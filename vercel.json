@@ -1,6 +1,6 @@
 {
-  "cleanUrls": true,
+  "cleanUrls": false,
   "redirects": [
-    { "source": "/", "destination": "/pages/index.html", "permanent": true }
+    { "source": "/", "destination": "/pages/", "permanent": true }
   ]
 }
