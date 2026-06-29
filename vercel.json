@@ -1,6 +1,4 @@
 {
   "cleanUrls": false,
-  "redirects": [
-    { "source": "/", "destination": "/pages/", "permanent": true }
-  ]
+  "redirects": [{ "source": "/", "destination": "/pages", "permanent": true }]
 }
