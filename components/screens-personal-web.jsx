@@ -1,17 +1,12 @@
 // Personal user web dashboard
 
-function PersonalDashboard() {
+function PersonalDashboardInner() {
   const t = useTokens();
   const u = APP_DATA.personal;
   const pctDay = u.todayMinutes / u.todayGoal;
 
   return (
-    <WebShell
-      role="personal"
-      active="overview"
-      title="Less screen. More you."
-      subtitle="Personal · Thursday afternoon"
-    >
+    <>
       <div
         style={{
           display: "grid",
@@ -178,30 +173,29 @@ function PersonalDashboard() {
               <span
                 style={{
                   width: 14,
-                  height: 3,
-                  borderRadius: 2,
+                  height: 14,
+                  borderRadius: 4,
                   background: t.c.primary,
                 }}
-              />{" "}
-              This week
+              />
+              <span style={{ color: t.c.text }}>This week</span>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
               <span
                 style={{
                   width: 14,
-                  height: 3,
-                  borderRadius: 2,
-                  background: t.c.textMute,
-                  opacity: 0.5,
+                  height: 14,
+                  borderRadius: 4,
+                  background: t.c.border,
                 }}
-              />{" "}
-              Last week
+              />
+              <span style={{ color: t.c.textMute }}>Last week</span>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
               <span
                 style={{ width: 14, borderTop: `1.5px dashed ${t.c.accent}` }}
               />{" "}
-              Goal
+              <span style={{ color: t.c.textMute }}>Goal</span>
             </div>
           </div>
         </Card>
@@ -290,6 +284,19 @@ function PersonalDashboard() {
           </div>
         </Card>
       </div>
+    </>
+  );
+}
+
+function PersonalDashboard() {
+  return (
+    <WebShell
+      role="personal"
+      active="overview"
+      title="Less screen. More you."
+      subtitle="Personal · Thursday afternoon"
+    >
+      <PersonalDashboardInner />
     </WebShell>
   );
 }
@@ -467,3 +474,4 @@ function PickupChart({ data }) {
 }
 window.PickupChart = PickupChart;
 window.PersonalDashboard = PersonalDashboard;
+window.PersonalDashboardInner = PersonalDashboardInner;

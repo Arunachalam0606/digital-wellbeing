@@ -3338,7 +3338,7 @@ function MobLogin({ android = false, onLogin }) {
   );
 }
 
-function MobOnboardWelcome({ android = false, onNext }) {
+function MobOnboardWelcome({ android = false, onSelect }) {
   const t = useTokens();
   return (
     <MobileScreen android={android} scroll={false} bg={`linear-gradient(135deg, ${t.c.primarySoft} 0%, ${t.c.surface2} 100%)`}>
@@ -3349,29 +3349,24 @@ function MobOnboardWelcome({ android = false, onNext }) {
         <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", height: "100%", justifyContent: "space-between" }}>
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 20 }}>
-            <div style={{ width: 24, height: 4, background: t.c.primary, borderRadius: 2 }} />
-            <div style={{ width: 24, height: 4, background: t.c.surface2, borderRadius: 2 }} />
-            <div style={{ width: 24, height: 4, background: t.c.surface2, borderRadius: 2 }} />
-            <span style={{ fontSize: 11, color: t.c.textMute, marginLeft: "auto" }}>Step 1 of 4</span>
-          </div>
+              <div style={{ width: 24, height: 4, background: t.c.primary, borderRadius: 2 }} />
+              <div style={{ width: 24, height: 4, background: t.c.surface2, borderRadius: 2 }} />
+              <div style={{ width: 24, height: 4, background: t.c.surface2, borderRadius: 2 }} />
+              <span style={{ fontSize: 11, color: t.c.textMute, marginLeft: "auto" }}>Step 1 of 4</span>
+            </div>
 
-          <h2 style={{ fontFamily: t.fontSerif, fontSize: 28, fontWeight: 500, color: t.c.text, lineHeight: 1.15, marginBottom: 8 }}>
-            Welcome to Atrium
-          </h2>
-          <p style={{ fontSize: 13.5, color: t.c.textMute, lineHeight: 1.5, margin: "0 0 24px" }}>
-            Mindful daily screen habits for your family. Empathetic guidance instead of rigid blocks.
-          </p>
+            <h2 style={{ fontFamily: t.fontSerif, fontSize: 28, fontWeight: 500, color: t.c.text, lineHeight: 1.15, marginBottom: 8 }}>
+              Welcome to Atrium
+            </h2>
+            <p style={{ fontSize: 13.5, color: t.c.textMute, lineHeight: 1.5, margin: "0 0 24px" }}>
+              Mindful daily screen habits for your family. Empathetic guidance instead of rigid blocks.
+            </p>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            <div style={{ fontSize: 11, fontWeight: 600, color: t.c.textMute, textTransform: "uppercase", letterSpacing: ".05em" }}>Who is using this device?</div>
-            {[
-              { role: "parent", label: "I am a Parent", desc: "Manage children's limits, schedules, and view AI tips.", icon: "sparkles", color: t.c.primary },
-              { role: "child", label: "I am a Child", desc: "Track streaks, earn points, and view schedules.", icon: "gift", color: t.c.accent },
-              { role: "personal", label: "Independent", desc: "Manage limits for yourself without child pairing.", icon: "phone", color: t.c.textMute }
-            ].map(r => (
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              <div style={{ fontSize: 11, fontWeight: 600, color: t.c.textMute, textTransform: "uppercase", letterSpacing: ".05em" }}>Who is using this device?</div>
+              
               <button
-                key={r.role}
-                onClick={onNext}
+                onClick={() => onSelect("parent-ind")}
                 style={{
                   background: t.c.surface,
                   border: `1px solid ${t.c.border}`,
@@ -3387,17 +3382,144 @@ function MobOnboardWelcome({ android = false, onNext }) {
                   boxShadow: "0 4px 12px rgba(0,0,0,.01)",
                 }}
               >
-                <div style={{ width: 36, height: 36, borderRadius: 10, background: `${r.color}15`, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <Icon name={r.icon} size={18} color={r.color} />
+                <div style={{ width: 36, height: 36, borderRadius: 10, background: `${t.c.primary}15`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <Icon name="sparkles" size={18} color={t.c.primary} />
                 </div>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: 600, fontSize: 14.5 }}>{r.label}</div>
-                  <div style={{ fontSize: 11.5, color: t.c.textMute, marginTop: 2 }}>{r.desc}</div>
+                  <div style={{ fontWeight: 600, fontSize: 14.5 }}>Parent / Independent</div>
+                  <div style={{ fontSize: 11.5, color: t.c.textMute, marginTop: 2 }}>Manage child limits or track your personal wellbeing.</div>
                 </div>
               </button>
-            ))}
+
+              <button
+                onClick={() => onSelect("child")}
+                style={{
+                  background: t.c.surface,
+                  border: `1px solid ${t.c.border}`,
+                  borderRadius: 16,
+                  padding: 16,
+                  textAlign: "left",
+                  fontFamily: "inherit",
+                  cursor: "pointer",
+                  display: "flex",
+                  gap: 14,
+                  alignItems: "center",
+                  color: t.c.text,
+                  boxShadow: "0 4px 12px rgba(0,0,0,.01)",
+                }}
+              >
+                <div style={{ width: 36, height: 36, borderRadius: 10, background: `${t.c.accent}15`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <Icon name="phone" size={18} color={t.c.accent} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontWeight: 600, fontSize: 14.5 }}>Child Device</div>
+                  <div style={{ fontSize: 11.5, color: t.c.textMute, marginTop: 2 }}>Pair this device with parent controls.</div>
+                </div>
+              </button>
+            </div>
           </div>
         </div>
+      </div>
+    </MobileScreen>
+  );
+}
+
+function MobOnboardRoleQuestion({ android = false, onAnswer, onBack }) {
+  const t = useTokens();
+  return (
+    <MobileScreen android={android} scroll={false} bg={`linear-gradient(135deg, ${t.c.primarySoft} 0%, ${t.c.surface2} 100%)`}>
+      <div style={{ padding: "16px 24px 24px", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", boxSizing: "border-box", position: "relative", overflow: "hidden" }}>
+        {/* Subtle glow circles */}
+        <div style={{ position: "absolute", top: -80, right: -80, width: 160, height: 160, borderRadius: "50%", background: t.c.primary, filter: "blur(50px)", opacity: 0.12 }} />
+        <div style={{ position: "absolute", bottom: -60, left: -60, width: 140, height: 140, borderRadius: "50%", background: t.c.accent, filter: "blur(40px)", opacity: 0.12 }} />
+        <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", height: "100%", justifyContent: "space-between" }}>
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 20 }}>
+              <div style={{ width: 24, height: 4, background: t.c.primary, borderRadius: 2 }} />
+              <div style={{ width: 24, height: 4, background: t.c.primary, borderRadius: 2 }} />
+              <div style={{ width: 24, height: 4, background: t.c.surface2, borderRadius: 2 }} />
+              <span style={{ fontSize: 11, color: t.c.textMute, marginLeft: "auto" }}>Step 2 of 4</span>
+            </div>
+
+            <h2 style={{ fontFamily: t.fontSerif, fontSize: 26, fontWeight: 500, color: t.c.text, lineHeight: 1.15, marginBottom: 8 }}>
+              Are you managing children's devices?
+            </h2>
+            <p style={{ fontSize: 13.5, color: t.c.textMute, lineHeight: 1.5, margin: "0 0 24px" }}>
+              Atrium adapts its features based on your choice.
+            </p>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              <button
+                onClick={() => onAnswer("family")}
+                style={{
+                  background: t.c.surface,
+                  border: `1px solid ${t.c.border}`,
+                  borderRadius: 16,
+                  padding: 16,
+                  textAlign: "left",
+                  fontFamily: "inherit",
+                  cursor: "pointer",
+                  display: "flex",
+                  gap: 14,
+                  alignItems: "center",
+                  color: t.c.text,
+                  boxShadow: "0 4px 12px rgba(0,0,0,.01)",
+                }}
+              >
+                <div style={{ width: 36, height: 36, borderRadius: 10, background: `${t.c.primary}15`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <Icon name="users" size={18} color={t.c.primary} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontWeight: 600, fontSize: 14.5 }}>Yes, I am a Parent</div>
+                  <div style={{ fontSize: 11.5, color: t.c.textMute, marginTop: 2 }}>Setup profiles, link devices, and monitor child usage schedules.</div>
+                </div>
+              </button>
+
+              <button
+                onClick={() => onAnswer("independent")}
+                style={{
+                  background: t.c.surface,
+                  border: `1px solid ${t.c.border}`,
+                  borderRadius: 16,
+                  padding: 16,
+                  textAlign: "left",
+                  fontFamily: "inherit",
+                  cursor: "pointer",
+                  display: "flex",
+                  gap: 14,
+                  alignItems: "center",
+                  color: t.c.text,
+                  boxShadow: "0 4px 12px rgba(0,0,0,.01)",
+                }}
+              >
+                <div style={{ width: 36, height: 36, borderRadius: 10, background: `${t.c.textMute}15`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <Icon name="phone" size={18} color={t.c.textMute} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontWeight: 600, fontSize: 14.5 }}>No, personal use only</div>
+                  <div style={{ fontSize: 11.5, color: t.c.textMute, marginTop: 2 }}>Operate Atrium as a personal screen-time guide. Skip child setup.</div>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <div style={{ display: "flex", justifyContent: "flex-start", marginTop: 24 }}>
+            <button
+              onClick={onBack}
+              style={{
+                background: "transparent",
+                color: t.c.text,
+                border: "none",
+                fontSize: 14.5,
+                fontWeight: 600,
+                fontFamily: "inherit",
+                cursor: "pointer",
+                padding: "8px 12px",
+              }}
+            >
+              Back
+            </button>
+          </div>
         </div>
       </div>
     </MobileScreen>
@@ -3903,8 +4025,41 @@ function MobOnboarding({ android = false }) {
   const [step, setStep] = useState(1);
 
   if (step === 1) return <MobLogin android={android} onLogin={() => setStep(2)} />;
-  if (step === 2) return <MobOnboardWelcome android={android} onNext={() => setStep(3)} />;
-  if (step === 3) return <MobOnboardCreateProfile android={android} onNext={() => setStep(4)} onBack={() => setStep(2)} />;
+  
+  if (step === 2) {
+    return (
+      <MobOnboardWelcome
+        android={android}
+        onSelect={(role) => {
+          if (role === "child") {
+            alert("Pairing device to parent hub...");
+            setStep(1);
+          } else {
+            setStep(2.5);
+          }
+        }}
+      />
+    );
+  }
+
+  if (step === 2.5) {
+    return (
+      <MobOnboardRoleQuestion
+        android={android}
+        onAnswer={(choice) => {
+          if (choice === "independent") {
+            alert("Independent user profile created successfully!");
+            setStep(2);
+          } else {
+            setStep(3);
+          }
+        }}
+        onBack={() => setStep(2)}
+      />
+    );
+  }
+
+  if (step === 3) return <MobOnboardCreateProfile android={android} onNext={() => setStep(4)} onBack={() => setStep(2.5)} />;
   if (step === 4) return <MobOnboardLink android={android} onNext={() => setStep(5)} onBack={() => setStep(3)} />;
   if (step === 5) return <MobConnectingProgress android={android} onNext={() => setStep(6)} />;
   if (step === 6) return <MobOnboardConfigure android={android} onNext={() => setStep(1)} />;
@@ -3968,7 +4123,10 @@ function QRCodeMock({ size = 170, fg = "#000", bg = "#fff" }) {
     </svg>
   );
 }
+
 window.MobOnboarding = MobOnboarding;
+window.MobOnboardWelcome = MobOnboardWelcome;
+window.MobOnboardRoleQuestion = MobOnboardRoleQuestion;
 window.QRCodeMock = QRCodeMock;
 
 // ─────────────────── Shared parentTabs definition ───────────────────

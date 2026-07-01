@@ -4,18 +4,13 @@ const { useState: useStateP } = React;
 
 // ───────────────────── Parent Dashboard ─────────────────────
 
-function ParentDashboard() {
+function ParentDashboardInner() {
   const t = useTokens();
   const D = APP_DATA;
   const totalToday = D.kids.reduce((a, k) => a + k.todayMinutes, 0);
 
   return (
-    <WebShell
-      role="parent"
-      active="overview"
-      title="Good afternoon, Sarah"
-      subtitle={"Thursday, April 16 · Family overview"}
-    >
+    <>
       {/* Hero strip */}
       <div
         style={{
@@ -97,22 +92,9 @@ function ParentDashboard() {
                   <Icon name="trendDown" size={12} /> 18% vs. last Thu
                 </Chip>
               </div>
-              <div
-                style={{
-                  fontSize: 13,
-                  color: t.c.textMute,
-                  marginTop: 8,
-                  maxWidth: 380,
-                  lineHeight: 1.5,
-                }}
-              >
-                Maya is well under her 4h budget. Jaden crossed his 5h limit 12
-                minutes ago — Snapchat is now locked until tomorrow.
-              </div>
             </div>
             <Avatar name="Sarah Mitchell" size={48} color={t.c.primary} />
           </div>
-
           {/* Mini stacked bar by kid */}
           <div
             style={{
@@ -341,6 +323,19 @@ function ParentDashboard() {
           />
         </Card>
       </div>
+    </>
+  );
+}
+
+function ParentDashboard() {
+  return (
+    <WebShell
+      role="parent"
+      active="overview"
+      title="Good afternoon, Sarah"
+      subtitle={"Thursday, April 16 · Family overview"}
+    >
+      <ParentDashboardInner />
     </WebShell>
   );
 }
@@ -1021,6 +1016,7 @@ function Mini({ label, value, hint, color, pct }) {
 }
 window.Mini = Mini;
 window.ParentDashboard = ParentDashboard;
+window.ParentDashboardInner = ParentDashboardInner;
 
 // ───────────────────── Single-Child Detail ─────────────────────
 
@@ -1829,7 +1825,7 @@ function WebLogin() {
 
         <div style={{ display: "flex", alignItems: "center", gap: 10, zIndex: 2 }}>
           <Icon name="sparkles" size={28} color={t.c.primary} />
-          <span style={{ fontSize: 18, fontWeight: 600, fontFamily: t.fontSerif, letterSpacing: "-.02em" }}>Atrium</span>
+          <span style={{ fontSize: 18, fontWeight: 600, fontFamily: t.fontSerif, letterSpacing: "-.02em", color: t.c.text }}>Atrium</span>
         </div>
 
         <div style={{ zIndex: 2, maxWidth: 460 }}>
@@ -1858,7 +1854,7 @@ function WebLogin() {
                   🔥
                 </div>
                 <div>
-                  <div style={{ fontWeight: 600, fontSize: 14 }}>Family Streak</div>
+                  <div style={{ fontWeight: 600, fontSize: 14, color: t.c.text }}>Family Streak</div>
                   <div style={{ fontSize: 11.5, color: t.c.textMute }}>Maya & Jaden hitting daily goals</div>
                 </div>
               </div>
@@ -1889,7 +1885,7 @@ function WebLogin() {
         justifyContent: "center",
       }}>
         <div style={{ maxWidth: 360, width: "100%", margin: "0 auto" }}>
-          <h2 style={{ fontFamily: t.fontSerif, fontSize: 32, fontWeight: 500, margin: "0 0 8px" }}>Welcome Back</h2>
+          <h2 style={{ fontFamily: t.fontSerif, fontSize: 32, fontWeight: 500, margin: "0 0 8px", color: t.c.text }}>Welcome Back</h2>
           <p style={{ fontSize: 14.5, color: t.c.textMute, margin: "0 0 32px" }}>Sign in to your parent administration hub</p>
 
           <form onSubmit={handleLogin} style={{ display: "flex", flexDirection: "column", gap: 20 }}>
@@ -2019,7 +2015,7 @@ function WebOnboardStep1({ childName, setChildName, onNext }) {
       <div style={{ background: t.c.surface2, borderRadius: 16, padding: 24, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
         <div>
           <span style={{ fontSize: 11, fontWeight: 700, color: t.c.primary, textTransform: "uppercase", letterSpacing: ".05em" }}>Profile Setup</span>
-          <h3 style={{ fontFamily: t.fontSerif, fontSize: 20, fontWeight: 500, margin: "8px 0 12px" }}>Why this matters</h3>
+          <h3 style={{ fontFamily: t.fontSerif, fontSize: 20, fontWeight: 500, margin: "8px 0 12px", color: t.c.text }}>Why this matters</h3>
           <p style={{ fontSize: 13, color: t.c.textMute, lineHeight: 1.5, margin: 0 }}>
             Creating a profile lets Atrium tailor its screen schedules specifically to your child's age group guidelines.
           </p>
@@ -2033,7 +2029,7 @@ function WebOnboardStep1({ childName, setChildName, onNext }) {
       {/* Right Column: Step Form */}
       <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
         <div>
-          <h2 style={{ fontFamily: t.fontSerif, fontSize: 32, fontWeight: 500, margin: "0 0 8px" }}>Create child profile</h2>
+          <h2 style={{ fontFamily: t.fontSerif, fontSize: 32, fontWeight: 500, margin: "0 0 8px", color: t.c.text }}>Create child profile</h2>
           <p style={{ fontSize: 14.5, color: t.c.textMute, marginBottom: 32 }}>Enter their details to configure device linking.</p>
           
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginBottom: 24 }}>
@@ -2140,7 +2136,7 @@ function WebOnboardStep2({ childName, onNext, onBack }) {
       <div style={{ background: t.c.surface2, borderRadius: 16, padding: 24, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
         <div>
           <span style={{ fontSize: 11, fontWeight: 700, color: t.c.primary, textTransform: "uppercase", letterSpacing: ".05em" }}>Pairing Device</span>
-          <h3 style={{ fontFamily: t.fontSerif, fontSize: 20, fontWeight: 500, margin: "8px 0 12px" }}>How to link</h3>
+          <h3 style={{ fontFamily: t.fontSerif, fontSize: 20, fontWeight: 500, margin: "8px 0 12px", color: t.c.text }}>How to link</h3>
           <ol style={{ fontSize: 13, color: t.c.textMute, paddingLeft: 18, lineHeight: 1.6, margin: 0 }}>
             <li style={{ marginBottom: 8 }}>Open Atrium on {childName}'s phone.</li>
             <li style={{ marginBottom: 8 }}>Select "I am a Child" role.</li>
@@ -2156,7 +2152,7 @@ function WebOnboardStep2({ childName, onNext, onBack }) {
       {/* Right Column: Step QR */}
       <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
         <div>
-          <h2 style={{ fontFamily: t.fontSerif, fontSize: 32, fontWeight: 500, margin: "0 0 8px" }}>Scan to link device</h2>
+          <h2 style={{ fontFamily: t.fontSerif, fontSize: 32, fontWeight: 500, margin: "0 0 8px", color: t.c.text }}>Scan to link device</h2>
           <p style={{ fontSize: 14.5, color: t.c.textMute, marginBottom: 32 }}>Pair parent controls with {childName}'s iPhone securely.</p>
           
           <div style={{ display: "flex", gap: 40, alignItems: "center", background: t.c.surface, border: `1px solid ${t.c.border}`, padding: 24, borderRadius: 20 }}>
@@ -2221,7 +2217,7 @@ function WebOnboardStep3({ childName, onNext, onBack }) {
       <div style={{ background: t.c.surface2, borderRadius: 16, padding: 24, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
         <div>
           <span style={{ fontSize: 11, fontWeight: 700, color: t.c.primary, textTransform: "uppercase", letterSpacing: ".05em" }}>Boundaries</span>
-          <h3 style={{ fontFamily: t.fontSerif, fontSize: 20, fontWeight: 500, margin: "8px 0 12px" }}>Calm, not locking</h3>
+          <h3 style={{ fontFamily: t.fontSerif, fontSize: 20, fontWeight: 500, margin: "8px 0 12px", color: t.c.text }}>Calm, not locking</h3>
           <p style={{ fontSize: 13, color: t.c.textMute, lineHeight: 1.5, margin: 0 }}>
             We recommend setting loose bedtime routines first. This lets kids practice scheduling without immediate hard locks.
           </p>
@@ -2235,13 +2231,13 @@ function WebOnboardStep3({ childName, onNext, onBack }) {
       {/* Right Column: Step Config */}
       <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
         <div>
-          <h2 style={{ fontFamily: t.fontSerif, fontSize: 32, fontWeight: 500, margin: "0 0 8px" }}>Setup initial rules</h2>
+          <h2 style={{ fontFamily: t.fontSerif, fontSize: 32, fontWeight: 500, margin: "0 0 8px", color: t.c.text }}>Setup initial rules</h2>
           <p style={{ fontSize: 14.5, color: t.c.textMute, marginBottom: 24 }}>Set simple start limits to get going.</p>
           
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: t.c.surface2, padding: "16px 20px", borderRadius: 12, border: `1px solid ${t.c.border}` }}>
               <div>
-                <div style={{ fontWeight: 600, fontSize: 14.5 }}>Enable Bedtime Lock</div>
+                <div style={{ fontWeight: 600, fontSize: 14.5, color: t.c.text }}>Enable Bedtime Lock</div>
                 <div style={{ fontSize: 12.5, color: t.c.textMute, marginTop: 2 }}>Locks device 9:00 PM – 7:00 AM</div>
               </div>
               <Toggle on={true} />
@@ -2249,7 +2245,7 @@ function WebOnboardStep3({ childName, onNext, onBack }) {
 
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: t.c.surface2, padding: "16px 20px", borderRadius: 12, border: `1px solid ${t.c.border}` }}>
               <div>
-                <div style={{ fontWeight: 600, fontSize: 14.5 }}>School Day Block</div>
+                <div style={{ fontWeight: 600, fontSize: 14.5, color: t.c.text }}>School Day Block</div>
                 <div style={{ fontSize: 12.5, color: t.c.textMute, marginTop: 2 }}>Mutes notifications during school hours</div>
               </div>
               <Toggle on={true} />
@@ -2257,7 +2253,7 @@ function WebOnboardStep3({ childName, onNext, onBack }) {
 
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: t.c.surface2, padding: "16px 20px", borderRadius: 12, border: `1px solid ${t.c.border}` }}>
               <div>
-                <div style={{ fontWeight: 600, fontSize: 14.5 }}>Weekly AI Insight Coaching</div>
+                <div style={{ fontWeight: 600, fontSize: 14.5, color: t.c.text }}>Weekly AI Insight Coaching</div>
                 <div style={{ fontSize: 12.5, color: t.c.textMute, marginTop: 2 }}>Receive personalized screen routine tips</div>
               </div>
               <Toggle on={true} />
@@ -2303,9 +2299,158 @@ function WebOnboardStep3({ childName, onNext, onBack }) {
   );
 }
 
+function WebOnboardWelcomeScreen({ onSelect }) {
+  const t = useTokens();
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
+      <div>
+        <h2 style={{ fontFamily: t.fontSerif, fontSize: 32, fontWeight: 500, color: t.c.text, margin: "0 0 8px" }}>Welcome to Atrium</h2>
+        <p style={{ fontSize: 14.5, color: t.c.textMute, margin: 0 }}>Mindful daily screen habits for your family. Empathetic guidance instead of rigid blocks.</p>
+      </div>
+
+      <div>
+        <div style={{ fontSize: 11, fontWeight: 600, color: t.c.textMute, textTransform: "uppercase", letterSpacing: ".05em", marginBottom: 16 }}>Who is using this device?</div>
+        
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+          <button
+            onClick={() => onSelect("parent-ind")}
+            style={{
+              padding: 24,
+              borderRadius: 16,
+              background: t.c.surface,
+              border: `1px solid ${t.c.border}`,
+              textAlign: "left",
+              cursor: "pointer",
+              fontFamily: "inherit",
+              display: "flex",
+              flexDirection: "column",
+              gap: 16,
+              boxShadow: "0 4px 20px rgba(0,0,0,.01)",
+            }}
+          >
+            <div style={{ width: 44, height: 44, borderRadius: 12, background: `${t.c.primary}15`, display: "flex", alignItems: "center", justifyContent: "center", color: t.c.primary }}>
+              <Icon name="sparkles" size={20} />
+            </div>
+            <div>
+              <h4 style={{ fontSize: 16, fontWeight: 600, color: t.c.text, margin: "0 0 6px" }}>Parent / Independent</h4>
+              <p style={{ fontSize: 13, color: t.c.textMute, margin: 0, lineHeight: 1.45 }}>Manage child limits, routines, or track your own personal wellbeing.</p>
+            </div>
+          </button>
+
+          <button
+            onClick={() => onSelect("child")}
+            style={{
+              padding: 24,
+              borderRadius: 16,
+              background: t.c.surface,
+              border: `1px solid ${t.c.border}`,
+              textAlign: "left",
+              cursor: "pointer",
+              fontFamily: "inherit",
+              display: "flex",
+              flexDirection: "column",
+              gap: 16,
+              boxShadow: "0 4px 20px rgba(0,0,0,.01)",
+            }}
+          >
+            <div style={{ width: 44, height: 44, borderRadius: 12, background: `${t.c.accent}15`, display: "flex", alignItems: "center", justifyContent: "center", color: t.c.accent }}>
+              <Icon name="phone" size={20} />
+            </div>
+            <div>
+              <h4 style={{ fontSize: 16, fontWeight: 600, color: t.c.text, margin: "0 0 6px" }}>Child Device</h4>
+              <p style={{ fontSize: 13, color: t.c.textMute, margin: 0, lineHeight: 1.45 }}>Pair this device with parent controls to view streaks and daily budgets.</p>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function WebOnboardRoleQuestion({ onAnswer, onBack }) {
+  const t = useTokens();
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
+      <div>
+        <h2 style={{ fontFamily: t.fontSerif, fontSize: 32, fontWeight: 500, color: t.c.text, margin: "0 0 8px" }}>Are you managing children's devices?</h2>
+        <p style={{ fontSize: 14.5, color: t.c.textMute, margin: 0 }}>Configure Atrium to suit your personal goals or family parameters.</p>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+        <button
+          onClick={() => onAnswer("family")}
+          style={{
+            padding: 24,
+            borderRadius: 16,
+            background: t.c.surface,
+            border: `1px solid ${t.c.border}`,
+            textAlign: "left",
+            cursor: "pointer",
+            fontFamily: "inherit",
+            display: "flex",
+            flexDirection: "column",
+            gap: 16,
+            boxShadow: "0 4px 20px rgba(0,0,0,.01)",
+          }}
+        >
+          <div style={{ width: 44, height: 44, borderRadius: 12, background: `${t.c.primary}15`, display: "flex", alignItems: "center", justifyContent: "center", color: t.c.primary }}>
+            <Icon name="users" size={20} />
+          </div>
+          <div>
+            <h4 style={{ fontSize: 16, fontWeight: 600, color: t.c.text, margin: "0 0 6px" }}>Yes, I am a Parent</h4>
+            <p style={{ fontSize: 13, color: t.c.textMute, margin: 0, lineHeight: 1.45 }}>I want to setup profiles, pairing QR codes, and monitor device schedules for my kids.</p>
+          </div>
+        </button>
+
+        <button
+          onClick={() => onAnswer("independent")}
+          style={{
+            padding: 24,
+            borderRadius: 16,
+            background: t.c.surface,
+            border: `1px solid ${t.c.border}`,
+            textAlign: "left",
+            cursor: "pointer",
+            fontFamily: "inherit",
+            display: "flex",
+            flexDirection: "column",
+            gap: 16,
+            boxShadow: "0 4px 20px rgba(0,0,0,.01)",
+          }}
+        >
+          <div style={{ width: 44, height: 44, borderRadius: 12, background: `${t.c.textMute}15`, display: "flex", alignItems: "center", justifyContent: "center", color: t.c.textMute }}>
+            <Icon name="phone" size={20} />
+          </div>
+          <div>
+            <h4 style={{ fontSize: 16, fontWeight: 600, color: t.c.text, margin: "0 0 6px" }}>No, this is for personal use</h4>
+            <p style={{ fontSize: 13, color: t.c.textMute, margin: 0, lineHeight: 1.45 }}>Skip family configurations. Set daily app budgets and schedules for this browser.</p>
+          </div>
+        </button>
+      </div>
+
+      <div style={{ display: "flex", justifyContent: "flex-start" }}>
+        <button
+          onClick={onBack}
+          style={{
+            background: "transparent",
+            color: t.c.text,
+            border: "none",
+            fontSize: 14.5,
+            fontWeight: 600,
+            fontFamily: "inherit",
+            cursor: "pointer",
+          }}
+        >
+          Back
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function WebOnboardWizard() {
   const t = useTokens();
-  const [step, setStep] = React.useState(1);
+  const [step, setStep] = React.useState(0);
   const [childName, setChildName] = React.useState("Maya");
 
   return (
@@ -2333,15 +2478,43 @@ function WebOnboardWizard() {
         minHeight: 520,
       }}>
         {/* Progress indicator */}
-        <div style={{ display: "flex", alignItems: "center", justifyItems: "center", gap: 12, marginBottom: 32 }}>
-          {[1, 2, 3].map(s => (
-            <div key={s} style={{ flex: 1, height: 4, borderRadius: 2, background: s <= step ? t.c.primary : t.c.surface2 }} />
-          ))}
-          <span style={{ fontSize: 12, fontWeight: 600, color: t.c.textMute }}>Step {step} of 3</span>
-        </div>
+        {step > 0 && step <= 3 && (
+          <div style={{ display: "flex", alignItems: "center", justifyItems: "center", gap: 12, marginBottom: 32 }}>
+            {[1, 2, 3].map(s => (
+              <div key={s} style={{ flex: 1, height: 4, borderRadius: 2, background: s <= step ? t.c.primary : t.c.surface2 }} />
+            ))}
+            <span style={{ fontSize: 12, fontWeight: 600, color: t.c.textMute }}>Step {step} of 3</span>
+          </div>
+        )}
 
         {/* Step Content */}
         <div style={{ flex: 1 }}>
+          {step === 0 && (
+            <WebOnboardWelcomeScreen
+              onSelect={(role) => {
+                if (role === "child") {
+                  alert("Device paired to parent hub!");
+                } else {
+                  setStep(0.5);
+                }
+              }}
+            />
+          )}
+
+          {step === 0.5 && (
+            <WebOnboardRoleQuestion
+              onAnswer={(choice) => {
+                if (choice === "independent") {
+                  alert("Personal wellbeing profile created successfully!");
+                  setStep(0);
+                } else {
+                  setStep(1);
+                }
+              }}
+              onBack={() => setStep(0)}
+            />
+          )}
+
           {step === 1 && (
             <WebOnboardStep1
               childName={childName}
@@ -2363,7 +2536,7 @@ function WebOnboardWizard() {
               childName={childName}
               onNext={() => {
                 alert("Setup completed successfully!");
-                setStep(1);
+                setStep(0);
               }}
               onBack={() => setStep(2)}
             />
@@ -2484,8 +2657,32 @@ function QRCodeMock({ size = 170, fg = "#000", bg = "#fff" }) {
   );
 }
 
+function WebOnboardWelcomePreview() {
+  const t = useTokens();
+  return (
+    <div style={{ width: "100%", height: "100%", background: t.c.bg, display: "flex", alignItems: "center", justifyContent: "center", padding: 40, boxSizing: "border-box" }}>
+      <div style={{ width: 800, background: t.c.surface, border: `1px solid ${t.c.border}`, borderRadius: 24, padding: 40, boxShadow: "0 24px 64px rgba(40,30,20,.06)", boxSizing: "border-box", minHeight: 520 }}>
+        <WebOnboardWelcomeScreen onSelect={()=>{}} />
+      </div>
+    </div>
+  );
+}
+
+function WebOnboardRoleQuestionPreview() {
+  const t = useTokens();
+  return (
+    <div style={{ width: "100%", height: "100%", background: t.c.bg, display: "flex", alignItems: "center", justifyContent: "center", padding: 40, boxSizing: "border-box" }}>
+      <div style={{ width: 800, background: t.c.surface, border: `1px solid ${t.c.border}`, borderRadius: 24, padding: 40, boxShadow: "0 24px 64px rgba(40,30,20,.06)", boxSizing: "border-box", minHeight: 520 }}>
+        <WebOnboardRoleQuestion onAnswer={()=>{}} onBack={()=>{}} />
+      </div>
+    </div>
+  );
+}
+
 window.WebLogin = WebLogin;
 window.WebOnboardWizard = WebOnboardWizard;
+window.WebOnboardWelcomePreview = WebOnboardWelcomePreview;
+window.WebOnboardRoleQuestionPreview = WebOnboardRoleQuestionPreview;
 window.WebOnboardStep1Preview = WebOnboardStep1Preview;
 window.WebOnboardStep2Preview = WebOnboardStep2Preview;
 window.WebOnboardStep3Preview = WebOnboardStep3Preview;

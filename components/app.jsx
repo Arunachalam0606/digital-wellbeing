@@ -177,6 +177,26 @@ function App() {
             </div>
           </DCArtboard>
           <DCArtboard
+            id="web-onboard-welcome"
+            label="Web Onboarding · Welcome Screen"
+            width={1440}
+            height={980}
+          >
+            <div key={key} style={{ width: "100%", height: "100%" }}>
+              <WebOnboardWelcomePreview />
+            </div>
+          </DCArtboard>
+          <DCArtboard
+            id="web-onboard-role-question"
+            label="Web Onboarding · Role Choice Question"
+            width={1440}
+            height={980}
+          >
+            <div key={key} style={{ width: "100%", height: "100%" }}>
+              <WebOnboardRoleQuestionPreview />
+            </div>
+          </DCArtboard>
+          <DCArtboard
             id="web-onboard-step-1"
             label="Web Onboarding Step 1 · Create Profile"
             width={1440}
@@ -708,6 +728,28 @@ function App() {
             >
               <PhoneFrame>
                 <MobOnboardWelcome />
+              </PhoneFrame>
+            </div>
+          </DCArtboard>
+          
+          <DCArtboard
+            id="m-onboard-role-question-screen"
+            label="Onboarding 1.5 · Are you a parent?"
+            width={phoneAB.width}
+            height={phoneAB.height}
+          >
+            <div
+              key={key}
+              style={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <PhoneFrame>
+                <MobOnboardRoleQuestion />
               </PhoneFrame>
             </div>
           </DCArtboard>
