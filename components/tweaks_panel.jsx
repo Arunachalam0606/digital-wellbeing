@@ -9,8 +9,8 @@
 // Usage (in an HTML file that loads React + Babel):
 
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/ {
-  primaryColor: "#7A5AE0",
-  palette: ["#7A5AE0", "#29261b", "#f6f4ef"],
+  primaryColor: "#5C8A6B",
+  palette: ["#5C8A6B", "#2D2A26", "#FBF8F3"],
   fontSize: 16,
   density: "regular",
   dark: false,
@@ -18,9 +18,81 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/ {
 
 function App() {
   const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+  const isDark = t.dark;
+
+  const options = isDark
+    ? [
+        ["#7BB38C", "#E4EAE6", "#121614"],
+        ["#B1A2D9", "#EAE4ED", "#141218"],
+        ["#EE9A85", "#EFE4DF", "#181311"],
+        ["#7FA7D1", "#E9ECEF", "#111315"],
+        ["#E59593", "#EFE4E4", "#181212"],
+      ]
+    : [
+        ["#5C8A6B", "#2D2A26", "#FBF8F3"],
+        ["#8B7AB0", "#2A2632", "#FBF7FB"],
+        ["#D97257", "#322521", "#FCF7F4"],
+        ["#4F6B8A", "#1F2937", "#F4F5F6"],
+        ["#C86260", "#362322", "#FDF8F7"],
+      ];
+
+  // Map chosen palette to correct light/dark mode
+  React.useEffect(() => {
+    const activePalette = t.palette;
+    const lightIndex = [
+      "#FBF8F3",
+      "#FBF7FB",
+      "#FCF7F4",
+      "#F4F5F6",
+      "#FDF8F7",
+    ].indexOf(activePalette[2]);
+    const darkIndex = [
+      "#121614",
+      "#141218",
+      "#181311",
+      "#111315",
+      "#181212",
+    ].indexOf(activePalette[2]);
+
+    if (isDark && lightIndex !== -1) {
+      setTweak("palette", [
+        ["#7BB38C", "#B1A2D9", "#EE9A85", "#7FA7D1", "#E59593"][lightIndex],
+        ["#E4EAE6", "#EAE4ED", "#EFE4DF", "#E9ECEF", "#EFE4E4"][lightIndex],
+        ["#121614", "#141218", "#181311", "#111315", "#181212"][lightIndex],
+      ]);
+    } else if (!isDark && darkIndex !== -1) {
+      setTweak("palette", [
+        ["#5C8A6B", "#8B7AB0", "#D97257", "#4F6B8A", "#C86260"][darkIndex],
+        ["#2D2A26", "#2A2632", "#322521", "#1F2937", "#362322"][darkIndex],
+        ["#FBF8F3", "#FBF7FB", "#FCF7F4", "#F4F5F6", "#FDF8F7"][darkIndex],
+      ]);
+    }
+  }, [isDark]);
+
   return (
-    <div style={{ fontSize: t.fontSize, color: t.primaryColor }}>
-      Hello
+    <div
+      style={{
+        fontSize: t.fontSize,
+        color: t.palette[1],
+        background: t.palette[2],
+        minHeight: "100vh",
+        padding: 24,
+        transition: "background 0.2s, color 0.2s",
+      }}
+    >
+      <div
+        style={{
+          color: t.palette[0],
+          fontWeight: "bold",
+          fontSize: "1.5em",
+          marginBottom: 8,
+        }}
+      >
+        Atrium
+      </div>
+      <div style={{ marginBottom: 16 }}>
+        Hello. This is the preview using the selected palette.
+      </div>
       <TweaksPanel>
         <TweakSection label="Typography" />
         <TweakSlider
@@ -47,10 +119,7 @@ function App() {
         <TweakColor
           label="Palette"
           value={t.palette}
-          options={[
-            ["#7A5AE0", "#29261b", "#f6f4ef"],
-            ["#475569", "#0f172a", "#f1f5f9"],
-          ]}
+          options={options}
           onChange={(v) => setTweak("palette", v)}
         />
         <TweakToggle

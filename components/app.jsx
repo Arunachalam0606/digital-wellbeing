@@ -5,6 +5,7 @@ const DEFAULT_TWEAKS = /*EDITMODE-BEGIN*/ {
   palette: "sage",
   density: "cozy",
   cardStyle: "soft",
+  darkMode: false,
 }; /*EDITMODE-END*/
 
 // Helper to wrap mobile content in a device frame inside an artboard
@@ -53,7 +54,7 @@ function App() {
   const [t, setTweak] = useTweaks(DEFAULT_TWEAKS);
   window.__TWEAKS = t;
   // Force re-render of artboards when tweaks change by using key
-  const key = `${t.palette}-${t.density}-${t.cardStyle}`;
+  const key = `${t.palette}-${t.density}-${t.cardStyle}-${t.darkMode}`;
 
   // Standard artboard sizes
   const phoneAB = { width: 470, height: 940 };
@@ -674,6 +675,7 @@ function App() {
         <TweakSection label="Visual palette">
           <PaletteSwatches
             value={t.palette}
+            darkMode={t.darkMode}
             onChange={(v) => setTweak("palette", v)}
           />
         </TweakSection>
@@ -703,6 +705,14 @@ function App() {
           />
         </TweakSection>
 
+        <TweakSection label="Theme Mode">
+          <TweakToggle
+            label="Dark Mode"
+            value={t.darkMode}
+            onChange={(v) => setTweak("darkMode", v)}
+          />
+        </TweakSection>
+
         <div
           style={{
             padding: "12px 14px",
@@ -720,27 +730,42 @@ function App() {
 }
 
 // Custom palette swatch picker (live inside the light tweaks panel)
-function PaletteSwatches({ value, onChange }) {
+function PaletteSwatches({ value, darkMode, onChange }) {
   const palettes = [
     {
       key: "sage",
       name: "Sage",
-      colors: ["#5C8A6B", "#E8896F", "#F4D374", "#A8A0C8"],
+      colors: darkMode
+        ? ["#7BB38C", "#F1AA97", "#FBE094", "#C0B7DC"]
+        : ["#5C8A6B", "#E8896F", "#F4D374", "#A8A0C8"],
     },
     {
       key: "lavender",
       name: "Lavender",
-      colors: ["#8B7AB0", "#E8896F", "#F4D374", "#7DA9C7"],
+      colors: darkMode
+        ? ["#B1A2D9", "#F1AA97", "#FBE094", "#A0C5DD"]
+        : ["#8B7AB0", "#E8896F", "#F4D374", "#7DA9C7"],
     },
     {
       key: "coral",
       name: "Coral",
-      colors: ["#D97257", "#5C8A6B", "#F4D374", "#A8A0C8"],
+      colors: darkMode
+        ? ["#EE9A85", "#7BB38C", "#FBE094", "#C0B7DC"]
+        : ["#D97257", "#5C8A6B", "#F4D374", "#A8A0C8"],
     },
     {
       key: "slate",
       name: "Slate",
-      colors: ["#4F6B8A", "#E8896F", "#F4D374", "#A8A0C8"],
+      colors: darkMode
+        ? ["#7FA7D1", "#F1AA97", "#FBE094", "#C0B7DC"]
+        : ["#4F6B8A", "#E8896F", "#F4D374", "#A8A0C8"],
+    },
+    {
+      key: "rose",
+      name: "Rose",
+      colors: darkMode
+        ? ["#E59593", "#7BB38C", "#FBE094", "#C0B7DC"]
+        : ["#C86260", "#5C8A6B", "#F4D374", "#A8A0C8"],
     },
   ];
   return (

@@ -67,12 +67,12 @@ function BrandSystem() {
       <Card style={{ marginBottom: 20 }}>
         <SectionHead
           title="Palettes"
-          subtitle="Four tweakable directions. Sage is default."
+          subtitle="Five theme directions, each with light and dark mode variants."
         />
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
+            gridTemplateColumns: "repeat(5, 1fr)",
             gap: 16,
           }}
         >
