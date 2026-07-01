@@ -321,10 +321,10 @@ function BrandSystem() {
               <Chip bg={t.c.surface2} color={t.c.textMute}>
                 ● Paused
               </Chip>
-              <Chip bg={t.c.yellowSoft} color="#8a6a18">
+              <Chip bg={t.c.yellowSoft} color={t.c.yellowText}>
                 🔥 4-day streak
               </Chip>
-              <Chip bg={t.c.lavSoft} color="#564a78">
+              <Chip bg={t.c.lavSoft} color={t.c.lavText}>
                 Weekend
               </Chip>
             </div>

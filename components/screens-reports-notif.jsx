@@ -582,7 +582,7 @@ function NotificationsLog() {
     warn: { col: t.c.warn, bg: t.c.warnSoft, label: "Warning" },
     bypass: { col: t.c.danger, bg: t.c.dangerSoft, label: "Bypass attempt" },
     achieved: { col: t.c.primary, bg: t.c.primarySoft, label: "Achievement" },
-    request: { col: "#564a78", bg: t.c.lavSoft, label: "Request" },
+    request: { col: t.c.lavText, bg: t.c.lavSoft, label: "Request" },
     schedule: { col: t.c.blue, bg: t.c.blueSoft, label: "Schedule" },
   };
 

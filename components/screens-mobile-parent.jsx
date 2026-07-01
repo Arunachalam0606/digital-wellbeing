@@ -195,7 +195,7 @@ function MobParentFamily({ android = false }) {
               alignItems: "center",
               gap: 6,
               fontSize: 10.5,
-              color: "#8a6a18",
+              color: t.c.yellowText,
               fontWeight: 600,
               textTransform: "uppercase",
               letterSpacing: ".06em",
@@ -388,7 +388,7 @@ function KidMobileCard({ kid }) {
             {kid.streak > 0 && (
               <Chip
                 bg={t.c.yellowSoft}
-                color="#8a6a18"
+                color={t.c.yellowText}
                 style={{ fontSize: 10 }}
               >
                 🔥 {kid.streak}d
@@ -664,7 +664,7 @@ function MobParentMe({ android = false }) {
             >
               <Chip
                 bg={t.c.yellowSoft}
-                color="#8a6a18"
+                color={t.c.yellowText}
                 style={{ fontSize: 10 }}
               >
                 🔥 6 days
@@ -1612,7 +1612,7 @@ function MobParentShield({ android = false }) {
             icon="eye"
             label="Trackers"
             value={fmtNum(A.trackers)}
-            color="#564a78"
+            color={t.c.lavText}
           />
           <ShieldStat
             icon="ban"
@@ -1652,7 +1652,7 @@ function MobParentShield({ android = false }) {
                 let offset = 0;
                 const colors = {
                   Ads: t.c.accent,
-                  Trackers: "#564a78",
+                  Trackers: t.c.lavText,
                   Social: t.c.blue,
                   Malware: t.c.danger,
                   Other: t.c.textMute,
@@ -1735,7 +1735,7 @@ function MobParentShield({ android = false }) {
             >
               {[
                 ["Ads", A.ads, t.c.accent],
-                ["Trackers", A.trackers, "#564a78"],
+                ["Trackers", A.trackers, t.c.lavText],
                 ["Social widgets", A.socialWidgets, t.c.blue],
                 ["Malware", A.malware, t.c.danger],
                 ["Other", A.other, t.c.textMute],
@@ -1829,7 +1829,7 @@ function MobParentShield({ android = false }) {
               </div>
               <Chip
                 bg={d.type === "Ads" ? t.c.accentSoft : t.c.lavSoft}
-                color={d.type === "Ads" ? t.c.accent : "#564a78"}
+                color={d.type === "Ads" ? t.c.accent : t.c.lavText}
                 style={{ fontSize: 9 }}
               >
                 {d.type}
@@ -1957,7 +1957,7 @@ function MobParentSchedules({ android = false }) {
   return (
     <MobileScreen
       android={android}
-      tab={<MobileTabBar items={parentTabs} active="schedule" />}
+      tab={<MobileTabBar items={parentTabs} active="limits" />}
       fab={<FAB icon="plus" label="New" />}
     >
       <MobileHeader
@@ -2600,7 +2600,7 @@ function MobParentKidDetail({ android = false, kidIndex = 1 }) {
                 icon: "message",
                 text: "Asked for 30 more minutes on Discord",
                 sub: "Late afternoon",
-                col: "#564a78",
+                col: t.c.lavText,
                 bg: t.c.lavSoft,
               },
               {
@@ -2682,7 +2682,7 @@ function MobParentNotifLog({ android = false }) {
     warn: { col: t.c.warn, bg: t.c.warnSoft, label: "Warning" },
     bypass: { col: t.c.danger, bg: t.c.dangerSoft, label: "Bypass" },
     achieved: { col: t.c.primary, bg: t.c.primarySoft, label: "Achieved" },
-    request: { col: "#564a78", bg: t.c.lavSoft, label: "Request" },
+    request: { col: t.c.lavText, bg: t.c.lavSoft, label: "Request" },
     schedule: { col: t.c.blue, bg: t.c.blueSoft, label: "Schedule" },
   };
 
@@ -3093,8 +3093,8 @@ window.QRCodeMock = QRCodeMock;
 const parentTabs = [
   { id: "family", label: "Family", icon: "users" },
   { id: "me", label: "Me", icon: "leaf" },
+  { id: "limits", label: "Limits", icon: "clock" },
   { id: "reports", label: "Reports", icon: "chart" },
   { id: "shield", label: "Shield", icon: "shield", badge: 3 },
-  { id: "schedule", label: "Plans", icon: "calendar" },
 ];
 window.parentTabs = parentTabs;

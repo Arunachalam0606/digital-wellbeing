@@ -5,12 +5,13 @@ const DEFAULT_TWEAKS = /*EDITMODE-BEGIN*/ {
   palette: "sage",
   density: "cozy",
   cardStyle: "soft",
+  dark: false,
 }; /*EDITMODE-END*/
 
-// Helper to wrap mobile content in a device frame inside an artboard
-function PhoneFrame({ children, android = false, title }) {
+// Wrap mobile content in a device frame (iOS or Android) inside an artboard
+function PhoneFrame({ children, android = false }) {
   const t = useTokens();
-  // 420 width × 880 height feels comfortable in artboard. Slightly compact iPhone.
+  const frameBg = t.dark ? t.c.bg : "#F0EEE9";
   if (android) {
     return (
       <div
@@ -20,7 +21,7 @@ function PhoneFrame({ children, android = false, title }) {
           justifyContent: "center",
           width: "100%",
           height: "100%",
-          background: t.c.bg,
+          background: frameBg,
           padding: 24,
         }}
       >
@@ -38,11 +39,11 @@ function PhoneFrame({ children, android = false, title }) {
         justifyContent: "center",
         width: "100%",
         height: "100%",
-        background: t.c.bg,
+        background: frameBg,
         padding: 24,
       }}
     >
-      <IOSDevice width={402} height={874}>
+      <IOSDevice width={402} height={874} dark={t.dark}>
         {children}
       </IOSDevice>
     </div>
@@ -52,10 +53,30 @@ function PhoneFrame({ children, android = false, title }) {
 function App() {
   const [t, setTweak] = useTweaks(DEFAULT_TWEAKS);
   window.__TWEAKS = t;
-  // Force re-render of artboards when tweaks change by using key
-  const key = `${t.palette}-${t.density}-${t.cardStyle}`;
+  const key = `${t.palette}-${t.density}-${t.cardStyle}-${t.dark ? "d" : "l"}`;
 
-  // Standard artboard sizes
+  // In dark mode, blend the design canvas neutral gray with our dark bg so
+  // there's no jarring bright surround around artboards.
+  useEffect(() => {
+    document.body.style.background = t.dark ? "#0F1114" : "#F0EEE9";
+    // Also update canvas grid + text colors via CSS var overrides.
+    const styleId = "canvas-theme-override";
+    let el = document.getElementById(styleId);
+    if (!el) {
+      el = document.createElement("style");
+      el.id = styleId;
+      document.head.appendChild(el);
+    }
+    if (t.dark) {
+      el.textContent = `
+        [data-dc-canvas]{background:#0F1114!important}
+        .dc-labeltext, .dc-editable{color:rgba(240,235,220,.9)!important}
+      `;
+    } else {
+      el.textContent = "";
+    }
+  }, [t.dark]);
+
   const phoneAB = { width: 470, height: 940 };
 
   return (
@@ -187,7 +208,7 @@ function App() {
         <DCSection
           id="mob-parent"
           title="Mobile — Parent app"
-          subtitle="5 tabs: Family · Me · Reports · Shield · Plans · plus drill-downs"
+          subtitle="Every parent web feature has a mobile equivalent. 5 main tabs + drill-downs."
         >
           <DCArtboard
             id="m-family-ios"
@@ -233,7 +254,7 @@ function App() {
           </DCArtboard>
           <DCArtboard
             id="m-me-ios"
-            label="② Me · iOS — parent's own wellbeing"
+            label="② Me · parent's own wellbeing"
             width={phoneAB.width}
             height={phoneAB.height}
           >
@@ -253,8 +274,50 @@ function App() {
             </div>
           </DCArtboard>
           <DCArtboard
+            id="m-limits-ios"
+            label="③ Limits · categories + apps + schedules + bedtime"
+            width={phoneAB.width}
+            height={phoneAB.height}
+          >
+            <div
+              key={key}
+              style={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <PhoneFrame>
+                <MobParentLimits />
+              </PhoneFrame>
+            </div>
+          </DCArtboard>
+          <DCArtboard
+            id="m-limits-and"
+            label="③ Limits · Android"
+            width={phoneAB.width}
+            height={phoneAB.height}
+          >
+            <div
+              key={key}
+              style={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <PhoneFrame android>
+                <MobParentLimits android />
+              </PhoneFrame>
+            </div>
+          </DCArtboard>
+          <DCArtboard
             id="m-reports-ios"
-            label="③ Reports · iOS — kids + parent"
+            label="④ Reports · kids + parent, trends + heatmap"
             width={phoneAB.width}
             height={phoneAB.height}
           >
@@ -275,7 +338,7 @@ function App() {
           </DCArtboard>
           <DCArtboard
             id="m-shield-ios"
-            label="④ Shield · iOS — ad blocker stats"
+            label="⑤ Shield · ad blocker stats + per-device"
             width={phoneAB.width}
             height={phoneAB.height}
           >
@@ -296,7 +359,7 @@ function App() {
           </DCArtboard>
           <DCArtboard
             id="m-shield-and"
-            label="④ Shield · Android"
+            label="⑤ Shield · Android"
             width={phoneAB.width}
             height={phoneAB.height}
           >
@@ -317,7 +380,7 @@ function App() {
           </DCArtboard>
           <DCArtboard
             id="m-sched-ios"
-            label="⑤ Plans · iOS — schedules"
+            label="Schedules detail · from Limits"
             width={phoneAB.width}
             height={phoneAB.height}
           >
@@ -338,7 +401,7 @@ function App() {
           </DCArtboard>
           <DCArtboard
             id="m-kid-ios"
-            label="⑥ Kid drill-down · Jaden (iOS)"
+            label="Kid drill-down · Jaden"
             width={phoneAB.width}
             height={phoneAB.height}
           >
@@ -359,7 +422,7 @@ function App() {
           </DCArtboard>
           <DCArtboard
             id="m-notif-ios"
-            label="⑦ Notifications log (iOS)"
+            label="Notifications log · alerts + requests"
             width={phoneAB.width}
             height={phoneAB.height}
           >
@@ -379,8 +442,29 @@ function App() {
             </div>
           </DCArtboard>
           <DCArtboard
+            id="m-settings-ios"
+            label="Settings · account, privacy, family"
+            width={phoneAB.width}
+            height={phoneAB.height}
+          >
+            <div
+              key={key}
+              style={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <PhoneFrame>
+                <MobParentSettings />
+              </PhoneFrame>
+            </div>
+          </DCArtboard>
+          <DCArtboard
             id="m-onboard-ios"
-            label="⑧ Onboarding · link child device"
+            label="Onboarding · link a child device"
             width={phoneAB.width}
             height={phoneAB.height}
           >
@@ -405,11 +489,11 @@ function App() {
         <DCSection
           id="mob-child"
           title="Mobile — Child app"
-          subtitle="Coach voice, never punitive. 4 tabs + locked state."
+          subtitle="Coach voice, never punitive. 4 tabs + locked-app state."
         >
           <DCArtboard
             id="m-c-today-ios"
-            label="① Today · iOS — time left, streak, apps"
+            label="① Today · time left, streak, apps (iOS)"
             width={phoneAB.width}
             height={phoneAB.height}
           >
@@ -451,7 +535,7 @@ function App() {
           </DCArtboard>
           <DCArtboard
             id="m-c-apps"
-            label="② Apps · iOS — categories + per-app limits"
+            label="② Apps · categories + per-app limits"
             width={phoneAB.width}
             height={phoneAB.height}
           >
@@ -472,7 +556,7 @@ function App() {
           </DCArtboard>
           <DCArtboard
             id="m-c-streak"
-            label="③ Streak · iOS — badges & personal bests"
+            label="③ Streak · badges & personal bests"
             width={phoneAB.width}
             height={phoneAB.height}
           >
@@ -493,7 +577,7 @@ function App() {
           </DCArtboard>
           <DCArtboard
             id="m-c-ask"
-            label="④ Ask · iOS — request more time"
+            label="④ Ask · request more time"
             width={phoneAB.width}
             height={phoneAB.height}
           >
@@ -514,7 +598,7 @@ function App() {
           </DCArtboard>
           <DCArtboard
             id="m-c-locked-ios"
-            label="⑤ Locked app · TikTok hit limit (iOS)"
+            label="Locked · TikTok hit limit (iOS)"
             width={phoneAB.width}
             height={phoneAB.height}
           >
@@ -535,7 +619,7 @@ function App() {
           </DCArtboard>
           <DCArtboard
             id="m-c-locked-and"
-            label="⑤ Locked app · Android"
+            label="Locked · Android"
             width={phoneAB.width}
             height={phoneAB.height}
           >
@@ -564,7 +648,7 @@ function App() {
         >
           <DCArtboard
             id="m-p-today-ios"
-            label="① Today · iOS — big ring, coach quote"
+            label="① Today · big ring, coach quote"
             width={phoneAB.width}
             height={phoneAB.height}
           >
@@ -606,7 +690,7 @@ function App() {
           </DCArtboard>
           <DCArtboard
             id="m-p-reports"
-            label="② Reports · iOS — trends + heatmap"
+            label="② Reports · trends + heatmap"
             width={phoneAB.width}
             height={phoneAB.height}
           >
@@ -627,7 +711,7 @@ function App() {
           </DCArtboard>
           <DCArtboard
             id="m-p-focus"
-            label="③ Focus mode · iOS — timer + presets"
+            label="③ Focus · timer + presets"
             width={phoneAB.width}
             height={phoneAB.height}
           >
@@ -648,7 +732,7 @@ function App() {
           </DCArtboard>
           <DCArtboard
             id="m-p-detail"
-            label="④ App detail · Roblox (iOS)"
+            label="④ App detail · Roblox"
             width={phoneAB.width}
             height={phoneAB.height}
           >
@@ -671,9 +755,18 @@ function App() {
       </DesignCanvas>
 
       <TweaksPanel title="Tweaks">
-        <TweakSection label="Visual palette">
+        <TweakSection label="Appearance">
+          <TweakToggle
+            label="Dark mode"
+            value={t.dark}
+            onChange={(v) => setTweak("dark", v)}
+          />
+        </TweakSection>
+
+        <TweakSection label="Palette">
           <PaletteSwatches
             value={t.palette}
+            dark={t.dark}
             onChange={(v) => setTweak("palette", v)}
           />
         </TweakSection>
@@ -705,44 +798,29 @@ function App() {
 
         <div
           style={{
-            padding: "12px 14px",
+            padding: "10px 14px 4px",
             fontSize: 11.5,
-            color: "rgba(41,38,27,.6)",
+            color: "rgba(41,38,27,.65)",
             lineHeight: 1.5,
           }}
         >
-          Changes apply across every artboard. Try Lavender + Outlined for a
-          clinical feel.
+          8 palettes · each with hand-tuned dark variants. Try{" "}
+          <b>Ocean + Dark</b>.
         </div>
       </TweaksPanel>
     </>
   );
 }
 
-// Custom palette swatch picker (live inside the light tweaks panel)
-function PaletteSwatches({ value, onChange }) {
-  const palettes = [
-    {
-      key: "sage",
-      name: "Sage",
-      colors: ["#5C8A6B", "#E8896F", "#F4D374", "#A8A0C8"],
-    },
-    {
-      key: "lavender",
-      name: "Lavender",
-      colors: ["#8B7AB0", "#E8896F", "#F4D374", "#7DA9C7"],
-    },
-    {
-      key: "coral",
-      name: "Coral",
-      colors: ["#D97257", "#5C8A6B", "#F4D374", "#A8A0C8"],
-    },
-    {
-      key: "slate",
-      name: "Slate",
-      colors: ["#4F6B8A", "#E8896F", "#F4D374", "#A8A0C8"],
-    },
-  ];
+// Palette swatch grid — respects the current dark mode preview + shows a
+// tiny sun/moon indicator for whichever variant the user is looking at.
+function PaletteSwatches({ value, dark, onChange }) {
+  const palettes = Object.entries(window.PALETTES).map(([key, def]) => ({
+    key,
+    name: def.name,
+    colors: def.swatch,
+    preview: dark ? def.dark : def.light,
+  }));
   return (
     <div style={{ padding: "6px 14px 8px" }}>
       <div
@@ -759,6 +837,7 @@ function PaletteSwatches({ value, onChange }) {
               key={p.key}
               type="button"
               onClick={() => onChange(p.key)}
+              title={p.name}
               style={{
                 background: selected
                   ? "rgba(255,255,255,.9)"
@@ -792,7 +871,18 @@ function PaletteSwatches({ value, onChange }) {
                   style={{
                     position: "absolute",
                     inset: 0,
-                    background: p.colors[0],
+                    background: p.preview.bg,
+                  }}
+                />
+                <div
+                  style={{
+                    position: "absolute",
+                    left: 3,
+                    top: 3,
+                    width: 12,
+                    height: 12,
+                    borderRadius: 3,
+                    background: p.preview.primary,
                   }}
                 />
                 <div
@@ -801,7 +891,7 @@ function PaletteSwatches({ value, onChange }) {
                     right: 0,
                     top: 0,
                     bottom: 0,
-                    width: "46%",
+                    width: "38%",
                     display: "grid",
                     gridTemplateRows: "1fr 1fr 1fr",
                   }}

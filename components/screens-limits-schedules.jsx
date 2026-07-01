@@ -458,7 +458,7 @@ function Schedules() {
               padding: 14,
               borderRadius: 14,
               background: t.c.lavSoft,
-              color: "#564a78",
+              color: t.c.lavText,
               display: "flex",
               gap: 12,
               alignItems: "flex-start",
@@ -669,9 +669,9 @@ function Timeline() {
       w: 30,
       label: "Sleep / locked",
       color: t.c.lavSoft,
-      text: "#564a78",
+      text: t.c.lavText,
     },
-    { x: 30, w: 5, label: "Wake", color: t.c.yellowSoft, text: "#8a6a18" },
+    { x: 30, w: 5, label: "Wake", color: t.c.yellowSoft, text: t.c.yellowText },
     {
       x: 35,
       w: 30,
@@ -686,7 +686,13 @@ function Timeline() {
       color: t.c.primarySoft,
       text: t.c.primary,
     },
-    { x: 83, w: 5, label: "Dinner quiet", color: t.c.lavSoft, text: "#564a78" },
+    {
+      x: 83,
+      w: 5,
+      label: "Dinner quiet",
+      color: t.c.lavSoft,
+      text: t.c.lavText,
+    },
     {
       x: 88,
       w: 8,
@@ -694,7 +700,7 @@ function Timeline() {
       color: t.c.primarySoft,
       text: t.c.primary,
     },
-    { x: 96, w: 4, label: "Bed", color: t.c.lavSoft, text: "#564a78" },
+    { x: 96, w: 4, label: "Bed", color: t.c.lavSoft, text: t.c.lavText },
   ];
   return (
     <div>

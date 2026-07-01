@@ -72,7 +72,7 @@ function PersonalDashboard() {
               32 of 30 minutes; it's locked for the rest of the day.
             </div>
             <div style={{ display: "flex", gap: 8, marginTop: 16 }}>
-              <Chip bg={t.c.yellowSoft} color="#8a6a18">
+              <Chip bg={t.c.yellowSoft} color={t.c.yellowText}>
                 🔥 11-day streak
               </Chip>
               <Chip bg={t.c.primarySoft} color={t.c.primary}>

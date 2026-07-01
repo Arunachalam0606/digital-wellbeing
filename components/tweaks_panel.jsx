@@ -1,68 +1,48 @@
 // tweaks-panel.jsx
 // Reusable Tweaks shell + form-control helpers.
-
+//
 // Owns the host protocol (listens for __activate_edit_mode / __deactivate_edit_mode,
 // posts __edit_mode_available / __edit_mode_set_keys / __edit_mode_dismissed) so
 // individual prototypes don't re-roll it. Ships a consistent set of controls so you
 // don't hand-draw <input type="range">, segmented radios, steppers, etc.
-
+//
 // Usage (in an HTML file that loads React + Babel):
-
-const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/ {
-  primaryColor: "#7A5AE0",
-  palette: ["#7A5AE0", "#29261b", "#f6f4ef"],
-  fontSize: 16,
-  density: "regular",
-  dark: false,
-}; /*EDITMODE-END*/
-
-function App() {
-  const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
-  return (
-    <div style={{ fontSize: t.fontSize, color: t.primaryColor }}>
-      Hello
-      <TweaksPanel>
-        <TweakSection label="Typography" />
-        <TweakSlider
-          label="Font size"
-          value={t.fontSize}
-          min={10}
-          max={32}
-          unit="px"
-          onChange={(v) => setTweak("fontSize", v)}
-        />
-        <TweakRadio
-          label="Density"
-          value={t.density}
-          options={["compact", "regular", "comfy"]}
-          onChange={(v) => setTweak("density", v)}
-        />
-        <TweakSection label="Theme" />
-        <TweakColor
-          label="Primary"
-          value={t.primaryColor}
-          options={["#0F766E", "#2A6FDB", "#1F8A5B", "#7A5AE0"]}
-          onChange={(v) => setTweak("primaryColor", v)}
-        />
-        <TweakColor
-          label="Palette"
-          value={t.palette}
-          options={[
-            ["#7A5AE0", "#29261b", "#f6f4ef"],
-            ["#475569", "#0f172a", "#f1f5f9"],
-          ]}
-          onChange={(v) => setTweak("palette", v)}
-        />
-        <TweakToggle
-          label="Dark mode"
-          value={t.dark}
-          onChange={(v) => setTweak("dark", v)}
-        />
-      </TweaksPanel>
-    </div>
-  );
-}
-
+//
+//   const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+//     "primaryColor": "#7A5AE0",
+//     "palette": ["#7A5AE0", "#29261b", "#f6f4ef"],
+//     "fontSize": 16,
+//     "density": "regular",
+//     "dark": false
+//   }/*EDITMODE-END*/;
+//
+//   function App() {
+//     const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+//     return (
+//       <div style={{ fontSize: t.fontSize, color: t.primaryColor }}>
+//         Hello
+//         <TweaksPanel>
+//           <TweakSection label="Typography" />
+//           <TweakSlider label="Font size" value={t.fontSize} min={10} max={32} unit="px"
+//                        onChange={(v) => setTweak('fontSize', v)} />
+//           <TweakRadio  label="Density" value={t.density}
+//                        options={['compact', 'regular', 'comfy']}
+//                        onChange={(v) => setTweak('density', v)} />
+//           <TweakSection label="Theme" />
+//           <TweakColor  label="Primary" value={t.primaryColor}
+//                        options={['#0F766E', '#2A6FDB', '#1F8A5B', '#7A5AE0']}
+//                        onChange={(v) => setTweak('primaryColor', v)} />
+//           <TweakColor  label="Palette" value={t.palette}
+//                        options={[['#7A5AE0', '#29261b', '#f6f4ef'],
+//                                  ['#475569', '#0f172a', '#f1f5f9']]}
+//                        onChange={(v) => setTweak('palette', v)} />
+//           <TweakToggle label="Dark mode" value={t.dark}
+//                        onChange={(v) => setTweak('dark', v)} />
+//         </TweaksPanel>
+//       </div>
+//     );
+//   }
+//
 // ─────────────────────────────────────────────────────────────────────────────
 
 const __TWEAKS_STYLE = `
@@ -76,7 +56,7 @@ const __TWEAKS_STYLE = `
     font:11.5px/1.4 ui-sans-serif,system-ui,-apple-system,sans-serif;overflow:hidden}
   .twk-hd{display:flex;align-items:center;justify-content:space-between;
     padding:10px 8px 10px 14px;cursor:move;user-select:none}
-  .twk-hd span{font-size:12px;font-weight:600;letter-spacing:.01em}
+  .twk-hd b{font-size:12px;font-weight:600;letter-spacing:.01em}
   .twk-x{appearance:none;border:0;background:transparent;color:rgba(41,38,27,.55);
     width:22px;height:22px;border-radius:6px;cursor:default;font-size:13px;line-height:1}
   .twk-x:hover{background:rgba(0,0,0,.06);color:#29261b}
@@ -201,184 +181,144 @@ function useTweaks(defaults) {
 // flips off in lockstep; the host echoes __deactivate_edit_mode back which
 // is what actually hides the panel.
 function TweaksPanel({ title = "Tweaks", noDeckControls = false, children }) {
-  const hasDeckStage = typeof document !== "undefined" && !!document.querySelector("deck-stage");
-
+  const [open, setOpen] = React.useState(true);
+  const [shrunk, setShrunk] = React.useState(false);
   const dragRef = React.useRef(null);
-  const offsetRef = React.useRef({ x: 16, y: 16 });
-
-  const defaultOpen = true;
-  const defaultShrunk = false;
-  const defaultRailEnabled = hasDeckStage && typeof document !== "undefined" && !!document.querySelector("deck-stage")?._railEnabled;
-  let tempRailVisible = true;
-  try {
-    if (typeof localStorage !== "undefined") {
-      tempRailVisible = localStorage.getItem("deck-stage.railVisible") !== "0";
+  // Auto-inject a rail toggle when a <deck-stage> is on the page. The
+  // toggle drives the deck's per-viewer _railVisible via window message;
+  // state is mirrored from the same localStorage key the deck reads so
+  // the control reflects reality across reloads. The mechanism is the
+  // message — authors who want custom placement can post it directly
+  // and pass noDeckControls to suppress this one.
+  const hasDeckStage = React.useMemo(
+    () =>
+      typeof document !== "undefined" && !!document.querySelector("deck-stage"),
+    [],
+  );
+  // deck-stage enables its rail in connectedCallback, but this panel can
+  // mount before that element has upgraded. The initial read catches the
+  // common case; the listener covers mounting first. (Older deck-stage.js
+  // copies still wait for the host's __omelette_rail_enabled postMessage —
+  // same listener handles those.)
+  const [railEnabled, setRailEnabled] = React.useState(
+    () => hasDeckStage && !!document.querySelector("deck-stage")?._railEnabled,
+  );
+  React.useEffect(() => {
+    if (!hasDeckStage || railEnabled) return undefined;
+    const onMsg = (e) => {
+      if (e.data && e.data.type === "__omelette_rail_enabled")
+        setRailEnabled(true);
+    };
+    window.addEventListener("message", onMsg);
+    return () => window.removeEventListener("message", onMsg);
+  }, [hasDeckStage, railEnabled]);
+  const [railVisible, setRailVisible] = React.useState(() => {
+    try {
+      return localStorage.getItem("deck-stage.railVisible") !== "0";
+    } catch (e) {
+      return true;
     }
-  } catch (error) {
-    tempRailVisible = true;
-  }
-  const defaultRailVisible = tempRailVisible;
-
-  const [open, setOpen] = React.useState(defaultOpen);
-  const [shrunk, setShrunk] = React.useState(defaultShrunk);
-  const [railEnabled, setRailEnabled] = React.useState(defaultRailEnabled);
-  const [railVisible, setRailVisible] = React.useState(defaultRailVisible);
+  });
+  const toggleRail = (on) => {
+    setRailVisible(on);
+    window.postMessage({ type: "__deck_rail_visible", on }, "*");
+  };
+  const offsetRef = React.useRef({ x: 16, y: 16 });
+  const PAD = 16;
 
   const clampToViewport = React.useCallback(() => {
     const panel = dragRef.current;
-
-    if (!panel) {
-      return;
-    }
-
-    const width = panel.offsetWidth;
-    const height = panel.offsetHeight;
-    const padding = 16;
-    const maxRight = Math.max(padding, window.innerWidth - width - padding);
-    const maxBottom = Math.max(padding, window.innerHeight - height - padding);
-
+    if (!panel) return;
+    const w = panel.offsetWidth,
+      h = panel.offsetHeight;
+    const maxRight = Math.max(PAD, window.innerWidth - w - PAD);
+    const maxBottom = Math.max(PAD, window.innerHeight - h - PAD);
     offsetRef.current = {
-      x: Math.min(maxRight, Math.max(padding, offsetRef.current.x)),
-      y: Math.min(maxBottom, Math.max(padding, offsetRef.current.y)),
+      x: Math.min(maxRight, Math.max(PAD, offsetRef.current.x)),
+      y: Math.min(maxBottom, Math.max(PAD, offsetRef.current.y)),
     };
     panel.style.right = offsetRef.current.x + "px";
     panel.style.bottom = offsetRef.current.y + "px";
   }, []);
 
-  const toggleRail = (on) => {
-    setRailVisible(on);
-    window.postMessage({ type: "__deck_rail_visible", on }, "*");
-  };
+  React.useEffect(() => {
+    if (!open) return;
+    clampToViewport();
+    if (typeof ResizeObserver === "undefined") {
+      window.addEventListener("resize", clampToViewport);
+      return () => window.removeEventListener("resize", clampToViewport);
+    }
+    const ro = new ResizeObserver(clampToViewport);
+    ro.observe(document.documentElement);
+    return () => ro.disconnect();
+  }, [open, clampToViewport]);
 
-  const toggleShrink = () => {
-    setShrunk((previous) => !previous);
-  };
+  React.useEffect(() => {
+    clampToViewport();
+  }, [shrunk, clampToViewport]);
+
+  React.useEffect(() => {
+    const onMsg = (e) => {
+      const t = e?.data?.type;
+      if (t === "__activate_edit_mode") setOpen(true);
+      else if (t === "__deactivate_edit_mode") setOpen(false);
+    };
+    window.addEventListener("message", onMsg);
+    window.parent.postMessage({ type: "__edit_mode_available" }, "*");
+    return () => window.removeEventListener("message", onMsg);
+  }, []);
 
   const dismiss = () => {
     setOpen(false);
     window.parent.postMessage({ type: "__edit_mode_dismissed" }, "*");
   };
 
-  const onDragStart = (event) => {
+  const onDragStart = (e) => {
     const panel = dragRef.current;
-
-    if (!panel) {
-      return;
-    }
-
-    const rect = panel.getBoundingClientRect();
-    const startX = event.clientX;
-    const startY = event.clientY;
-    const startRight = window.innerWidth - rect.right;
-    const startBottom = window.innerHeight - rect.bottom;
-
-    const move = (moveEvent) => {
+    if (!panel) return;
+    const r = panel.getBoundingClientRect();
+    const sx = e.clientX,
+      sy = e.clientY;
+    const startRight = window.innerWidth - r.right;
+    const startBottom = window.innerHeight - r.bottom;
+    const move = (ev) => {
       offsetRef.current = {
-        x: startRight - (moveEvent.clientX - startX),
-        y: startBottom - (moveEvent.clientY - startY),
+        x: startRight - (ev.clientX - sx),
+        y: startBottom - (ev.clientY - sy),
       };
       clampToViewport();
     };
-
     const up = () => {
       window.removeEventListener("mousemove", move);
       window.removeEventListener("mouseup", up);
     };
-
     window.addEventListener("mousemove", move);
     window.addEventListener("mouseup", up);
   };
 
-  const handleButtonMouseDown = (event) => {
-    event.stopPropagation();
-  };
-
-  React.useEffect(() => {
-    if (!hasDeckStage || railEnabled) {
-      return undefined;
-    }
-
-    const handleMessage = (event) => {
-      if (event.data?.type === "__omelette_rail_enabled") {
-        setRailEnabled(true);
-      }
-    };
-
-    window.addEventListener("message", handleMessage);
-    return () => window.removeEventListener("message", handleMessage);
-  }, [hasDeckStage, railEnabled]);
-
-  React.useEffect(() => {
-    if (!open) {
-      return;
-    }
-
-    clampToViewport();
-
-    if (typeof ResizeObserver === "undefined") {
-      window.addEventListener("resize", clampToViewport);
-      return () => window.removeEventListener("resize", clampToViewport);
-    }
-
-    const resizeObserver = new ResizeObserver(clampToViewport);
-    resizeObserver.observe(document.documentElement);
-    return () => resizeObserver.disconnect();
-  }, [open, clampToViewport]);
-
-  React.useEffect(() => {
-    const handleEditModeMessage = (event) => {
-      const messageType = event?.data?.type;
-
-      if (messageType === "__activate_edit_mode") {
-        setOpen(true);
-      } else if (messageType === "__deactivate_edit_mode") {
-        setOpen(false);
-      }
-    };
-
-    window.addEventListener("message", handleEditModeMessage);
-    window.parent.postMessage({ type: "__edit_mode_available" }, "*");
-    return () => window.removeEventListener("message", handleEditModeMessage);
-  }, []);
-
-  React.useEffect(() => {
-    clampToViewport();
-  }, [shrunk, clampToViewport]);
-
-  const buttonLabel = shrunk ? "Expand tweaks" : "Close tweaks";
-  const buttonSymbol = shrunk ? "＋" : "✕";
-  const panelClassName = shrunk ? "twk-panel shrunk" : "twk-panel";
-
-  if (!open) {
-    return null;
-  }
-
+  if (!open) return null;
   return (
     <>
       <style>{__TWEAKS_STYLE}</style>
-
       <section
         ref={dragRef}
-        className={panelClassName}
+        className={shrunk ? "twk-panel shrunk" : "twk-panel"}
         data-noncommentable=""
         style={{ right: offsetRef.current.x, bottom: offsetRef.current.y }}
       >
         <div className="twk-hd" onMouseDown={onDragStart}>
-          <span>{title}</span>
-
+          <b>{title}</b>
           <button
             className="twk-x"
-            aria-label={buttonLabel}
-            onMouseDown={handleButtonMouseDown}
-            onClick={toggleShrink}
+            aria-label={shrunk ? "Expand tweaks" : "Minimize tweaks"}
+            onMouseDown={(e) => e.stopPropagation()}
+            onClick={() => setShrunk((prev) => !prev)}
           >
-            {buttonSymbol}
+            {shrunk ? "＋" : "✕"}
           </button>
         </div>
-
         <div className="twk-body">
           {children}
-
           {hasDeckStage && railEnabled && !noDeckControls && (
             <TweakSection label="Deck">
               <TweakToggle

@@ -147,7 +147,7 @@ function ParentDashboard() {
               gap: 8,
               fontSize: 11.5,
               fontWeight: 600,
-              color: "#8a6a18",
+              color: t.c.yellowText,
               textTransform: "uppercase",
               letterSpacing: ".06em",
             }}
@@ -464,7 +464,7 @@ function KidCard({ kid }) {
               </Chip>
             )}
             {kid.streak > 0 && (
-              <Chip bg={t.c.yellowSoft} color="#8a6a18">
+              <Chip bg={t.c.yellowSoft} color={t.c.yellowText}>
                 🔥 {kid.streak}-day streak
               </Chip>
             )}

@@ -146,13 +146,15 @@ function MobChildToday({ android = false }) {
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <div style={{ fontSize: 32, lineHeight: 1 }}>🔥</div>
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 14, fontWeight: 700, color: "#8a6a18" }}>
+              <div
+                style={{ fontSize: 14, fontWeight: 700, color: t.c.yellowText }}
+              >
                 4-day streak
               </div>
               <div
                 style={{
                   fontSize: 11.5,
-                  color: "#8a6a18",
+                  color: t.c.yellowText,
                   opacity: 0.85,
                   marginTop: 2,
                 }}
@@ -160,7 +162,7 @@ function MobChildToday({ android = false }) {
                 1 more day to unlock the "5-Day Calm" badge.
               </div>
             </div>
-            <Icon name="arrowRight" size={16} color="#8a6a18" />
+            <Icon name="arrowRight" size={16} color={t.c.yellowText} />
           </div>
           <div style={{ display: "flex", gap: 4, marginTop: 12 }}>
             {[true, true, true, true, false, false, false].map((on, i) => (
@@ -174,7 +176,7 @@ function MobChildToday({ android = false }) {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  color: on ? "#8a6a18" : "rgba(0,0,0,.3)",
+                  color: on ? t.c.yellowText : "rgba(0,0,0,.3)",
                   fontSize: 11,
                   fontWeight: 700,
                 }}
@@ -484,7 +486,7 @@ function MobChildStreak({ android = false }) {
                 fontSize: 48,
                 fontWeight: 500,
                 letterSpacing: "-.03em",
-                color: "#8a6a18",
+                color: t.c.yellowText,
                 lineHeight: 1,
                 marginTop: 8,
               }}
@@ -494,7 +496,7 @@ function MobChildStreak({ android = false }) {
             <div
               style={{
                 fontSize: 13,
-                color: "#8a6a18",
+                color: t.c.yellowText,
                 marginTop: 8,
                 fontWeight: 500,
               }}
@@ -932,7 +934,7 @@ function MobChildAsk({ android = false }) {
               {r.status === "pending" && (
                 <Chip
                   bg={t.c.yellowSoft}
-                  color="#8a6a18"
+                  color={t.c.yellowText}
                   style={{ fontSize: 10 }}
                 >
                   Pending
@@ -1141,7 +1143,7 @@ function MobChildLocked({ android = false }) {
               borderRadius: 14,
               padding: 14,
               fontSize: 12.5,
-              color: "#8a6a18",
+              color: t.c.yellowText,
               lineHeight: 1.5,
               textAlign: "left",
             }}

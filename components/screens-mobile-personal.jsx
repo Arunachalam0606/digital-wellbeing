@@ -87,7 +87,7 @@ function MobPersonalToday({ android = false }) {
               justifyContent: "center",
             }}
           >
-            <Chip bg={t.c.yellowSoft} color="#8a6a18">
+            <Chip bg={t.c.yellowSoft} color={t.c.yellowText}>
               🔥 11-day streak
             </Chip>
             <Chip bg={t.c.primarySoft} color={t.c.primary}>
@@ -719,7 +719,7 @@ function MobPersonalFocus({ android = false }) {
               { name: "Deep work", mins: 90, icon: "leaf", col: t.c.primary },
               { name: "Sprint", mins: 25, icon: "flame", col: t.c.accent },
               { name: "Reading", mins: 30, icon: "lightbulb", col: t.c.warn },
-              { name: "Bedtime", mins: 480, icon: "lock", col: "#564a78" },
+              { name: "Bedtime", mins: 480, icon: "lock", col: t.c.lavText },
             ].map((p) => (
               <button
                 key={p.name}

@@ -128,7 +128,7 @@ function AdBlocker() {
           label="Trackers"
           value={A.trackers}
           pct={A.trackers / A.blockedToday}
-          color="#564a78"
+          color={t.c.lavText}
         />
         <BlockStat
           icon="ban"
@@ -168,7 +168,7 @@ function AdBlocker() {
             <div style={{ flex: 1 }}>
               {[
                 ["Ads", A.ads, t.c.accent],
-                ["Trackers", A.trackers, "#564a78"],
+                ["Trackers", A.trackers, t.c.lavText],
                 ["Social widgets", A.socialWidgets, t.c.blue],
                 ["Malware", A.malware, t.c.danger],
                 ["Other", A.other, t.c.textMute],
@@ -255,7 +255,7 @@ function AdBlocker() {
                 </div>
                 <Chip
                   bg={d.type === "Ads" ? t.c.accentSoft : t.c.lavSoft}
-                  color={d.type === "Ads" ? t.c.accent : "#564a78"}
+                  color={d.type === "Ads" ? t.c.accent : t.c.lavText}
                 >
                   {d.type}
                 </Chip>
