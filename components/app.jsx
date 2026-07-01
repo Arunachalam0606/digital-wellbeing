@@ -156,6 +156,56 @@ function App() {
               <AICoachWeb />
             </div>
           </DCArtboard>
+          <DCArtboard
+            id="web-login-screen"
+            label="Web Login · Parent sign-in"
+            width={1440}
+            height={980}
+          >
+            <div key={key} style={{ width: "100%", height: "100%" }}>
+              <WebLogin />
+            </div>
+          </DCArtboard>
+          <DCArtboard
+            id="web-onboard-wizard"
+            label="Web Onboarding · Pairing Setup Wizard"
+            width={1440}
+            height={980}
+          >
+            <div key={key} style={{ width: "100%", height: "100%" }}>
+              <WebOnboardWizard />
+            </div>
+          </DCArtboard>
+          <DCArtboard
+            id="web-onboard-step-1"
+            label="Web Onboarding Step 1 · Create Profile"
+            width={1440}
+            height={980}
+          >
+            <div key={key} style={{ width: "100%", height: "100%" }}>
+              <WebOnboardStep1Preview />
+            </div>
+          </DCArtboard>
+          <DCArtboard
+            id="web-onboard-step-2"
+            label="Web Onboarding Step 2 · Link Device"
+            width={1440}
+            height={980}
+          >
+            <div key={key} style={{ width: "100%", height: "100%" }}>
+              <WebOnboardStep2Preview />
+            </div>
+          </DCArtboard>
+          <DCArtboard
+            id="web-onboard-step-3"
+            label="Web Onboarding Step 3 · Setup Limits"
+            width={1440}
+            height={980}
+          >
+            <div key={key} style={{ width: "100%", height: "100%" }}>
+              <WebOnboardStep3Preview />
+            </div>
+          </DCArtboard>
         </DCSection>
 
         {/* ────────────────  Web — Personal & Reports  ──────────────── */}

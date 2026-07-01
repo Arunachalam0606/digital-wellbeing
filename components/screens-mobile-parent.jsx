@@ -2984,6 +2984,7 @@ function MobOnboardLink({ android = false, onNext, onBack }) {
           height: "100%",
           display: "flex",
           flexDirection: "column",
+          boxSizing: "border-box",
         }}
       >
         {/* Step dots */}
@@ -3158,7 +3159,7 @@ function MobLogin({ android = false, onLogin }) {
 
   return (
     <MobileScreen android={android} scroll={false}>
-      <div style={{ padding: "40px 24px 24px", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+      <div style={{ padding: "16px 24px 24px", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", boxSizing: "border-box" }}>
         <div style={{ textAlign: "center", marginTop: 24 }}>
           <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
             <Icon name="sparkles" size={40} color={t.c.primary} />
@@ -3289,7 +3290,7 @@ function MobOnboardWelcome({ android = false, onNext }) {
   const t = useTokens();
   return (
     <MobileScreen android={android} scroll={false}>
-      <div style={{ padding: "40px 24px 24px", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+      <div style={{ padding: "16px 24px 24px", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", boxSizing: "border-box" }}>
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 24 }}>
             <div style={{ width: 24, height: 4, background: t.c.primary, borderRadius: 2 }} />
@@ -3348,7 +3349,7 @@ function MobOnboardCreateProfile({ android = false, onNext, onBack }) {
 
   return (
     <MobileScreen android={android} scroll={false}>
-      <div style={{ padding: "40px 24px 24px", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+      <div style={{ padding: "16px 24px 24px", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", boxSizing: "border-box" }}>
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 24 }}>
             <div style={{ width: 24, height: 4, background: t.c.primary, borderRadius: 2 }} />
@@ -3490,7 +3491,7 @@ function MobConnectingProgress({ android = false, onNext }) {
 
   return (
     <MobileScreen android={android} scroll={false}>
-      <div style={{ padding: "40px 24px 24px", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+      <div style={{ padding: "16px 24px 24px", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", boxSizing: "border-box" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 24 }}>
           <div style={{ width: 24, height: 4, background: t.c.primary, borderRadius: 2 }} />
           <div style={{ width: 24, height: 4, background: t.c.primary, borderRadius: 2 }} />
@@ -3528,7 +3529,7 @@ function MobOnboardConfigure({ android = false, onNext }) {
 
   return (
     <MobileScreen android={android} scroll={false}>
-      <div style={{ padding: "40px 24px 24px", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+      <div style={{ padding: "16px 24px 24px", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", boxSizing: "border-box" }}>
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 24 }}>
             <div style={{ width: 24, height: 4, background: t.c.primary, borderRadius: 2 }} />

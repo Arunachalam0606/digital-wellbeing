@@ -1765,3 +1765,700 @@ function AICoachWeb() {
   );
 }
 window.AICoachWeb = AICoachWeb;
+
+function WebLogin() {
+  const t = useTokens();
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    alert("Signed in successfully!");
+  };
+
+  return (
+    <div style={{
+      width: "100%",
+      height: "100%",
+      background: t.c.bg,
+      display: "grid",
+      gridTemplateColumns: "1.2fr 1fr",
+      boxSizing: "border-box",
+    }}>
+      {/* Left side: Hero artwork / product showcase */}
+      <div style={{
+        background: `linear-gradient(135deg, ${t.c.primarySoft} 0%, ${t.c.surface2} 100%)`,
+        padding: 60,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        position: "relative",
+        overflow: "hidden",
+        borderRight: `1px solid ${t.c.border}`,
+      }}>
+        {/* Decorative background blur blobs */}
+        <div style={{ position: "absolute", top: -100, right: -100, width: 300, height: 300, borderRadius: "50%", background: t.c.yellowSoft, filter: "blur(80px)", opacity: 0.6 }} />
+        <div style={{ position: "absolute", bottom: -50, left: -50, width: 250, height: 250, borderRadius: "50%", background: t.c.accentSoft, filter: "blur(60px)", opacity: 0.5 }} />
+
+        <div style={{ display: "flex", alignItems: "center", gap: 10, zIndex: 2 }}>
+          <Icon name="sparkles" size={28} color={t.c.primary} />
+          <span style={{ fontSize: 18, fontWeight: 600, fontFamily: t.fontSerif, letterSpacing: "-.02em" }}>Atrium</span>
+        </div>
+
+        <div style={{ zIndex: 2, maxWidth: 460 }}>
+          <h1 style={{ fontFamily: t.fontSerif, fontSize: 44, fontWeight: 500, lineHeight: 1.15, letterSpacing: "-.02em", color: t.c.text, margin: "0 0 16px" }}>
+            Bring calm back to your family's screens.
+          </h1>
+          <p style={{ fontSize: 16, color: t.c.textMute, lineHeight: 1.6, margin: 0 }}>
+            Atrium helps kids and parents reflect on their screen routines with soft bounds, positive streaks, and empathetic coaching.
+          </p>
+
+          {/* Floating Glassmorphic Card Showcase */}
+          <div style={{
+            marginTop: 40,
+            background: t.c.surface,
+            borderRadius: 20,
+            padding: 24,
+            border: `1px solid ${t.c.border}`,
+            boxShadow: "0 20px 48px rgba(40,30,20,.05)",
+            display: "flex",
+            flexDirection: "column",
+            gap: 16,
+          }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <div style={{ width: 36, height: 36, borderRadius: "50%", background: t.c.primary, display: "flex", alignItems: "center", justifyContent: "center", color: "white" }}>
+                  🔥
+                </div>
+                <div>
+                  <div style={{ fontWeight: 600, fontSize: 14 }}>Family Streak</div>
+                  <div style={{ fontSize: 11.5, color: t.c.textMute }}>Maya & Jaden hitting daily goals</div>
+                </div>
+              </div>
+              <span style={{ fontSize: 18, fontWeight: "bold", color: t.c.primary }}>12 Days</span>
+            </div>
+            
+            <div style={{ height: 1, background: t.c.border }} />
+
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <div style={{ width: 8, height: 8, borderRadius: "50%", background: t.c.accent }} />
+              <div style={{ fontSize: 13, color: t.c.text }}>
+                Weekly Coach Tip: <strong>YouTube usage down 14% this week.</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style={{ fontSize: 12.5, color: t.c.textMute, zIndex: 2 }}>
+          © Atrium. Dedicated to healthy digital boundaries.
+        </div>
+      </div>
+
+      {/* Right side: Login Form */}
+      <div style={{
+        padding: 80,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+      }}>
+        <div style={{ maxWidth: 360, width: "100%", margin: "0 auto" }}>
+          <h2 style={{ fontFamily: t.fontSerif, fontSize: 32, fontWeight: 500, margin: "0 0 8px" }}>Welcome Back</h2>
+          <p style={{ fontSize: 14.5, color: t.c.textMute, margin: "0 0 32px" }}>Sign in to your parent administration hub</p>
+
+          <form onSubmit={handleLogin} style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+            <div>
+              <label style={{ fontSize: 11, fontWeight: 600, color: t.c.textMute, textTransform: "uppercase", display: "block", marginBottom: 8, letterSpacing: ".05em" }}>Parent Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="sarah@atrium.com"
+                style={{
+                  width: "100%",
+                  padding: "14px 18px",
+                  borderRadius: 12,
+                  background: t.c.surface,
+                  border: `1px solid ${t.c.border}`,
+                  color: t.c.text,
+                  fontSize: 14.5,
+                  fontFamily: "inherit",
+                  boxSizing: "border-box",
+                  outline: "none",
+                }}
+              />
+            </div>
+
+            <div>
+              <label style={{ fontSize: 11, fontWeight: 600, color: t.c.textMute, textTransform: "uppercase", display: "block", marginBottom: 8, letterSpacing: ".05em" }}>Password</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                style={{
+                  width: "100%",
+                  padding: "14px 18px",
+                  borderRadius: 12,
+                  background: t.c.surface,
+                  border: `1px solid ${t.c.border}`,
+                  color: t.c.text,
+                  fontSize: 14.5,
+                  fontFamily: "inherit",
+                  boxSizing: "border-box",
+                  outline: "none",
+                }}
+              />
+            </div>
+
+            <button
+              type="submit"
+              style={{
+                background: t.c.primary,
+                color: "white",
+                border: "none",
+                borderRadius: 12,
+                padding: "15px 0",
+                fontWeight: 600,
+                fontSize: 15,
+                fontFamily: "inherit",
+                cursor: "pointer",
+                marginTop: 8,
+                boxShadow: "0 4px 16px rgba(92,138,107,.15)",
+              }}
+            >
+              Sign in to Atrium
+            </button>
+          </form>
+
+          <div style={{ display: "flex", alignItems: "center", gap: 12, color: t.c.textMute, fontSize: 13, margin: "24px 0" }}>
+            <div style={{ flex: 1, height: 1, background: t.c.border }} />
+            <span>or sign in with</span>
+            <div style={{ flex: 1, height: 1, background: t.c.border }} />
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            <button
+              type="button"
+              style={{
+                background: t.c.surface,
+                border: `1px solid ${t.c.border}`,
+                borderRadius: 12,
+                padding: "12px 0",
+                fontSize: 14,
+                fontWeight: 600,
+                color: t.c.text,
+                fontFamily: "inherit",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 8,
+              }}
+            >
+              Google
+            </button>
+            <button
+              type="button"
+              style={{
+                background: t.c.surface,
+                border: `1px solid ${t.c.border}`,
+                borderRadius: 12,
+                padding: "12px 0",
+                fontSize: 14,
+                fontWeight: 600,
+                color: t.c.text,
+                fontFamily: "inherit",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 8,
+              }}
+            >
+              Apple
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function WebOnboardStep1({ childName, setChildName, onNext }) {
+  const t = useTokens();
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "260px 1fr", gap: 40, height: "100%" }}>
+      {/* Left Column: Side Info Panel */}
+      <div style={{ background: t.c.surface2, borderRadius: 16, padding: 24, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+        <div>
+          <span style={{ fontSize: 11, fontWeight: 700, color: t.c.primary, textTransform: "uppercase", letterSpacing: ".05em" }}>Profile Setup</span>
+          <h3 style={{ fontFamily: t.fontSerif, fontSize: 20, fontWeight: 500, margin: "8px 0 12px" }}>Why this matters</h3>
+          <p style={{ fontSize: 13, color: t.c.textMute, lineHeight: 1.5, margin: 0 }}>
+            Creating a profile lets Atrium tailor its screen schedules specifically to your child's age group guidelines.
+          </p>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, background: t.c.surface, padding: 12, borderRadius: 12 }}>
+          <Icon name="shieldCheck" size={16} color={t.c.primary} />
+          <span style={{ fontSize: 11, color: t.c.textMute }}>We never collect your child's Apple ID or login details.</span>
+        </div>
+      </div>
+
+      {/* Right Column: Step Form */}
+      <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+        <div>
+          <h2 style={{ fontFamily: t.fontSerif, fontSize: 32, fontWeight: 500, margin: "0 0 8px" }}>Create child profile</h2>
+          <p style={{ fontSize: 14.5, color: t.c.textMute, marginBottom: 32 }}>Enter their details to configure device linking.</p>
+          
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginBottom: 24 }}>
+            <div>
+              <label style={{ fontSize: 11, fontWeight: 600, color: t.c.textMute, textTransform: "uppercase", display: "block", marginBottom: 8 }}>Child's Name</label>
+              <input
+                type="text"
+                value={childName}
+                onChange={(e) => setChildName(e.target.value)}
+                style={{
+                  width: "100%",
+                  padding: "14px 16px",
+                  borderRadius: 12,
+                  background: t.c.surface2,
+                  border: `1px solid ${t.c.border}`,
+                  color: t.c.text,
+                  fontSize: 14.5,
+                  fontFamily: "inherit",
+                  boxSizing: "border-box",
+                }}
+              />
+            </div>
+            <div>
+              <label style={{ fontSize: 11, fontWeight: 600, color: t.c.textMute, textTransform: "uppercase", display: "block", marginBottom: 8 }}>Age</label>
+              <input
+                type="text"
+                defaultValue="11"
+                style={{
+                  width: "100%",
+                  padding: "14px 16px",
+                  borderRadius: 12,
+                  background: t.c.surface2,
+                  border: `1px solid ${t.c.border}`,
+                  color: t.c.text,
+                  fontSize: 14.5,
+                  fontFamily: "inherit",
+                  boxSizing: "border-box",
+                }}
+              />
+            </div>
+          </div>
+
+          <div>
+            <label style={{ fontSize: 11, fontWeight: 600, color: t.c.textMute, textTransform: "uppercase", display: "block", marginBottom: 8 }}>Device Type</label>
+            <div style={{ display: "flex", gap: 12 }}>
+              {["iPhone", "Android Phone", "iPad / Tablet"].map((d, i) => (
+                <button
+                  key={d}
+                  type="button"
+                  style={{
+                    flex: 1,
+                    padding: "14px 18px",
+                    borderRadius: 12,
+                    background: i === 0 ? t.c.primarySoft : t.c.surface,
+                    border: `1px solid ${i === 0 ? t.c.primary : t.c.border}`,
+                    color: i === 0 ? t.c.primary : t.c.text,
+                    fontWeight: 600,
+                    fontSize: 13.5,
+                    fontFamily: "inherit",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 8,
+                  }}
+                >
+                  <Icon name="phone" size={15} color={i === 0 ? t.c.primary : t.c.textMute} />
+                  <span>{d}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 40 }}>
+          <button
+            onClick={onNext}
+            style={{
+              background: t.c.primary,
+              color: "white",
+              border: "none",
+              borderRadius: 12,
+              padding: "14px 32px",
+              fontWeight: 600,
+              fontSize: 14.5,
+              fontFamily: "inherit",
+              cursor: "pointer",
+              boxShadow: "0 4px 16px rgba(92,138,107,.15)",
+            }}
+          >
+            Continue
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function WebOnboardStep2({ childName, onNext, onBack }) {
+  const t = useTokens();
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "260px 1fr", gap: 40, height: "100%" }}>
+      {/* Left Column: Side Info Panel */}
+      <div style={{ background: t.c.surface2, borderRadius: 16, padding: 24, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+        <div>
+          <span style={{ fontSize: 11, fontWeight: 700, color: t.c.primary, textTransform: "uppercase", letterSpacing: ".05em" }}>Pairing Device</span>
+          <h3 style={{ fontFamily: t.fontSerif, fontSize: 20, fontWeight: 500, margin: "8px 0 12px" }}>How to link</h3>
+          <ol style={{ fontSize: 13, color: t.c.textMute, paddingLeft: 18, lineHeight: 1.6, margin: 0 }}>
+            <li style={{ marginBottom: 8 }}>Open Atrium on {childName}'s phone.</li>
+            <li style={{ marginBottom: 8 }}>Select "I am a Child" role.</li>
+            <li>Point their camera at this QR code.</li>
+          </ol>
+        </div>
+        <div style={{ display: "flex", gap: 8, alignItems: "center", background: t.c.primarySoft, padding: "10px 14px", borderRadius: 10, color: t.c.primary, fontSize: 12 }}>
+          <Icon name="shieldCheck" size={15} />
+          <span>Passcode: <strong style={{ fontFamily: t.fontMono }}>F4-9K-2A-7P</strong></span>
+        </div>
+      </div>
+
+      {/* Right Column: Step QR */}
+      <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+        <div>
+          <h2 style={{ fontFamily: t.fontSerif, fontSize: 32, fontWeight: 500, margin: "0 0 8px" }}>Scan to link device</h2>
+          <p style={{ fontSize: 14.5, color: t.c.textMute, marginBottom: 32 }}>Pair parent controls with {childName}'s iPhone securely.</p>
+          
+          <div style={{ display: "flex", gap: 40, alignItems: "center", background: t.c.surface, border: `1px solid ${t.c.border}`, padding: 24, borderRadius: 20 }}>
+            <div style={{ background: t.c.surface2, padding: 16, borderRadius: 16, border: `1px solid ${t.c.border}` }}>
+              <QRCodeMock size={140} fg={t.c.text} bg={t.c.surface2} />
+            </div>
+            <div>
+              <div style={{ fontSize: 13, color: t.c.textMute, marginBottom: 8 }}>Or enter pairing code manually:</div>
+              <div style={{ fontSize: 24, fontFamily: t.fontMono, fontWeight: "bold", letterSpacing: ".1em", color: t.c.primary }}>
+                F4-9K-2A-7P
+              </div>
+              <div style={{ fontSize: 11, color: t.c.textMute, marginTop: 8 }}>
+                QR code and manual pairing passcode expire in 10 minutes.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style={{ display: "flex", justifyContent: "space-between", marginTop: 40 }}>
+          <button
+            onClick={onBack}
+            style={{
+              background: "transparent",
+              color: t.c.text,
+              border: "none",
+              fontSize: 14.5,
+              fontWeight: 600,
+              fontFamily: "inherit",
+              cursor: "pointer",
+            }}
+          >
+            Back
+          </button>
+          <button
+            onClick={onNext}
+            style={{
+              background: t.c.primary,
+              color: "white",
+              border: "none",
+              borderRadius: 12,
+              padding: "14px 32px",
+              fontWeight: 600,
+              fontSize: 14.5,
+              fontFamily: "inherit",
+              cursor: "pointer",
+              boxShadow: "0 4px 16px rgba(92,138,107,.15)",
+            }}
+          >
+            Continue
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function WebOnboardStep3({ childName, onNext, onBack }) {
+  const t = useTokens();
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "260px 1fr", gap: 40, height: "100%" }}>
+      {/* Left Column: Side Info Panel */}
+      <div style={{ background: t.c.surface2, borderRadius: 16, padding: 24, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+        <div>
+          <span style={{ fontSize: 11, fontWeight: 700, color: t.c.primary, textTransform: "uppercase", letterSpacing: ".05em" }}>Boundaries</span>
+          <h3 style={{ fontFamily: t.fontSerif, fontSize: 20, fontWeight: 500, margin: "8px 0 12px" }}>Calm, not locking</h3>
+          <p style={{ fontSize: 13, color: t.c.textMute, lineHeight: 1.5, margin: 0 }}>
+            We recommend setting loose bedtime routines first. This lets kids practice scheduling without immediate hard locks.
+          </p>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, background: t.c.surface, padding: 12, borderRadius: 12 }}>
+          <Icon name="lightbulb" size={16} color={t.c.primary} />
+          <span style={{ fontSize: 11, color: t.c.textMute }}>You can refine schedules and custom limits at any time.</span>
+        </div>
+      </div>
+
+      {/* Right Column: Step Config */}
+      <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+        <div>
+          <h2 style={{ fontFamily: t.fontSerif, fontSize: 32, fontWeight: 500, margin: "0 0 8px" }}>Setup initial rules</h2>
+          <p style={{ fontSize: 14.5, color: t.c.textMute, marginBottom: 24 }}>Set simple start limits to get going.</p>
+          
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: t.c.surface2, padding: "16px 20px", borderRadius: 12, border: `1px solid ${t.c.border}` }}>
+              <div>
+                <div style={{ fontWeight: 600, fontSize: 14.5 }}>Enable Bedtime Lock</div>
+                <div style={{ fontSize: 12.5, color: t.c.textMute, marginTop: 2 }}>Locks device 9:00 PM – 7:00 AM</div>
+              </div>
+              <Toggle on={true} />
+            </div>
+
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: t.c.surface2, padding: "16px 20px", borderRadius: 12, border: `1px solid ${t.c.border}` }}>
+              <div>
+                <div style={{ fontWeight: 600, fontSize: 14.5 }}>School Day Block</div>
+                <div style={{ fontSize: 12.5, color: t.c.textMute, marginTop: 2 }}>Mutes notifications during school hours</div>
+              </div>
+              <Toggle on={true} />
+            </div>
+
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: t.c.surface2, padding: "16px 20px", borderRadius: 12, border: `1px solid ${t.c.border}` }}>
+              <div>
+                <div style={{ fontWeight: 600, fontSize: 14.5 }}>Weekly AI Insight Coaching</div>
+                <div style={{ fontSize: 12.5, color: t.c.textMute, marginTop: 2 }}>Receive personalized screen routine tips</div>
+              </div>
+              <Toggle on={true} />
+            </div>
+          </div>
+        </div>
+
+        <div style={{ display: "flex", justifyContent: "space-between", marginTop: 40 }}>
+          <button
+            onClick={onBack}
+            style={{
+              background: "transparent",
+              color: t.c.text,
+              border: "none",
+              fontSize: 14.5,
+              fontWeight: 600,
+              fontFamily: "inherit",
+              cursor: "pointer",
+            }}
+          >
+            Back
+          </button>
+          <button
+            onClick={onNext}
+            style={{
+              background: t.c.primary,
+              color: "white",
+              border: "none",
+              borderRadius: 12,
+              padding: "14px 32px",
+              fontWeight: 600,
+              fontSize: 14.5,
+              fontFamily: "inherit",
+              cursor: "pointer",
+              boxShadow: "0 4px 16px rgba(92,138,107,.15)",
+            }}
+          >
+            All set! Finish setup
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function WebOnboardWizard() {
+  const t = useTokens();
+  const [step, setStep] = React.useState(1);
+  const [childName, setChildName] = React.useState("Maya");
+
+  return (
+    <div style={{
+      width: "100%",
+      height: "100%",
+      background: t.c.bg,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: 40,
+      boxSizing: "border-box",
+    }}>
+      <div style={{
+        width: 800,
+        background: t.c.surface,
+        border: `1px solid ${t.c.border}`,
+        borderRadius: 24,
+        padding: 40,
+        boxShadow: "0 24px 64px rgba(40,30,20,.06)",
+        boxSizing: "border-box",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        minHeight: 520,
+      }}>
+        {/* Progress indicator */}
+        <div style={{ display: "flex", alignItems: "center", justifyItems: "center", gap: 12, marginBottom: 32 }}>
+          {[1, 2, 3].map(s => (
+            <div key={s} style={{ flex: 1, height: 4, borderRadius: 2, background: s <= step ? t.c.primary : t.c.surface2 }} />
+          ))}
+          <span style={{ fontSize: 12, fontWeight: 600, color: t.c.textMute }}>Step {step} of 3</span>
+        </div>
+
+        {/* Step Content */}
+        <div style={{ flex: 1 }}>
+          {step === 1 && (
+            <WebOnboardStep1
+              childName={childName}
+              setChildName={setChildName}
+              onNext={() => setStep(2)}
+            />
+          )}
+
+          {step === 2 && (
+            <WebOnboardStep2
+              childName={childName}
+              onNext={() => setStep(3)}
+              onBack={() => setStep(1)}
+            />
+          )}
+
+          {step === 3 && (
+            <WebOnboardStep3
+              childName={childName}
+              onNext={() => {
+                alert("Setup completed successfully!");
+                setStep(1);
+              }}
+              onBack={() => setStep(2)}
+            />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function WebOnboardStep1Preview() {
+  const t = useTokens();
+  return (
+    <div style={{ width: "100%", height: "100%", background: t.c.bg, display: "flex", alignItems: "center", justifyContent: "center", padding: 40, boxSizing: "border-box" }}>
+      <div style={{ width: 800, background: t.c.surface, border: `1px solid ${t.c.border}`, borderRadius: 24, padding: 40, boxShadow: "0 24px 64px rgba(40,30,20,.06)", boxSizing: "border-box", minHeight: 520 }}>
+        <div style={{ display: "flex", alignItems: "center", justifyItems: "center", gap: 12, marginBottom: 32 }}>
+          <div style={{ flex: 1, height: 4, borderRadius: 2, background: t.c.primary }} />
+          <div style={{ flex: 1, height: 4, borderRadius: 2, background: t.c.surface2 }} />
+          <div style={{ flex: 1, height: 4, borderRadius: 2, background: t.c.surface2 }} />
+          <span style={{ fontSize: 12, fontWeight: 600, color: t.c.textMute }}>Step 1 of 3</span>
+        </div>
+        <WebOnboardStep1 childName="Maya" setChildName={()=>{}} onNext={()=>{}} />
+      </div>
+    </div>
+  );
+}
+
+function WebOnboardStep2Preview() {
+  const t = useTokens();
+  return (
+    <div style={{ width: "100%", height: "100%", background: t.c.bg, display: "flex", alignItems: "center", justifyContent: "center", padding: 40, boxSizing: "border-box" }}>
+      <div style={{ width: 800, background: t.c.surface, border: `1px solid ${t.c.border}`, borderRadius: 24, padding: 40, boxShadow: "0 24px 64px rgba(40,30,20,.06)", boxSizing: "border-box", minHeight: 520 }}>
+        <div style={{ display: "flex", alignItems: "center", justifyItems: "center", gap: 12, marginBottom: 32 }}>
+          <div style={{ flex: 1, height: 4, borderRadius: 2, background: t.c.primary }} />
+          <div style={{ flex: 1, height: 4, borderRadius: 2, background: t.c.primary }} />
+          <div style={{ flex: 1, height: 4, borderRadius: 2, background: t.c.surface2 }} />
+          <span style={{ fontSize: 12, fontWeight: 600, color: t.c.textMute }}>Step 2 of 3</span>
+        </div>
+        <WebOnboardStep2 childName="Maya" onNext={()=>{}} onBack={()=>{}} />
+      </div>
+    </div>
+  );
+}
+
+function WebOnboardStep3Preview() {
+  const t = useTokens();
+  return (
+    <div style={{ width: "100%", height: "100%", background: t.c.bg, display: "flex", alignItems: "center", justifyContent: "center", padding: 40, boxSizing: "border-box" }}>
+      <div style={{ width: 800, background: t.c.surface, border: `1px solid ${t.c.border}`, borderRadius: 24, padding: 40, boxShadow: "0 24px 64px rgba(40,30,20,.06)", boxSizing: "border-box", minHeight: 520 }}>
+        <div style={{ display: "flex", alignItems: "center", justifyItems: "center", gap: 12, marginBottom: 32 }}>
+          <div style={{ flex: 1, height: 4, borderRadius: 2, background: t.c.primary }} />
+          <div style={{ flex: 1, height: 4, borderRadius: 2, background: t.c.primary }} />
+          <div style={{ flex: 1, height: 4, borderRadius: 2, background: t.c.primary }} />
+          <span style={{ fontSize: 12, fontWeight: 600, color: t.c.textMute }}>Step 3 of 3</span>
+        </div>
+        <WebOnboardStep3 childName="Maya" onNext={()=>{}} onBack={()=>{}} />
+      </div>
+    </div>
+  );
+}
+
+function QRCodeMock({ size = 170, fg = "#000", bg = "#fff" }) {
+  const grid = 21;
+  const cell = size / grid;
+  const seed = (x, y) => (x * 9301 + y * 49297 + 233280) % 2;
+  const cells = [];
+  for (let y = 0; y < grid; y++) {
+    for (let x = 0; x < grid; x++) {
+      if (seed(x, y) === 1) cells.push([x, y]);
+    }
+  }
+  const finder = (cx, cy) => (
+    <g key={`${cx}-${cy}`}>
+      <rect
+        x={cx * cell}
+        y={cy * cell}
+        width={7 * cell}
+        height={7 * cell}
+        fill={fg}
+      />
+      <rect
+        x={(cx + 1) * cell}
+        y={(cy + 1) * cell}
+        width={5 * cell}
+        height={5 * cell}
+        fill={bg}
+      />
+      <rect
+        x={(cx + 2) * cell}
+        y={(cy + 2) * cell}
+        width={3 * cell}
+        height={3 * cell}
+        fill={fg}
+      />
+    </g>
+  );
+  const inFinder = (x, y) =>
+    (x < 7 && y < 7) || (x >= grid - 7 && y < 7) || (x < 7 && y >= grid - 7);
+  return (
+    <svg width={size} height={size}>
+      <rect width={size} height={size} fill={bg} />
+      {cells
+        .filter(([x, y]) => !inFinder(x, y))
+        .map(([x, y]) => (
+          <rect
+            key={`${x}-${y}`}
+            x={x * cell}
+            y={y * cell}
+            width={cell}
+            height={cell}
+            fill={fg}
+          />
+        ))}
+      {finder(0, 0)}
+      {finder(grid - 7, 0)}
+      {finder(0, grid - 7)}
+    </svg>
+  );
+}
+
+window.WebLogin = WebLogin;
+window.WebOnboardWizard = WebOnboardWizard;
+window.WebOnboardStep1Preview = WebOnboardStep1Preview;
+window.WebOnboardStep2Preview = WebOnboardStep2Preview;
+window.WebOnboardStep3Preview = WebOnboardStep3Preview;
