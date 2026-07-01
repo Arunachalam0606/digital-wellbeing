@@ -1704,37 +1704,109 @@ function AICoachWeb() {
       time: "Yesterday",
       color: t.c.yellowText,
       bg: t.c.yellowSoft,
-    }
+    },
   ];
 
   return (
-    <WebShell role="parent" active="overview" title="AI Coach" subtitle="Personalized family screen tips & trends">
+    <WebShell
+      role="parent"
+      active="overview"
+      title="AI Coach"
+      subtitle="Personalized family screen tips & trends"
+    >
       <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 18 }}>
         <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
           <Card>
             <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
-              <div style={{ width: 48, height: 48, borderRadius: "50%", background: t.c.primarySoft, color: t.c.primary, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <div
+                style={{
+                  width: 48,
+                  height: 48,
+                  borderRadius: "50%",
+                  background: t.c.primarySoft,
+                  color: t.c.primary,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
                 <Icon name="sparkles" size={24} />
               </div>
               <div>
-                <h3 style={{ fontFamily: t.fontSerif, fontSize: 20, fontWeight: 500, margin: 0 }}>Atrium AI Assistant</h3>
-                <p style={{ fontSize: 13, color: t.c.textMute, margin: "4px 0 0" }}>Analyzing patterns for Maya & Jaden. Updated 10 minutes ago.</p>
+                <h3
+                  style={{
+                    fontFamily: t.fontSerif,
+                    fontSize: 20,
+                    fontWeight: 500,
+                    margin: 0,
+                  }}
+                >
+                  Atrium AI Assistant
+                </h3>
+                <p
+                  style={{
+                    fontSize: 13,
+                    color: t.c.textMute,
+                    margin: "4px 0 0",
+                  }}
+                >
+                  Analyzing patterns for Maya & Jaden. Updated 10 minutes ago.
+                </p>
               </div>
             </div>
           </Card>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+          <div
+            style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}
+          >
             {tips.slice(0, 2).map((tip, idx) => (
               <Card key={idx}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-                  <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 100, background: tip.bg, color: tip.color, letterSpacing: ".05em" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: 14,
+                  }}
+                >
+                  <span
+                    style={{
+                      fontSize: 10,
+                      fontWeight: 700,
+                      padding: "2px 8px",
+                      borderRadius: 100,
+                      background: tip.bg,
+                      color: tip.color,
+                      letterSpacing: ".05em",
+                    }}
+                  >
                     {tip.category}
                   </span>
-                  <span style={{ fontSize: 11, color: t.c.textMute }}>{tip.time}</span>
+                  <span style={{ fontSize: 11, color: t.c.textMute }}>
+                    {tip.time}
+                  </span>
                 </div>
-                <h4 style={{ fontSize: 16, fontWeight: 600, margin: "0 0 8px" }}>{tip.title}</h4>
-                <p style={{ fontSize: 13, color: t.c.textMute, lineHeight: 1.5, margin: "0 0 16px" }}>{tip.desc}</p>
-                <Button variant="secondary" size="sm" icon="arrowRight" style={{ width: "100%", justifyContent: "center" }}>
+                <h4
+                  style={{ fontSize: 16, fontWeight: 600, margin: "0 0 8px" }}
+                >
+                  {tip.title}
+                </h4>
+                <p
+                  style={{
+                    fontSize: 13,
+                    color: t.c.textMute,
+                    lineHeight: 1.5,
+                    margin: "0 0 16px",
+                  }}
+                >
+                  {tip.desc}
+                </p>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  icon="arrowRight"
+                  style={{ width: "100%", justifyContent: "center" }}
+                >
                   {tip.action}
                 </Button>
               </Card>
@@ -1742,16 +1814,58 @@ function AICoachWeb() {
           </div>
 
           <Card>
-            <h4 style={{ fontFamily: t.fontSerif, fontSize: 18, fontWeight: 500, margin: "0 0 12px" }}>Habit Analysis Graph</h4>
-            <div style={{ height: 160, display: "flex", alignItems: "flex-end", gap: 12, padding: "10px 0" }}>
+            <h4
+              style={{
+                fontFamily: t.fontSerif,
+                fontSize: 18,
+                fontWeight: 500,
+                margin: "0 0 12px",
+              }}
+            >
+              Habit Analysis Graph
+            </h4>
+            <div
+              style={{
+                height: 160,
+                display: "flex",
+                alignItems: "flex-end",
+                gap: 12,
+                padding: "10px 0",
+              }}
+            >
               {[35, 45, 60, 25, 40, 20, 15].map((val, idx) => (
-                <div key={idx} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
-                  <div style={{ width: "100%", height: val * 2, background: idx === 2 ? t.c.accent : t.c.primarySoft, borderRadius: 4 }} />
-                  <span style={{ fontSize: 10, color: t.c.textMute }}>{["M", "T", "W", "T", "F", "S", "S"][idx]}</span>
+                <div
+                  key={idx}
+                  style={{
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: 6,
+                  }}
+                >
+                  <div
+                    style={{
+                      width: "100%",
+                      height: val * 2,
+                      background: idx === 2 ? t.c.accent : t.c.primarySoft,
+                      borderRadius: 4,
+                    }}
+                  />
+                  <span style={{ fontSize: 10, color: t.c.textMute }}>
+                    {["M", "T", "W", "T", "F", "S", "S"][idx]}
+                  </span>
                 </div>
               ))}
             </div>
-            <div style={{ fontSize: 12, color: t.c.textMute, marginTop: 10, textAlign: "center" }}>
+            <div
+              style={{
+                fontSize: 12,
+                color: t.c.textMute,
+                marginTop: 10,
+                textAlign: "center",
+              }}
+            >
               Spike on Wednesday homework hours due to TikTok usage.
             </div>
           </Card>
@@ -1759,25 +1873,62 @@ function AICoachWeb() {
 
         <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
           <Card>
-            <h4 style={{ fontFamily: t.fontSerif, fontSize: 18, fontWeight: 500, margin: "0 0 12px" }}>Family Streak</h4>
+            <h4
+              style={{
+                fontFamily: t.fontSerif,
+                fontSize: 18,
+                fontWeight: 500,
+                margin: "0 0 12px",
+              }}
+            >
+              Family Streak
+            </h4>
             <div style={{ textAlign: "center", padding: "10px 0" }}>
               <span style={{ fontSize: 48 }}>🔥</span>
-              <div style={{ fontSize: 24, fontWeight: "bold", margin: "8px 0 4px" }}>12 Days</div>
-              <div style={{ fontSize: 12.5, color: t.c.textMute }}>Maya and Jaden both hit their goals.</div>
+              <div
+                style={{
+                  fontSize: 24,
+                  fontWeight: "bold",
+                  margin: "8px 0 4px",
+                }}
+              >
+                12 Days
+              </div>
+              <div style={{ fontSize: 12.5, color: t.c.textMute }}>
+                Maya and Jaden both hit their goals.
+              </div>
             </div>
           </Card>
 
           <Card>
-            <h4 style={{ fontFamily: t.fontSerif, fontSize: 18, fontWeight: 500, margin: "0 0 12px" }}>Coach Tips Checklist</h4>
+            <h4
+              style={{
+                fontFamily: t.fontSerif,
+                fontSize: 18,
+                fontWeight: 500,
+                margin: "0 0 12px",
+              }}
+            >
+              Coach Tips Checklist
+            </h4>
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {[
                 "Talk to Maya about Wednesday's streak",
                 "Review Jaden's late night music routine",
-                "Approve pending Roblox time request"
+                "Approve pending Roblox time request",
               ].map((item, idx) => (
-                <div key={idx} style={{ display: "flex", gap: 10, alignItems: "center" }}>
-                  <input type="checkbox" defaultChecked={idx === 0} style={{ accentColor: t.c.primary }} />
-                  <span style={{ fontSize: 12.5, color: t.c.text }}>{item}</span>
+                <div
+                  key={idx}
+                  style={{ display: "flex", gap: 10, alignItems: "center" }}
+                >
+                  <input
+                    type="checkbox"
+                    defaultChecked={idx === 0}
+                    style={{ accentColor: t.c.primary }}
+                  />
+                  <span style={{ fontSize: 12.5, color: t.c.text }}>
+                    {item}
+                  </span>
                 </div>
               ))}
             </div>
@@ -1800,73 +1951,201 @@ function WebLogin() {
   };
 
   return (
-    <div style={{
-      width: "100%",
-      height: "100%",
-      background: t.c.bg,
-      display: "grid",
-      gridTemplateColumns: "1.2fr 1fr",
-      boxSizing: "border-box",
-    }}>
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        background: t.c.bg,
+        display: "grid",
+        gridTemplateColumns: "1.2fr 1fr",
+        boxSizing: "border-box",
+      }}
+    >
       {/* Left side: Hero artwork / product showcase */}
-      <div style={{
-        background: `linear-gradient(135deg, ${t.c.primarySoft} 0%, ${t.c.surface2} 100%)`,
-        padding: 60,
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
-        position: "relative",
-        overflow: "hidden",
-        borderRight: `1px solid ${t.c.border}`,
-      }}>
+      <div
+        style={{
+          background: `linear-gradient(135deg, ${t.c.primarySoft} 0%, ${t.c.surface2} 100%)`,
+          padding: 60,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          position: "relative",
+          overflow: "hidden",
+          borderRight: `1px solid ${t.c.border}`,
+        }}
+      >
         {/* Decorative background blur blobs */}
-        <div style={{ position: "absolute", top: -100, right: -100, width: 300, height: 300, borderRadius: "50%", background: t.c.yellow, filter: "blur(85px)", opacity: 0.15 }} />
-        <div style={{ position: "absolute", bottom: -50, left: -50, width: 250, height: 250, borderRadius: "50%", background: t.c.accent, filter: "blur(65px)", opacity: 0.15 }} />
+        <div
+          style={{
+            position: "absolute",
+            top: -100,
+            right: -100,
+            width: 300,
+            height: 300,
+            borderRadius: "50%",
+            background: t.c.yellow,
+            filter: "blur(85px)",
+            opacity: 0.15,
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            bottom: -50,
+            left: -50,
+            width: 250,
+            height: 250,
+            borderRadius: "50%",
+            background: t.c.accent,
+            filter: "blur(65px)",
+            opacity: 0.15,
+          }}
+        />
 
-        <div style={{ display: "flex", alignItems: "center", gap: 10, zIndex: 2 }}>
+        <div
+          style={{ display: "flex", alignItems: "center", gap: 10, zIndex: 2 }}
+        >
           <Icon name="sparkles" size={28} color={t.c.primary} />
-          <span style={{ fontSize: 18, fontWeight: 600, fontFamily: t.fontSerif, letterSpacing: "-.02em", color: t.c.text }}>Atrium</span>
+          <span
+            style={{
+              fontSize: 18,
+              fontWeight: 600,
+              fontFamily: t.fontSerif,
+              letterSpacing: "-.02em",
+              color: t.c.text,
+            }}
+          >
+            Atrium
+          </span>
         </div>
 
         <div style={{ zIndex: 2, maxWidth: 460 }}>
-          <h1 style={{ fontFamily: t.fontSerif, fontSize: 44, fontWeight: 500, lineHeight: 1.15, letterSpacing: "-.02em", color: t.c.text, margin: "0 0 16px" }}>
+          <h1
+            style={{
+              fontFamily: t.fontSerif,
+              fontSize: 44,
+              fontWeight: 500,
+              lineHeight: 1.15,
+              letterSpacing: "-.02em",
+              color: t.c.text,
+              margin: "0 0 16px",
+            }}
+          >
             Bring calm back to your family's screens.
           </h1>
-          <p style={{ fontSize: 16, color: t.c.textMute, lineHeight: 1.6, margin: 0 }}>
-            Atrium helps kids and parents reflect on their screen routines with soft bounds, positive streaks, and empathetic coaching.
+          <p
+            style={{
+              fontSize: 16,
+              color: t.c.textMute,
+              lineHeight: 1.6,
+              margin: 0,
+            }}
+          >
+            Atrium helps kids and parents reflect on their screen routines with
+            soft bounds, positive streaks, and empathetic coaching.
           </p>
 
           {/* Floating Glassmorphic Card Showcase */}
-          <div style={{
-            marginTop: 40,
-            background: t.c.surface,
-            borderRadius: 20,
-            padding: 24,
-            border: `1px solid ${t.c.border}`,
-            boxShadow: "0 20px 48px rgba(40,30,20,.05)",
-            display: "flex",
-            flexDirection: "column",
-            gap: 16,
-          }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <div style={{ width: 36, height: 36, borderRadius: "50%", background: t.c.primary, display: "flex", alignItems: "center", justifyContent: "center", color: "white" }}>
+          <div
+            style={{
+              marginTop: 40,
+              background: t.c.surface,
+              borderRadius: 20,
+              padding: "24px 28px",
+              border: `1px solid ${t.c.border}`,
+              boxShadow: "0 20px 48px rgba(0,0,0,.03)",
+              display: "flex",
+              flexDirection: "column",
+              gap: 20,
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                <div
+                  style={{
+                    width: 42,
+                    height: 42,
+                    borderRadius: 12,
+                    background: t.c.yellowSoft || "rgba(245, 158, 11, 0.1)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: 20,
+                    boxShadow: "0 4px 12px rgba(245, 158, 11, 0.05)",
+                  }}
+                >
                   🔥
                 </div>
                 <div>
-                  <div style={{ fontWeight: 600, fontSize: 14, color: t.c.text }}>Family Streak</div>
-                  <div style={{ fontSize: 11.5, color: t.c.textMute }}>Maya & Jaden hitting daily goals</div>
+                  <div
+                    style={{
+                      fontWeight: 600,
+                      fontSize: 15,
+                      color: t.c.text,
+                      letterSpacing: "-.01em",
+                    }}
+                  >
+                    Mindful Habit Streaks
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 12.5,
+                      color: t.c.textMute,
+                      marginTop: 2,
+                    }}
+                  >
+                    Encourage daily screen-free windows
+                  </div>
                 </div>
               </div>
-              <span style={{ fontSize: 18, fontWeight: "bold", color: t.c.primary }}>12 Days</span>
+              <span
+                style={{
+                  fontSize: 8,
+                  textTransform: "uppercase",
+                  letterSpacing: ".06em",
+                  padding: "5px 10px",
+                  borderRadius: 8,
+                  background: t.c.surface2,
+                  border: `1px solid ${t.c.border}`,
+                  color: t.c.textMute,
+                  fontWeight: 600,
+                }}
+              >
+                Feature Preview
+              </span>
             </div>
-            
+
             <div style={{ height: 1, background: t.c.border }} />
 
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <div style={{ width: 8, height: 8, borderRadius: "50%", background: t.c.accent }} />
-              <div style={{ fontSize: 13, color: t.c.text }}>
-                Weekly Coach Tip: <strong>YouTube usage down 14% this week.</strong>
+            <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
+              <div
+                style={{
+                  width: 24,
+                  height: 24,
+                  borderRadius: "50%",
+                  background: t.c.primarySoft || "rgba(16, 185, 129, 0.1)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: t.c.primary,
+                  flexShrink: 0,
+                  marginTop: 2,
+                }}
+              >
+                <Icon name="sparkles" size={13} />
+              </div>
+              <div style={{ fontSize: 13.5, color: t.c.text, lineHeight: 1.5 }}>
+                <span style={{ fontWeight: 600, color: t.c.primary }}>
+                  Empathetic Coaching:
+                </span>{" "}
+                Suggests gentle screen breaks instead of rigid lockouts to build
+                trust.
               </div>
             </div>
           </div>
@@ -1878,19 +2157,50 @@ function WebLogin() {
       </div>
 
       {/* Right side: Login Form */}
-      <div style={{
-        padding: 80,
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-      }}>
+      <div
+        style={{
+          padding: 80,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+        }}
+      >
         <div style={{ maxWidth: 360, width: "100%", margin: "0 auto" }}>
-          <h2 style={{ fontFamily: t.fontSerif, fontSize: 32, fontWeight: 500, margin: "0 0 8px", color: t.c.text }}>Welcome Back</h2>
-          <p style={{ fontSize: 14.5, color: t.c.textMute, margin: "0 0 32px" }}>Sign in to your parent administration hub</p>
+          <h2
+            style={{
+              fontFamily: t.fontSerif,
+              fontSize: 32,
+              fontWeight: 500,
+              margin: "0 0 8px",
+              color: t.c.text,
+            }}
+          >
+            Welcome Back
+          </h2>
+          <p
+            style={{ fontSize: 14.5, color: t.c.textMute, margin: "0 0 32px" }}
+          >
+            Sign in to your parent administration hub
+          </p>
 
-          <form onSubmit={handleLogin} style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+          <form
+            onSubmit={handleLogin}
+            style={{ display: "flex", flexDirection: "column", gap: 20 }}
+          >
             <div>
-              <label style={{ fontSize: 11, fontWeight: 600, color: t.c.textMute, textTransform: "uppercase", display: "block", marginBottom: 8, letterSpacing: ".05em" }}>Parent Email</label>
+              <label
+                style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: t.c.textMute,
+                  textTransform: "uppercase",
+                  display: "block",
+                  marginBottom: 8,
+                  letterSpacing: ".05em",
+                }}
+              >
+                Parent Email
+              </label>
               <input
                 type="email"
                 value={email}
@@ -1912,7 +2222,19 @@ function WebLogin() {
             </div>
 
             <div>
-              <label style={{ fontSize: 11, fontWeight: 600, color: t.c.textMute, textTransform: "uppercase", display: "block", marginBottom: 8, letterSpacing: ".05em" }}>Password</label>
+              <label
+                style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: t.c.textMute,
+                  textTransform: "uppercase",
+                  display: "block",
+                  marginBottom: 8,
+                  letterSpacing: ".05em",
+                }}
+              >
+                Password
+              </label>
               <input
                 type="password"
                 value={password}
@@ -1953,13 +2275,24 @@ function WebLogin() {
             </button>
           </form>
 
-          <div style={{ display: "flex", alignItems: "center", gap: 12, color: t.c.textMute, fontSize: 13, margin: "24px 0" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+              color: t.c.textMute,
+              fontSize: 13,
+              margin: "24px 0",
+            }}
+          >
             <div style={{ flex: 1, height: 1, background: t.c.border }} />
             <span>or sign in with</span>
             <div style={{ flex: 1, height: 1, background: t.c.border }} />
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+          <div
+            style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}
+          >
             <button
               type="button"
               style={{
@@ -2010,31 +2343,122 @@ function WebLogin() {
 function WebOnboardStep1({ childName, setChildName, onNext }) {
   const t = useTokens();
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "260px 1fr", gap: 40, height: "100%" }}>
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "260px 1fr",
+        gap: 40,
+        height: "100%",
+      }}
+    >
       {/* Left Column: Side Info Panel */}
-      <div style={{ background: t.c.surface2, borderRadius: 16, padding: 24, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+      <div
+        style={{
+          background: t.c.surface2,
+          borderRadius: 16,
+          padding: 24,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+        }}
+      >
         <div>
-          <span style={{ fontSize: 11, fontWeight: 700, color: t.c.primary, textTransform: "uppercase", letterSpacing: ".05em" }}>Profile Setup</span>
-          <h3 style={{ fontFamily: t.fontSerif, fontSize: 20, fontWeight: 500, margin: "8px 0 12px", color: t.c.text }}>Why this matters</h3>
-          <p style={{ fontSize: 13, color: t.c.textMute, lineHeight: 1.5, margin: 0 }}>
-            Creating a profile lets Atrium tailor its screen schedules specifically to your child's age group guidelines.
+          <span
+            style={{
+              fontSize: 11,
+              fontWeight: 700,
+              color: t.c.primary,
+              textTransform: "uppercase",
+              letterSpacing: ".05em",
+            }}
+          >
+            Profile Setup
+          </span>
+          <h3
+            style={{
+              fontFamily: t.fontSerif,
+              fontSize: 20,
+              fontWeight: 500,
+              margin: "8px 0 12px",
+              color: t.c.text,
+            }}
+          >
+            Why this matters
+          </h3>
+          <p
+            style={{
+              fontSize: 13,
+              color: t.c.textMute,
+              lineHeight: 1.5,
+              margin: 0,
+            }}
+          >
+            Creating a profile lets Atrium tailor its screen schedules
+            specifically to your child's age group guidelines.
           </p>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, background: t.c.surface, padding: 12, borderRadius: 12 }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            background: t.c.surface,
+            padding: 12,
+            borderRadius: 12,
+          }}
+        >
           <Icon name="shieldCheck" size={16} color={t.c.primary} />
-          <span style={{ fontSize: 11, color: t.c.textMute }}>We never collect your child's Apple ID or login details.</span>
+          <span style={{ fontSize: 11, color: t.c.textMute }}>
+            We never collect your child's Apple ID or login details.
+          </span>
         </div>
       </div>
 
       {/* Right Column: Step Form */}
-      <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+        }}
+      >
         <div>
-          <h2 style={{ fontFamily: t.fontSerif, fontSize: 32, fontWeight: 500, margin: "0 0 8px", color: t.c.text }}>Create child profile</h2>
-          <p style={{ fontSize: 14.5, color: t.c.textMute, marginBottom: 32 }}>Enter their details to configure device linking.</p>
-          
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginBottom: 24 }}>
+          <h2
+            style={{
+              fontFamily: t.fontSerif,
+              fontSize: 32,
+              fontWeight: 500,
+              margin: "0 0 8px",
+              color: t.c.text,
+            }}
+          >
+            Create child profile
+          </h2>
+          <p style={{ fontSize: 14.5, color: t.c.textMute, marginBottom: 32 }}>
+            Enter their details to configure device linking.
+          </p>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: 24,
+              marginBottom: 24,
+            }}
+          >
             <div>
-              <label style={{ fontSize: 11, fontWeight: 600, color: t.c.textMute, textTransform: "uppercase", display: "block", marginBottom: 8 }}>Child's Name</label>
+              <label
+                style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: t.c.textMute,
+                  textTransform: "uppercase",
+                  display: "block",
+                  marginBottom: 8,
+                }}
+              >
+                Child's Name
+              </label>
               <input
                 type="text"
                 value={childName}
@@ -2053,7 +2477,18 @@ function WebOnboardStep1({ childName, setChildName, onNext }) {
               />
             </div>
             <div>
-              <label style={{ fontSize: 11, fontWeight: 600, color: t.c.textMute, textTransform: "uppercase", display: "block", marginBottom: 8 }}>Age</label>
+              <label
+                style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: t.c.textMute,
+                  textTransform: "uppercase",
+                  display: "block",
+                  marginBottom: 8,
+                }}
+              >
+                Age
+              </label>
               <input
                 type="text"
                 defaultValue="11"
@@ -2073,7 +2508,18 @@ function WebOnboardStep1({ childName, setChildName, onNext }) {
           </div>
 
           <div>
-            <label style={{ fontSize: 11, fontWeight: 600, color: t.c.textMute, textTransform: "uppercase", display: "block", marginBottom: 8 }}>Device Type</label>
+            <label
+              style={{
+                fontSize: 11,
+                fontWeight: 600,
+                color: t.c.textMute,
+                textTransform: "uppercase",
+                display: "block",
+                marginBottom: 8,
+              }}
+            >
+              Device Type
+            </label>
             <div style={{ display: "flex", gap: 12 }}>
               {["iPhone", "Android Phone", "iPad / Tablet"].map((d, i) => (
                 <button
@@ -2096,7 +2542,11 @@ function WebOnboardStep1({ childName, setChildName, onNext }) {
                     gap: 8,
                   }}
                 >
-                  <Icon name="phone" size={15} color={i === 0 ? t.c.primary : t.c.textMute} />
+                  <Icon
+                    name="phone"
+                    size={15}
+                    color={i === 0 ? t.c.primary : t.c.textMute}
+                  />
                   <span>{d}</span>
                 </button>
               ))}
@@ -2104,7 +2554,9 @@ function WebOnboardStep1({ childName, setChildName, onNext }) {
           </div>
         </div>
 
-        <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 40 }}>
+        <div
+          style={{ display: "flex", justifyContent: "flex-end", marginTop: 40 }}
+        >
           <button
             onClick={onNext}
             style={{
@@ -2131,37 +2583,144 @@ function WebOnboardStep1({ childName, setChildName, onNext }) {
 function WebOnboardStep2({ childName, onNext, onBack }) {
   const t = useTokens();
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "260px 1fr", gap: 40, height: "100%" }}>
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "260px 1fr",
+        gap: 40,
+        height: "100%",
+      }}
+    >
       {/* Left Column: Side Info Panel */}
-      <div style={{ background: t.c.surface2, borderRadius: 16, padding: 24, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+      <div
+        style={{
+          background: t.c.surface2,
+          borderRadius: 16,
+          padding: 24,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+        }}
+      >
         <div>
-          <span style={{ fontSize: 11, fontWeight: 700, color: t.c.primary, textTransform: "uppercase", letterSpacing: ".05em" }}>Pairing Device</span>
-          <h3 style={{ fontFamily: t.fontSerif, fontSize: 20, fontWeight: 500, margin: "8px 0 12px", color: t.c.text }}>How to link</h3>
-          <ol style={{ fontSize: 13, color: t.c.textMute, paddingLeft: 18, lineHeight: 1.6, margin: 0 }}>
-            <li style={{ marginBottom: 8 }}>Open Atrium on {childName}'s phone.</li>
+          <span
+            style={{
+              fontSize: 11,
+              fontWeight: 700,
+              color: t.c.primary,
+              textTransform: "uppercase",
+              letterSpacing: ".05em",
+            }}
+          >
+            Pairing Device
+          </span>
+          <h3
+            style={{
+              fontFamily: t.fontSerif,
+              fontSize: 20,
+              fontWeight: 500,
+              margin: "8px 0 12px",
+              color: t.c.text,
+            }}
+          >
+            How to link
+          </h3>
+          <ol
+            style={{
+              fontSize: 13,
+              color: t.c.textMute,
+              paddingLeft: 18,
+              lineHeight: 1.6,
+              margin: 0,
+            }}
+          >
+            <li style={{ marginBottom: 8 }}>
+              Open Atrium on {childName}'s phone.
+            </li>
             <li style={{ marginBottom: 8 }}>Select "I am a Child" role.</li>
             <li>Point their camera at this QR code.</li>
           </ol>
         </div>
-        <div style={{ display: "flex", gap: 8, alignItems: "center", background: t.c.primarySoft, padding: "10px 14px", borderRadius: 10, color: t.c.primary, fontSize: 12 }}>
+        <div
+          style={{
+            display: "flex",
+            gap: 8,
+            alignItems: "center",
+            background: t.c.primarySoft,
+            padding: "10px 14px",
+            borderRadius: 10,
+            color: t.c.primary,
+            fontSize: 12,
+          }}
+        >
           <Icon name="shieldCheck" size={15} />
-          <span>Passcode: <strong style={{ fontFamily: t.fontMono }}>F4-9K-2A-7P</strong></span>
+          <span>
+            Passcode:{" "}
+            <strong style={{ fontFamily: t.fontMono }}>F4-9K-2A-7P</strong>
+          </span>
         </div>
       </div>
 
       {/* Right Column: Step QR */}
-      <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+        }}
+      >
         <div>
-          <h2 style={{ fontFamily: t.fontSerif, fontSize: 32, fontWeight: 500, margin: "0 0 8px", color: t.c.text }}>Scan to link device</h2>
-          <p style={{ fontSize: 14.5, color: t.c.textMute, marginBottom: 32 }}>Pair parent controls with {childName}'s iPhone securely.</p>
-          
-          <div style={{ display: "flex", gap: 40, alignItems: "center", background: t.c.surface, border: `1px solid ${t.c.border}`, padding: 24, borderRadius: 20 }}>
-            <div style={{ background: t.c.surface2, padding: 16, borderRadius: 16, border: `1px solid ${t.c.border}` }}>
+          <h2
+            style={{
+              fontFamily: t.fontSerif,
+              fontSize: 32,
+              fontWeight: 500,
+              margin: "0 0 8px",
+              color: t.c.text,
+            }}
+          >
+            Scan to link device
+          </h2>
+          <p style={{ fontSize: 14.5, color: t.c.textMute, marginBottom: 32 }}>
+            Pair parent controls with {childName}'s iPhone securely.
+          </p>
+
+          <div
+            style={{
+              display: "flex",
+              gap: 40,
+              alignItems: "center",
+              background: t.c.surface,
+              border: `1px solid ${t.c.border}`,
+              padding: 24,
+              borderRadius: 20,
+            }}
+          >
+            <div
+              style={{
+                background: t.c.surface2,
+                padding: 16,
+                borderRadius: 16,
+                border: `1px solid ${t.c.border}`,
+              }}
+            >
               <QRCodeMock size={140} fg={t.c.text} bg={t.c.surface2} />
             </div>
             <div>
-              <div style={{ fontSize: 13, color: t.c.textMute, marginBottom: 8 }}>Or enter pairing code manually:</div>
-              <div style={{ fontSize: 24, fontFamily: t.fontMono, fontWeight: "bold", letterSpacing: ".1em", color: t.c.primary }}>
+              <div
+                style={{ fontSize: 13, color: t.c.textMute, marginBottom: 8 }}
+              >
+                Or enter pairing code manually:
+              </div>
+              <div
+                style={{
+                  fontSize: 24,
+                  fontFamily: t.fontMono,
+                  fontWeight: "bold",
+                  letterSpacing: ".1em",
+                  color: t.c.primary,
+                }}
+              >
                 F4-9K-2A-7P
               </div>
               <div style={{ fontSize: 11, color: t.c.textMute, marginTop: 8 }}>
@@ -2171,7 +2730,13 @@ function WebOnboardStep2({ childName, onNext, onBack }) {
           </div>
         </div>
 
-        <div style={{ display: "flex", justifyContent: "space-between", marginTop: 40 }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            marginTop: 40,
+          }}
+        >
           <button
             onClick={onBack}
             style={{
@@ -2212,56 +2777,189 @@ function WebOnboardStep2({ childName, onNext, onBack }) {
 function WebOnboardStep3({ childName, onNext, onBack }) {
   const t = useTokens();
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "260px 1fr", gap: 40, height: "100%" }}>
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "260px 1fr",
+        gap: 40,
+        height: "100%",
+      }}
+    >
       {/* Left Column: Side Info Panel */}
-      <div style={{ background: t.c.surface2, borderRadius: 16, padding: 24, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+      <div
+        style={{
+          background: t.c.surface2,
+          borderRadius: 16,
+          padding: 24,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+        }}
+      >
         <div>
-          <span style={{ fontSize: 11, fontWeight: 700, color: t.c.primary, textTransform: "uppercase", letterSpacing: ".05em" }}>Boundaries</span>
-          <h3 style={{ fontFamily: t.fontSerif, fontSize: 20, fontWeight: 500, margin: "8px 0 12px", color: t.c.text }}>Calm, not locking</h3>
-          <p style={{ fontSize: 13, color: t.c.textMute, lineHeight: 1.5, margin: 0 }}>
-            We recommend setting loose bedtime routines first. This lets kids practice scheduling without immediate hard locks.
+          <span
+            style={{
+              fontSize: 11,
+              fontWeight: 700,
+              color: t.c.primary,
+              textTransform: "uppercase",
+              letterSpacing: ".05em",
+            }}
+          >
+            Boundaries
+          </span>
+          <h3
+            style={{
+              fontFamily: t.fontSerif,
+              fontSize: 20,
+              fontWeight: 500,
+              margin: "8px 0 12px",
+              color: t.c.text,
+            }}
+          >
+            Calm, not locking
+          </h3>
+          <p
+            style={{
+              fontSize: 13,
+              color: t.c.textMute,
+              lineHeight: 1.5,
+              margin: 0,
+            }}
+          >
+            We recommend setting loose bedtime routines first. This lets kids
+            practice scheduling without immediate hard locks.
           </p>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, background: t.c.surface, padding: 12, borderRadius: 12 }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            background: t.c.surface,
+            padding: 12,
+            borderRadius: 12,
+          }}
+        >
           <Icon name="lightbulb" size={16} color={t.c.primary} />
-          <span style={{ fontSize: 11, color: t.c.textMute }}>You can refine schedules and custom limits at any time.</span>
+          <span style={{ fontSize: 11, color: t.c.textMute }}>
+            You can refine schedules and custom limits at any time.
+          </span>
         </div>
       </div>
 
       {/* Right Column: Step Config */}
-      <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+        }}
+      >
         <div>
-          <h2 style={{ fontFamily: t.fontSerif, fontSize: 32, fontWeight: 500, margin: "0 0 8px", color: t.c.text }}>Setup initial rules</h2>
-          <p style={{ fontSize: 14.5, color: t.c.textMute, marginBottom: 24 }}>Set simple start limits to get going.</p>
-          
+          <h2
+            style={{
+              fontFamily: t.fontSerif,
+              fontSize: 32,
+              fontWeight: 500,
+              margin: "0 0 8px",
+              color: t.c.text,
+            }}
+          >
+            Setup initial rules
+          </h2>
+          <p style={{ fontSize: 14.5, color: t.c.textMute, marginBottom: 24 }}>
+            Set simple start limits to get going.
+          </p>
+
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: t.c.surface2, padding: "16px 20px", borderRadius: 12, border: `1px solid ${t.c.border}` }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                background: t.c.surface2,
+                padding: "16px 20px",
+                borderRadius: 12,
+                border: `1px solid ${t.c.border}`,
+              }}
+            >
               <div>
-                <div style={{ fontWeight: 600, fontSize: 14.5, color: t.c.text }}>Enable Bedtime Lock</div>
-                <div style={{ fontSize: 12.5, color: t.c.textMute, marginTop: 2 }}>Locks device 9:00 PM – 7:00 AM</div>
+                <div
+                  style={{ fontWeight: 600, fontSize: 14.5, color: t.c.text }}
+                >
+                  Enable Bedtime Lock
+                </div>
+                <div
+                  style={{ fontSize: 12.5, color: t.c.textMute, marginTop: 2 }}
+                >
+                  Locks device 9:00 PM – 7:00 AM
+                </div>
               </div>
               <Toggle on={true} />
             </div>
 
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: t.c.surface2, padding: "16px 20px", borderRadius: 12, border: `1px solid ${t.c.border}` }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                background: t.c.surface2,
+                padding: "16px 20px",
+                borderRadius: 12,
+                border: `1px solid ${t.c.border}`,
+              }}
+            >
               <div>
-                <div style={{ fontWeight: 600, fontSize: 14.5, color: t.c.text }}>School Day Block</div>
-                <div style={{ fontSize: 12.5, color: t.c.textMute, marginTop: 2 }}>Mutes notifications during school hours</div>
+                <div
+                  style={{ fontWeight: 600, fontSize: 14.5, color: t.c.text }}
+                >
+                  School Day Block
+                </div>
+                <div
+                  style={{ fontSize: 12.5, color: t.c.textMute, marginTop: 2 }}
+                >
+                  Mutes notifications during school hours
+                </div>
               </div>
               <Toggle on={true} />
             </div>
 
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: t.c.surface2, padding: "16px 20px", borderRadius: 12, border: `1px solid ${t.c.border}` }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                background: t.c.surface2,
+                padding: "16px 20px",
+                borderRadius: 12,
+                border: `1px solid ${t.c.border}`,
+              }}
+            >
               <div>
-                <div style={{ fontWeight: 600, fontSize: 14.5, color: t.c.text }}>Weekly AI Insight Coaching</div>
-                <div style={{ fontSize: 12.5, color: t.c.textMute, marginTop: 2 }}>Receive personalized screen routine tips</div>
+                <div
+                  style={{ fontWeight: 600, fontSize: 14.5, color: t.c.text }}
+                >
+                  Weekly AI Insight Coaching
+                </div>
+                <div
+                  style={{ fontSize: 12.5, color: t.c.textMute, marginTop: 2 }}
+                >
+                  Receive personalized screen routine tips
+                </div>
               </div>
               <Toggle on={true} />
             </div>
           </div>
         </div>
 
-        <div style={{ display: "flex", justifyContent: "space-between", marginTop: 40 }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            marginTop: 40,
+          }}
+        >
           <button
             onClick={onBack}
             style={{
@@ -2304,14 +3002,40 @@ function WebOnboardWelcomeScreen({ onSelect }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
       <div>
-        <h2 style={{ fontFamily: t.fontSerif, fontSize: 32, fontWeight: 500, color: t.c.text, margin: "0 0 8px" }}>Welcome to Atrium</h2>
-        <p style={{ fontSize: 14.5, color: t.c.textMute, margin: 0 }}>Mindful daily screen habits for your family. Empathetic guidance instead of rigid blocks.</p>
+        <h2
+          style={{
+            fontFamily: t.fontSerif,
+            fontSize: 32,
+            fontWeight: 500,
+            color: t.c.text,
+            margin: "0 0 8px",
+          }}
+        >
+          Welcome to Atrium
+        </h2>
+        <p style={{ fontSize: 14.5, color: t.c.textMute, margin: 0 }}>
+          Mindful daily screen habits for your family. Empathetic guidance
+          instead of rigid blocks.
+        </p>
       </div>
 
       <div>
-        <div style={{ fontSize: 11, fontWeight: 600, color: t.c.textMute, textTransform: "uppercase", letterSpacing: ".05em", marginBottom: 16 }}>Who is using this device?</div>
-        
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+        <div
+          style={{
+            fontSize: 11,
+            fontWeight: 600,
+            color: t.c.textMute,
+            textTransform: "uppercase",
+            letterSpacing: ".05em",
+            marginBottom: 16,
+          }}
+        >
+          Who is using this device?
+        </div>
+
+        <div
+          style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}
+        >
           <button
             onClick={() => onSelect("parent-ind")}
             style={{
@@ -2328,12 +3052,42 @@ function WebOnboardWelcomeScreen({ onSelect }) {
               boxShadow: "0 4px 20px rgba(0,0,0,.01)",
             }}
           >
-            <div style={{ width: 44, height: 44, borderRadius: 12, background: `${t.c.primary}15`, display: "flex", alignItems: "center", justifyContent: "center", color: t.c.primary }}>
+            <div
+              style={{
+                width: 44,
+                height: 44,
+                borderRadius: 12,
+                background: `${t.c.primary}15`,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: t.c.primary,
+              }}
+            >
               <Icon name="sparkles" size={20} />
             </div>
             <div>
-              <h4 style={{ fontSize: 16, fontWeight: 600, color: t.c.text, margin: "0 0 6px" }}>Parent / Independent</h4>
-              <p style={{ fontSize: 13, color: t.c.textMute, margin: 0, lineHeight: 1.45 }}>Manage child limits, routines, or track your own personal wellbeing.</p>
+              <h4
+                style={{
+                  fontSize: 16,
+                  fontWeight: 600,
+                  color: t.c.text,
+                  margin: "0 0 6px",
+                }}
+              >
+                Parent / Independent
+              </h4>
+              <p
+                style={{
+                  fontSize: 13,
+                  color: t.c.textMute,
+                  margin: 0,
+                  lineHeight: 1.45,
+                }}
+              >
+                Manage child limits, routines, or track your own personal
+                wellbeing.
+              </p>
             </div>
           </button>
 
@@ -2353,12 +3107,42 @@ function WebOnboardWelcomeScreen({ onSelect }) {
               boxShadow: "0 4px 20px rgba(0,0,0,.01)",
             }}
           >
-            <div style={{ width: 44, height: 44, borderRadius: 12, background: `${t.c.accent}15`, display: "flex", alignItems: "center", justifyContent: "center", color: t.c.accent }}>
+            <div
+              style={{
+                width: 44,
+                height: 44,
+                borderRadius: 12,
+                background: `${t.c.accent}15`,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: t.c.accent,
+              }}
+            >
               <Icon name="phone" size={20} />
             </div>
             <div>
-              <h4 style={{ fontSize: 16, fontWeight: 600, color: t.c.text, margin: "0 0 6px" }}>Child Device</h4>
-              <p style={{ fontSize: 13, color: t.c.textMute, margin: 0, lineHeight: 1.45 }}>Pair this device with parent controls to view streaks and daily budgets.</p>
+              <h4
+                style={{
+                  fontSize: 16,
+                  fontWeight: 600,
+                  color: t.c.text,
+                  margin: "0 0 6px",
+                }}
+              >
+                Child Device
+              </h4>
+              <p
+                style={{
+                  fontSize: 13,
+                  color: t.c.textMute,
+                  margin: 0,
+                  lineHeight: 1.45,
+                }}
+              >
+                Pair this device with parent controls to view streaks and daily
+                budgets.
+              </p>
             </div>
           </button>
         </div>
@@ -2372,8 +3156,20 @@ function WebOnboardRoleQuestion({ onAnswer, onBack }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
       <div>
-        <h2 style={{ fontFamily: t.fontSerif, fontSize: 32, fontWeight: 500, color: t.c.text, margin: "0 0 8px" }}>Are you managing children's devices?</h2>
-        <p style={{ fontSize: 14.5, color: t.c.textMute, margin: 0 }}>Configure Atrium to suit your personal goals or family parameters.</p>
+        <h2
+          style={{
+            fontFamily: t.fontSerif,
+            fontSize: 32,
+            fontWeight: 500,
+            color: t.c.text,
+            margin: "0 0 8px",
+          }}
+        >
+          Are you managing children's devices?
+        </h2>
+        <p style={{ fontSize: 14.5, color: t.c.textMute, margin: 0 }}>
+          Configure Atrium to suit your personal goals or family parameters.
+        </p>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
@@ -2393,12 +3189,42 @@ function WebOnboardRoleQuestion({ onAnswer, onBack }) {
             boxShadow: "0 4px 20px rgba(0,0,0,.01)",
           }}
         >
-          <div style={{ width: 44, height: 44, borderRadius: 12, background: `${t.c.primary}15`, display: "flex", alignItems: "center", justifyContent: "center", color: t.c.primary }}>
+          <div
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: 12,
+              background: `${t.c.primary}15`,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: t.c.primary,
+            }}
+          >
             <Icon name="users" size={20} />
           </div>
           <div>
-            <h4 style={{ fontSize: 16, fontWeight: 600, color: t.c.text, margin: "0 0 6px" }}>Yes, I am a Parent</h4>
-            <p style={{ fontSize: 13, color: t.c.textMute, margin: 0, lineHeight: 1.45 }}>I want to setup profiles, pairing QR codes, and monitor device schedules for my kids.</p>
+            <h4
+              style={{
+                fontSize: 16,
+                fontWeight: 600,
+                color: t.c.text,
+                margin: "0 0 6px",
+              }}
+            >
+              Yes, I am a Parent
+            </h4>
+            <p
+              style={{
+                fontSize: 13,
+                color: t.c.textMute,
+                margin: 0,
+                lineHeight: 1.45,
+              }}
+            >
+              I want to setup profiles, pairing QR codes, and monitor device
+              schedules for my kids.
+            </p>
           </div>
         </button>
 
@@ -2418,12 +3244,42 @@ function WebOnboardRoleQuestion({ onAnswer, onBack }) {
             boxShadow: "0 4px 20px rgba(0,0,0,.01)",
           }}
         >
-          <div style={{ width: 44, height: 44, borderRadius: 12, background: `${t.c.textMute}15`, display: "flex", alignItems: "center", justifyContent: "center", color: t.c.textMute }}>
+          <div
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: 12,
+              background: `${t.c.textMute}15`,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: t.c.textMute,
+            }}
+          >
             <Icon name="phone" size={20} />
           </div>
           <div>
-            <h4 style={{ fontSize: 16, fontWeight: 600, color: t.c.text, margin: "0 0 6px" }}>No, this is for personal use</h4>
-            <p style={{ fontSize: 13, color: t.c.textMute, margin: 0, lineHeight: 1.45 }}>Skip family configurations. Set daily app budgets and schedules for this browser.</p>
+            <h4
+              style={{
+                fontSize: 16,
+                fontWeight: 600,
+                color: t.c.text,
+                margin: "0 0 6px",
+              }}
+            >
+              No, this is for personal use
+            </h4>
+            <p
+              style={{
+                fontSize: 13,
+                color: t.c.textMute,
+                margin: 0,
+                lineHeight: 1.45,
+              }}
+            >
+              Skip family configurations. Set daily app budgets and schedules
+              for this browser.
+            </p>
           </div>
         </button>
       </div>
@@ -2454,36 +3310,60 @@ function WebOnboardWizard() {
   const [childName, setChildName] = React.useState("Maya");
 
   return (
-    <div style={{
-      width: "100%",
-      height: "100%",
-      background: t.c.bg,
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      padding: 40,
-      boxSizing: "border-box",
-    }}>
-      <div style={{
-        width: 800,
-        background: t.c.surface,
-        border: `1px solid ${t.c.border}`,
-        borderRadius: 24,
-        padding: 40,
-        boxShadow: "0 24px 64px rgba(40,30,20,.06)",
-        boxSizing: "border-box",
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        background: t.c.bg,
         display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
-        minHeight: 520,
-      }}>
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 40,
+        boxSizing: "border-box",
+      }}
+    >
+      <div
+        style={{
+          width: 800,
+          background: t.c.surface,
+          border: `1px solid ${t.c.border}`,
+          borderRadius: 24,
+          padding: 40,
+          boxShadow: "0 24px 64px rgba(40,30,20,.06)",
+          boxSizing: "border-box",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          minHeight: 520,
+        }}
+      >
         {/* Progress indicator */}
         {step > 0 && step <= 3 && (
-          <div style={{ display: "flex", alignItems: "center", justifyItems: "center", gap: 12, marginBottom: 32 }}>
-            {[1, 2, 3].map(s => (
-              <div key={s} style={{ flex: 1, height: 4, borderRadius: 2, background: s <= step ? t.c.primary : t.c.surface2 }} />
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyItems: "center",
+              gap: 12,
+              marginBottom: 32,
+            }}
+          >
+            {[1, 2, 3].map((s) => (
+              <div
+                key={s}
+                style={{
+                  flex: 1,
+                  height: 4,
+                  borderRadius: 2,
+                  background: s <= step ? t.c.primary : t.c.surface2,
+                }}
+              />
             ))}
-            <span style={{ fontSize: 12, fontWeight: 600, color: t.c.textMute }}>Step {step} of 3</span>
+            <span
+              style={{ fontSize: 12, fontWeight: 600, color: t.c.textMute }}
+            >
+              Step {step} of 3
+            </span>
           </div>
         )}
 
@@ -2550,15 +3430,72 @@ function WebOnboardWizard() {
 function WebOnboardStep1Preview() {
   const t = useTokens();
   return (
-    <div style={{ width: "100%", height: "100%", background: t.c.bg, display: "flex", alignItems: "center", justifyContent: "center", padding: 40, boxSizing: "border-box" }}>
-      <div style={{ width: 800, background: t.c.surface, border: `1px solid ${t.c.border}`, borderRadius: 24, padding: 40, boxShadow: "0 24px 64px rgba(40,30,20,.06)", boxSizing: "border-box", minHeight: 520 }}>
-        <div style={{ display: "flex", alignItems: "center", justifyItems: "center", gap: 12, marginBottom: 32 }}>
-          <div style={{ flex: 1, height: 4, borderRadius: 2, background: t.c.primary }} />
-          <div style={{ flex: 1, height: 4, borderRadius: 2, background: t.c.surface2 }} />
-          <div style={{ flex: 1, height: 4, borderRadius: 2, background: t.c.surface2 }} />
-          <span style={{ fontSize: 12, fontWeight: 600, color: t.c.textMute }}>Step 1 of 3</span>
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        background: t.c.bg,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 40,
+        boxSizing: "border-box",
+      }}
+    >
+      <div
+        style={{
+          width: 800,
+          background: t.c.surface,
+          border: `1px solid ${t.c.border}`,
+          borderRadius: 24,
+          padding: 40,
+          boxShadow: "0 24px 64px rgba(40,30,20,.06)",
+          boxSizing: "border-box",
+          minHeight: 520,
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyItems: "center",
+            gap: 12,
+            marginBottom: 32,
+          }}
+        >
+          <div
+            style={{
+              flex: 1,
+              height: 4,
+              borderRadius: 2,
+              background: t.c.primary,
+            }}
+          />
+          <div
+            style={{
+              flex: 1,
+              height: 4,
+              borderRadius: 2,
+              background: t.c.surface2,
+            }}
+          />
+          <div
+            style={{
+              flex: 1,
+              height: 4,
+              borderRadius: 2,
+              background: t.c.surface2,
+            }}
+          />
+          <span style={{ fontSize: 12, fontWeight: 600, color: t.c.textMute }}>
+            Step 1 of 3
+          </span>
         </div>
-        <WebOnboardStep1 childName="Maya" setChildName={()=>{}} onNext={()=>{}} />
+        <WebOnboardStep1
+          childName="Maya"
+          setChildName={() => {}}
+          onNext={() => {}}
+        />
       </div>
     </div>
   );
@@ -2567,15 +3504,68 @@ function WebOnboardStep1Preview() {
 function WebOnboardStep2Preview() {
   const t = useTokens();
   return (
-    <div style={{ width: "100%", height: "100%", background: t.c.bg, display: "flex", alignItems: "center", justifyContent: "center", padding: 40, boxSizing: "border-box" }}>
-      <div style={{ width: 800, background: t.c.surface, border: `1px solid ${t.c.border}`, borderRadius: 24, padding: 40, boxShadow: "0 24px 64px rgba(40,30,20,.06)", boxSizing: "border-box", minHeight: 520 }}>
-        <div style={{ display: "flex", alignItems: "center", justifyItems: "center", gap: 12, marginBottom: 32 }}>
-          <div style={{ flex: 1, height: 4, borderRadius: 2, background: t.c.primary }} />
-          <div style={{ flex: 1, height: 4, borderRadius: 2, background: t.c.primary }} />
-          <div style={{ flex: 1, height: 4, borderRadius: 2, background: t.c.surface2 }} />
-          <span style={{ fontSize: 12, fontWeight: 600, color: t.c.textMute }}>Step 2 of 3</span>
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        background: t.c.bg,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 40,
+        boxSizing: "border-box",
+      }}
+    >
+      <div
+        style={{
+          width: 800,
+          background: t.c.surface,
+          border: `1px solid ${t.c.border}`,
+          borderRadius: 24,
+          padding: 40,
+          boxShadow: "0 24px 64px rgba(40,30,20,.06)",
+          boxSizing: "border-box",
+          minHeight: 520,
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyItems: "center",
+            gap: 12,
+            marginBottom: 32,
+          }}
+        >
+          <div
+            style={{
+              flex: 1,
+              height: 4,
+              borderRadius: 2,
+              background: t.c.primary,
+            }}
+          />
+          <div
+            style={{
+              flex: 1,
+              height: 4,
+              borderRadius: 2,
+              background: t.c.primary,
+            }}
+          />
+          <div
+            style={{
+              flex: 1,
+              height: 4,
+              borderRadius: 2,
+              background: t.c.surface2,
+            }}
+          />
+          <span style={{ fontSize: 12, fontWeight: 600, color: t.c.textMute }}>
+            Step 2 of 3
+          </span>
         </div>
-        <WebOnboardStep2 childName="Maya" onNext={()=>{}} onBack={()=>{}} />
+        <WebOnboardStep2 childName="Maya" onNext={() => {}} onBack={() => {}} />
       </div>
     </div>
   );
@@ -2584,15 +3574,68 @@ function WebOnboardStep2Preview() {
 function WebOnboardStep3Preview() {
   const t = useTokens();
   return (
-    <div style={{ width: "100%", height: "100%", background: t.c.bg, display: "flex", alignItems: "center", justifyContent: "center", padding: 40, boxSizing: "border-box" }}>
-      <div style={{ width: 800, background: t.c.surface, border: `1px solid ${t.c.border}`, borderRadius: 24, padding: 40, boxShadow: "0 24px 64px rgba(40,30,20,.06)", boxSizing: "border-box", minHeight: 520 }}>
-        <div style={{ display: "flex", alignItems: "center", justifyItems: "center", gap: 12, marginBottom: 32 }}>
-          <div style={{ flex: 1, height: 4, borderRadius: 2, background: t.c.primary }} />
-          <div style={{ flex: 1, height: 4, borderRadius: 2, background: t.c.primary }} />
-          <div style={{ flex: 1, height: 4, borderRadius: 2, background: t.c.primary }} />
-          <span style={{ fontSize: 12, fontWeight: 600, color: t.c.textMute }}>Step 3 of 3</span>
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        background: t.c.bg,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 40,
+        boxSizing: "border-box",
+      }}
+    >
+      <div
+        style={{
+          width: 800,
+          background: t.c.surface,
+          border: `1px solid ${t.c.border}`,
+          borderRadius: 24,
+          padding: 40,
+          boxShadow: "0 24px 64px rgba(40,30,20,.06)",
+          boxSizing: "border-box",
+          minHeight: 520,
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyItems: "center",
+            gap: 12,
+            marginBottom: 32,
+          }}
+        >
+          <div
+            style={{
+              flex: 1,
+              height: 4,
+              borderRadius: 2,
+              background: t.c.primary,
+            }}
+          />
+          <div
+            style={{
+              flex: 1,
+              height: 4,
+              borderRadius: 2,
+              background: t.c.primary,
+            }}
+          />
+          <div
+            style={{
+              flex: 1,
+              height: 4,
+              borderRadius: 2,
+              background: t.c.primary,
+            }}
+          />
+          <span style={{ fontSize: 12, fontWeight: 600, color: t.c.textMute }}>
+            Step 3 of 3
+          </span>
         </div>
-        <WebOnboardStep3 childName="Maya" onNext={()=>{}} onBack={()=>{}} />
+        <WebOnboardStep3 childName="Maya" onNext={() => {}} onBack={() => {}} />
       </div>
     </div>
   );
@@ -2660,9 +3703,31 @@ function QRCodeMock({ size = 170, fg = "#000", bg = "#fff" }) {
 function WebOnboardWelcomePreview() {
   const t = useTokens();
   return (
-    <div style={{ width: "100%", height: "100%", background: t.c.bg, display: "flex", alignItems: "center", justifyContent: "center", padding: 40, boxSizing: "border-box" }}>
-      <div style={{ width: 800, background: t.c.surface, border: `1px solid ${t.c.border}`, borderRadius: 24, padding: 40, boxShadow: "0 24px 64px rgba(40,30,20,.06)", boxSizing: "border-box", minHeight: 520 }}>
-        <WebOnboardWelcomeScreen onSelect={()=>{}} />
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        background: t.c.bg,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 40,
+        boxSizing: "border-box",
+      }}
+    >
+      <div
+        style={{
+          width: 800,
+          background: t.c.surface,
+          border: `1px solid ${t.c.border}`,
+          borderRadius: 24,
+          padding: 40,
+          boxShadow: "0 24px 64px rgba(40,30,20,.06)",
+          boxSizing: "border-box",
+          minHeight: 520,
+        }}
+      >
+        <WebOnboardWelcomeScreen onSelect={() => {}} />
       </div>
     </div>
   );
@@ -2671,9 +3736,31 @@ function WebOnboardWelcomePreview() {
 function WebOnboardRoleQuestionPreview() {
   const t = useTokens();
   return (
-    <div style={{ width: "100%", height: "100%", background: t.c.bg, display: "flex", alignItems: "center", justifyContent: "center", padding: 40, boxSizing: "border-box" }}>
-      <div style={{ width: 800, background: t.c.surface, border: `1px solid ${t.c.border}`, borderRadius: 24, padding: 40, boxShadow: "0 24px 64px rgba(40,30,20,.06)", boxSizing: "border-box", minHeight: 520 }}>
-        <WebOnboardRoleQuestion onAnswer={()=>{}} onBack={()=>{}} />
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        background: t.c.bg,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 40,
+        boxSizing: "border-box",
+      }}
+    >
+      <div
+        style={{
+          width: 800,
+          background: t.c.surface,
+          border: `1px solid ${t.c.border}`,
+          borderRadius: 24,
+          padding: 40,
+          boxShadow: "0 24px 64px rgba(40,30,20,.06)",
+          boxSizing: "border-box",
+          minHeight: 520,
+        }}
+      >
+        <WebOnboardRoleQuestion onAnswer={() => {}} onBack={() => {}} />
       </div>
     </div>
   );
@@ -2706,8 +3793,15 @@ function WebParentSettings() {
       title="Parent Settings"
       subtitle="Manage your family account, billing, and global settings"
     >
-      <div style={{ display: "grid", gridTemplateColumns: "220px 1fr", gap: 32, padding: "0 32px 32px", boxSizing: "border-box" }}>
-        
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "220px 1fr",
+          gap: 32,
+          padding: "0 32px 32px",
+          boxSizing: "border-box",
+        }}
+      >
         {/* Left Tabs Nav */}
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
           {tabs.map((tab) => {
@@ -2732,7 +3826,11 @@ function WebParentSettings() {
                   fontFamily: "inherit",
                 }}
               >
-                <Icon name={tab.icon} size={15} color={isAct ? t.c.primary : t.c.textMute} />
+                <Icon
+                  name={tab.icon}
+                  size={15}
+                  color={isAct ? t.c.primary : t.c.textMute}
+                />
                 <span>{tab.label}</span>
               </button>
             );
@@ -2740,25 +3838,91 @@ function WebParentSettings() {
         </div>
 
         {/* Right Tab Content */}
-        <div style={{ background: t.c.surface, border: `1px solid ${t.c.border}`, borderRadius: 20, padding: 32, boxShadow: "0 4px 20px rgba(0,0,0,.01)" }}>
+        <div
+          style={{
+            background: t.c.surface,
+            border: `1px solid ${t.c.border}`,
+            borderRadius: 20,
+            padding: 32,
+            boxShadow: "0 4px 20px rgba(0,0,0,.01)",
+          }}
+        >
           {activeTab === "profile" && (
             <div>
-              <h3 style={{ fontFamily: t.fontSerif, fontSize: 22, fontWeight: 500, margin: "0 0 8px" }}>Account Profile</h3>
-              <p style={{ fontSize: 13, color: t.c.textMute, margin: "0 0 24px" }}>Manage your parent administration credentials</p>
+              <h3
+                style={{
+                  fontFamily: t.fontSerif,
+                  fontSize: 22,
+                  fontWeight: 500,
+                  margin: "0 0 8px",
+                }}
+              >
+                Account Profile
+              </h3>
+              <p
+                style={{
+                  fontSize: 13,
+                  color: t.c.textMute,
+                  margin: "0 0 24px",
+                }}
+              >
+                Manage your parent administration credentials
+              </p>
 
-              <div style={{ display: "flex", alignItems: "center", gap: 20, marginBottom: 32 }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 20,
+                  marginBottom: 32,
+                }}
+              >
                 <Avatar name="Sarah Mitchell" size={64} color={t.c.primary} />
                 <div>
-                  <button style={{ background: t.c.primarySoft, color: t.c.primary, border: "none", padding: "8px 16px", borderRadius: 8, fontWeight: 600, fontSize: 12.5, fontFamily: "inherit", cursor: "pointer" }}>
+                  <button
+                    style={{
+                      background: t.c.primarySoft,
+                      color: t.c.primary,
+                      border: "none",
+                      padding: "8px 16px",
+                      borderRadius: 8,
+                      fontWeight: 600,
+                      fontSize: 12.5,
+                      fontFamily: "inherit",
+                      cursor: "pointer",
+                    }}
+                  >
                     Change Avatar
                   </button>
-                  <div style={{ fontSize: 11, color: t.c.textMute, marginTop: 6 }}>JPG or PNG. Max size of 800K.</div>
+                  <div
+                    style={{ fontSize: 11, color: t.c.textMute, marginTop: 6 }}
+                  >
+                    JPG or PNG. Max size of 800K.
+                  </div>
                 </div>
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 20 }}>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: 20,
+                  marginBottom: 20,
+                }}
+              >
                 <div>
-                  <label style={{ fontSize: 11, fontWeight: 600, color: t.c.textMute, textTransform: "uppercase", display: "block", marginBottom: 8 }}>Parent Name</label>
+                  <label
+                    style={{
+                      fontSize: 11,
+                      fontWeight: 600,
+                      color: t.c.textMute,
+                      textTransform: "uppercase",
+                      display: "block",
+                      marginBottom: 8,
+                    }}
+                  >
+                    Parent Name
+                  </label>
                   <input
                     type="text"
                     defaultValue="Sarah Mitchell"
@@ -2776,7 +3940,18 @@ function WebParentSettings() {
                   />
                 </div>
                 <div>
-                  <label style={{ fontSize: 11, fontWeight: 600, color: t.c.textMute, textTransform: "uppercase", display: "block", marginBottom: 8 }}>Email Address</label>
+                  <label
+                    style={{
+                      fontSize: 11,
+                      fontWeight: 600,
+                      color: t.c.textMute,
+                      textTransform: "uppercase",
+                      display: "block",
+                      marginBottom: 8,
+                    }}
+                  >
+                    Email Address
+                  </label>
                   <input
                     type="email"
                     defaultValue="sarah.m@gmail.com"
@@ -2795,7 +3970,19 @@ function WebParentSettings() {
                 </div>
               </div>
 
-              <button style={{ background: t.c.primary, color: "white", border: "none", padding: "12px 24px", borderRadius: 10, fontWeight: 600, fontSize: 13.5, fontFamily: "inherit", cursor: "pointer" }}>
+              <button
+                style={{
+                  background: t.c.primary,
+                  color: "white",
+                  border: "none",
+                  padding: "12px 24px",
+                  borderRadius: 10,
+                  fontWeight: 600,
+                  fontSize: 13.5,
+                  fontFamily: "inherit",
+                  cursor: "pointer",
+                }}
+              >
                 Save Changes
               </button>
             </div>
@@ -2803,33 +3990,109 @@ function WebParentSettings() {
 
           {activeTab === "family" && (
             <div>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: 24,
+                }}
+              >
                 <div>
-                  <h3 style={{ fontFamily: t.fontSerif, fontSize: 22, fontWeight: 500, margin: "0 0 8px" }}>Family & Devices</h3>
-                  <p style={{ fontSize: 13, color: t.c.textMute, margin: 0 }}>Add children and view their connected device status</p>
+                  <h3
+                    style={{
+                      fontFamily: t.fontSerif,
+                      fontSize: 22,
+                      fontWeight: 500,
+                      margin: "0 0 8px",
+                    }}
+                  >
+                    Family & Devices
+                  </h3>
+                  <p style={{ fontSize: 13, color: t.c.textMute, margin: 0 }}>
+                    Add children and view their connected device status
+                  </p>
                 </div>
-                <button style={{ background: t.c.primary, color: "white", border: "none", padding: "10px 18px", borderRadius: 10, fontWeight: 600, fontSize: 13, fontFamily: "inherit", cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}>
+                <button
+                  style={{
+                    background: t.c.primary,
+                    color: "white",
+                    border: "none",
+                    padding: "10px 18px",
+                    borderRadius: 10,
+                    fontWeight: 600,
+                    fontSize: 13,
+                    fontFamily: "inherit",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 6,
+                  }}
+                >
                   <Icon name="plus" size={14} /> Add Child
                 </button>
               </div>
 
-              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              <div
+                style={{ display: "flex", flexDirection: "column", gap: 12 }}
+              >
                 {[
-                  { name: "Maya Mitchell", age: 11, devices: ["Maya's iPhone 14", "Maya's iPad Pro"], status: "Active limits" },
-                  { name: "Jaden Mitchell", age: 8, devices: ["Jaden's Android Tab"], status: "Paused until 4 PM" }
+                  {
+                    name: "Maya Mitchell",
+                    age: 11,
+                    devices: ["Maya's iPhone 14", "Maya's iPad Pro"],
+                    status: "Active limits",
+                  },
+                  {
+                    name: "Jaden Mitchell",
+                    age: 8,
+                    devices: ["Jaden's Android Tab"],
+                    status: "Paused until 4 PM",
+                  },
                 ].map((child, idx) => (
-                  <div key={idx} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 24px", background: t.c.bg, borderRadius: 16, border: `1px solid ${t.c.border}` }}>
+                  <div
+                    key={idx}
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      padding: "20px 24px",
+                      background: t.c.bg,
+                      borderRadius: 16,
+                      border: `1px solid ${t.c.border}`,
+                    }}
+                  >
                     <div>
-                      <div style={{ fontWeight: 600, fontSize: 15 }}>{child.name}</div>
-                      <div style={{ fontSize: 12.5, color: t.c.textMute, marginTop: 4 }}>
+                      <div style={{ fontWeight: 600, fontSize: 15 }}>
+                        {child.name}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 12.5,
+                          color: t.c.textMute,
+                          marginTop: 4,
+                        }}
+                      >
                         Age {child.age} · {child.devices.join(", ")}
                       </div>
                     </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                      <Chip bg={idx === 0 ? t.c.primarySoft : t.c.accentSoft} color={idx === 0 ? t.c.primary : t.c.accent}>
+                    <div
+                      style={{ display: "flex", alignItems: "center", gap: 12 }}
+                    >
+                      <Chip
+                        bg={idx === 0 ? t.c.primarySoft : t.c.accentSoft}
+                        color={idx === 0 ? t.c.primary : t.c.accent}
+                      >
                         {child.status}
                       </Chip>
-                      <button style={{ background: "transparent", border: "none", cursor: "pointer", color: t.c.textMute }}>
+                      <button
+                        style={{
+                          background: "transparent",
+                          border: "none",
+                          cursor: "pointer",
+                          color: t.c.textMute,
+                        }}
+                      >
                         <Icon name="settings" size={15} />
                       </button>
                     </div>
@@ -2841,47 +4104,212 @@ function WebParentSettings() {
 
           {activeTab === "billing" && (
             <div>
-              <h3 style={{ fontFamily: t.fontSerif, fontSize: 22, fontWeight: 500, margin: "0 0 8px" }}>Billing & Plan</h3>
-              <p style={{ fontSize: 13, color: t.c.textMute, margin: "0 0 24px" }}>View billing history, invoices, and active plans</p>
+              <h3
+                style={{
+                  fontFamily: t.fontSerif,
+                  fontSize: 22,
+                  fontWeight: 500,
+                  margin: "0 0 8px",
+                }}
+              >
+                Billing & Plan
+              </h3>
+              <p
+                style={{
+                  fontSize: 13,
+                  color: t.c.textMute,
+                  margin: "0 0 24px",
+                }}
+              >
+                View billing history, invoices, and active plans
+              </p>
 
               {/* Plan overview card */}
-              <div style={{ background: `linear-gradient(135deg, ${t.c.primarySoft} 0%, ${t.c.surface2} 100%)`, borderRadius: 16, padding: 24, border: `1px solid ${t.c.border}`, display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 32 }}>
+              <div
+                style={{
+                  background: `linear-gradient(135deg, ${t.c.primarySoft} 0%, ${t.c.surface2} 100%)`,
+                  borderRadius: 16,
+                  padding: 24,
+                  border: `1px solid ${t.c.border}`,
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: 32,
+                }}
+              >
                 <div>
-                  <span style={{ fontSize: 10.5, fontWeight: 700, color: t.c.primary, textTransform: "uppercase", letterSpacing: ".05em" }}>Current Plan</span>
-                  <div style={{ fontFamily: t.fontSerif, fontSize: 24, fontWeight: 500, marginTop: 4 }}>Atrium Family Premium</div>
-                  <div style={{ fontSize: 12.5, color: t.c.textMute, marginTop: 4 }}>Billed annually ($89/yr) · Next renewal June 20, 2027</div>
+                  <span
+                    style={{
+                      fontSize: 10.5,
+                      fontWeight: 700,
+                      color: t.c.primary,
+                      textTransform: "uppercase",
+                      letterSpacing: ".05em",
+                    }}
+                  >
+                    Current Plan
+                  </span>
+                  <div
+                    style={{
+                      fontFamily: t.fontSerif,
+                      fontSize: 24,
+                      fontWeight: 500,
+                      marginTop: 4,
+                    }}
+                  >
+                    Atrium Family Premium
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 12.5,
+                      color: t.c.textMute,
+                      marginTop: 4,
+                    }}
+                  >
+                    Billed annually ($89/yr) · Next renewal June 20, 2027
+                  </div>
                 </div>
                 <div style={{ textAlign: "right" }}>
-                  <div style={{ fontSize: 28, fontWeight: "bold", color: t.c.primary }}>$89<span style={{ fontSize: 14, fontWeight: "normal", color: t.c.textMute }}>/yr</span></div>
-                  <button style={{ background: t.c.surface, color: t.c.text, border: `1px solid ${t.c.border}`, padding: "8px 14px", borderRadius: 8, fontSize: 12, fontWeight: 600, fontFamily: "inherit", cursor: "pointer", marginTop: 8 }}>
+                  <div
+                    style={{
+                      fontSize: 28,
+                      fontWeight: "bold",
+                      color: t.c.primary,
+                    }}
+                  >
+                    $89
+                    <span
+                      style={{
+                        fontSize: 14,
+                        fontWeight: "normal",
+                        color: t.c.textMute,
+                      }}
+                    >
+                      /yr
+                    </span>
+                  </div>
+                  <button
+                    style={{
+                      background: t.c.surface,
+                      color: t.c.text,
+                      border: `1px solid ${t.c.border}`,
+                      padding: "8px 14px",
+                      borderRadius: 8,
+                      fontSize: 12,
+                      fontWeight: 600,
+                      fontFamily: "inherit",
+                      cursor: "pointer",
+                      marginTop: 8,
+                    }}
+                  >
                     Upgrade Plan
                   </button>
                 </div>
               </div>
 
               {/* Invoices table */}
-              <h4 style={{ fontWeight: 600, fontSize: 14.5, marginBottom: 16 }}>Billing History</h4>
-              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+              <h4 style={{ fontWeight: 600, fontSize: 14.5, marginBottom: 16 }}>
+                Billing History
+              </h4>
+              <table
+                style={{
+                  width: "100%",
+                  borderCollapse: "collapse",
+                  fontSize: 13,
+                }}
+              >
                 <thead>
-                  <tr style={{ borderBottom: `1px solid ${t.c.border}`, textAlign: "left" }}>
-                    <th style={{ padding: "12px 8px", color: t.c.textMute, fontWeight: 500 }}>Date</th>
-                    <th style={{ padding: "12px 8px", color: t.c.textMute, fontWeight: 500 }}>Invoice ID</th>
-                    <th style={{ padding: "12px 8px", color: t.c.textMute, fontWeight: 500 }}>Amount</th>
-                    <th style={{ padding: "12px 8px", color: t.c.textMute, fontWeight: 500 }}>Status</th>
+                  <tr
+                    style={{
+                      borderBottom: `1px solid ${t.c.border}`,
+                      textAlign: "left",
+                    }}
+                  >
+                    <th
+                      style={{
+                        padding: "12px 8px",
+                        color: t.c.textMute,
+                        fontWeight: 500,
+                      }}
+                    >
+                      Date
+                    </th>
+                    <th
+                      style={{
+                        padding: "12px 8px",
+                        color: t.c.textMute,
+                        fontWeight: 500,
+                      }}
+                    >
+                      Invoice ID
+                    </th>
+                    <th
+                      style={{
+                        padding: "12px 8px",
+                        color: t.c.textMute,
+                        fontWeight: 500,
+                      }}
+                    >
+                      Amount
+                    </th>
+                    <th
+                      style={{
+                        padding: "12px 8px",
+                        color: t.c.textMute,
+                        fontWeight: 500,
+                      }}
+                    >
+                      Status
+                    </th>
                     <th style={{ padding: "12px 8px", textAlign: "right" }} />
                   </tr>
                 </thead>
                 <tbody>
                   {[
-                    { date: "Jun 20, 2026", id: "INV-8902-12", amount: "$89.00", status: "Paid" },
-                    { date: "Jun 20, 2025", id: "INV-7212-09", amount: "$89.00", status: "Paid" }
+                    {
+                      date: "Jun 20, 2026",
+                      id: "INV-8902-12",
+                      amount: "$89.00",
+                      status: "Paid",
+                    },
+                    {
+                      date: "Jun 20, 2025",
+                      id: "INV-7212-09",
+                      amount: "$89.00",
+                      status: "Paid",
+                    },
                   ].map((inv, idx) => (
-                    <tr key={idx} style={{ borderBottom: idx === 1 ? "none" : `1px solid ${t.c.border}` }}>
+                    <tr
+                      key={idx}
+                      style={{
+                        borderBottom:
+                          idx === 1 ? "none" : `1px solid ${t.c.border}`,
+                      }}
+                    >
                       <td style={{ padding: "14px 8px" }}>{inv.date}</td>
-                      <td style={{ padding: "14px 8px", fontFamily: t.fontMono }}>{inv.id}</td>
+                      <td
+                        style={{ padding: "14px 8px", fontFamily: t.fontMono }}
+                      >
+                        {inv.id}
+                      </td>
                       <td style={{ padding: "14px 8px" }}>{inv.amount}</td>
-                      <td style={{ padding: "14px 8px" }}><span style={{ color: t.c.primary, fontWeight: 600 }}>{inv.status}</span></td>
-                      <td style={{ padding: "14px 8px", textAlign: "right" }}><a href="#" style={{ color: t.c.primary, textDecoration: "none", fontWeight: 600 }}>Download PDF</a></td>
+                      <td style={{ padding: "14px 8px" }}>
+                        <span style={{ color: t.c.primary, fontWeight: 600 }}>
+                          {inv.status}
+                        </span>
+                      </td>
+                      <td style={{ padding: "14px 8px", textAlign: "right" }}>
+                        <a
+                          href="#"
+                          style={{
+                            color: t.c.primary,
+                            textDecoration: "none",
+                            fontWeight: 600,
+                          }}
+                        >
+                          Download PDF
+                        </a>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -2891,20 +4319,73 @@ function WebParentSettings() {
 
           {activeTab === "notifications" && (
             <div>
-              <h3 style={{ fontFamily: t.fontSerif, fontSize: 22, fontWeight: 500, margin: "0 0 8px" }}>Notification Alerts</h3>
-              <p style={{ fontSize: 13, color: t.c.textMute, margin: "0 0 24px" }}>Configure how and when you receive limits and coaching notifications</p>
+              <h3
+                style={{
+                  fontFamily: t.fontSerif,
+                  fontSize: 22,
+                  fontWeight: 500,
+                  margin: "0 0 8px",
+                }}
+              >
+                Notification Alerts
+              </h3>
+              <p
+                style={{
+                  fontSize: 13,
+                  color: t.c.textMute,
+                  margin: "0 0 24px",
+                }}
+              >
+                Configure how and when you receive limits and coaching
+                notifications
+              </p>
 
-              <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+              <div
+                style={{ display: "flex", flexDirection: "column", gap: 20 }}
+              >
                 {[
-                  { title: "Bypass Requests", desc: "Instantly alert my dashboard when a child requests device time extensions.", on: true },
-                  { title: "Daily Limit Warnings", desc: "Notify me when Jaden or Maya are within 80% of their daily app categories budget.", on: true },
-                  { title: "Bedtime Reminders", desc: "Ping my phone when bedtime routine is about to lock child screens.", on: false },
-                  { title: "Weekly Coaching Summaries", desc: "Email me personalized routine audits and tip checklist summaries every Sunday.", on: true }
+                  {
+                    title: "Bypass Requests",
+                    desc: "Instantly alert my dashboard when a child requests device time extensions.",
+                    on: true,
+                  },
+                  {
+                    title: "Daily Limit Warnings",
+                    desc: "Notify me when Jaden or Maya are within 80% of their daily app categories budget.",
+                    on: true,
+                  },
+                  {
+                    title: "Bedtime Reminders",
+                    desc: "Ping my phone when bedtime routine is about to lock child screens.",
+                    on: false,
+                  },
+                  {
+                    title: "Weekly Coaching Summaries",
+                    desc: "Email me personalized routine audits and tip checklist summaries every Sunday.",
+                    on: true,
+                  },
                 ].map((notif, idx) => (
-                  <div key={idx} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <div
+                    key={idx}
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
                     <div style={{ flex: 1, paddingRight: 24 }}>
-                      <div style={{ fontWeight: 600, fontSize: 14.5 }}>{notif.title}</div>
-                      <div style={{ fontSize: 12.5, color: t.c.textMute, marginTop: 4 }}>{notif.desc}</div>
+                      <div style={{ fontWeight: 600, fontSize: 14.5 }}>
+                        {notif.title}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 12.5,
+                          color: t.c.textMute,
+                          marginTop: 4,
+                        }}
+                      >
+                        {notif.desc}
+                      </div>
                     </div>
                     <Toggle on={notif.on} />
                   </div>
@@ -2915,17 +4396,62 @@ function WebParentSettings() {
 
           {activeTab === "privacy" && (
             <div>
-              <h3 style={{ fontFamily: t.fontSerif, fontSize: 22, fontWeight: 500, margin: "0 0 8px" }}>Privacy & Security</h3>
-              <p style={{ fontSize: 13, color: t.c.textMute, margin: "0 0 24px" }}>Review data storage parameters, retention controls, and exporting logs</p>
+              <h3
+                style={{
+                  fontFamily: t.fontSerif,
+                  fontSize: 22,
+                  fontWeight: 500,
+                  margin: "0 0 8px",
+                }}
+              >
+                Privacy & Security
+              </h3>
+              <p
+                style={{
+                  fontSize: 13,
+                  color: t.c.textMute,
+                  margin: "0 0 24px",
+                }}
+              >
+                Review data storage parameters, retention controls, and
+                exporting logs
+              </p>
 
-              <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+              <div
+                style={{ display: "flex", flexDirection: "column", gap: 24 }}
+              >
                 <div>
-                  <div style={{ fontWeight: 600, fontSize: 14.5, marginBottom: 8 }}>Retention Policy</div>
-                  <p style={{ fontSize: 13, color: t.c.textMute, margin: "0 0 12px", lineHeight: 1.5 }}>
-                    Configure how long child screen activity records (pickups, session durations, categories) are kept on Atrium secure servers.
+                  <div
+                    style={{ fontWeight: 600, fontSize: 14.5, marginBottom: 8 }}
+                  >
+                    Retention Policy
+                  </div>
+                  <p
+                    style={{
+                      fontSize: 13,
+                      color: t.c.textMute,
+                      margin: "0 0 12px",
+                      lineHeight: 1.5,
+                    }}
+                  >
+                    Configure how long child screen activity records (pickups,
+                    session durations, categories) are kept on Atrium secure
+                    servers.
                   </p>
-                  <select style={{ padding: "10px 14px", borderRadius: 8, background: t.c.bg, border: `1px solid ${t.c.border}`, color: t.c.text, fontFamily: "inherit", fontSize: 13 }}>
-                    <option>Keep activity logs for 90 days (Recommended)</option>
+                  <select
+                    style={{
+                      padding: "10px 14px",
+                      borderRadius: 8,
+                      background: t.c.bg,
+                      border: `1px solid ${t.c.border}`,
+                      color: t.c.text,
+                      fontFamily: "inherit",
+                      fontSize: 13,
+                    }}
+                  >
+                    <option>
+                      Keep activity logs for 90 days (Recommended)
+                    </option>
                     <option>Keep activity logs for 30 days</option>
                     <option>Keep activity logs indefinitely</option>
                   </select>
@@ -2934,9 +4460,34 @@ function WebParentSettings() {
                 <div style={{ height: 1, background: t.c.border }} />
 
                 <div>
-                  <div style={{ fontWeight: 600, fontSize: 14.5, marginBottom: 8 }}>Export Family Logs</div>
-                  <p style={{ fontSize: 13, color: t.c.textMute, margin: "0 0 12px" }}>Retrieve all stored screen time and ad blocker analytics logs in structured JSON format.</p>
-                  <button style={{ background: t.c.surface2, border: `1px solid ${t.c.border}`, padding: "10px 18px", borderRadius: 8, fontSize: 13, color: t.c.text, fontWeight: 600, fontFamily: "inherit", cursor: "pointer" }}>
+                  <div
+                    style={{ fontWeight: 600, fontSize: 14.5, marginBottom: 8 }}
+                  >
+                    Export Family Logs
+                  </div>
+                  <p
+                    style={{
+                      fontSize: 13,
+                      color: t.c.textMute,
+                      margin: "0 0 12px",
+                    }}
+                  >
+                    Retrieve all stored screen time and ad blocker analytics
+                    logs in structured JSON format.
+                  </p>
+                  <button
+                    style={{
+                      background: t.c.surface2,
+                      border: `1px solid ${t.c.border}`,
+                      padding: "10px 18px",
+                      borderRadius: 8,
+                      fontSize: 13,
+                      color: t.c.text,
+                      fontWeight: 600,
+                      fontFamily: "inherit",
+                      cursor: "pointer",
+                    }}
+                  >
                     Request Export
                   </button>
                 </div>
