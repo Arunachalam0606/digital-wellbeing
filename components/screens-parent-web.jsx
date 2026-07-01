@@ -25,10 +25,37 @@ function ParentDashboard() {
           marginBottom: 18,
         }}
       >
-        {/* Today summary */}
-        <Card>
+        <Card style={{ position: "relative", overflow: "hidden" }}>
+          <svg
+            style={{
+              position: "absolute",
+              bottom: 0,
+              left: 0,
+              right: 0,
+              height: 70,
+              width: "100%",
+              opacity: t.dark ? 0.06 : 0.09,
+              pointerEvents: "none",
+              zIndex: 0,
+            }}
+            viewBox="0 0 100 40"
+            preserveAspectRatio="none"
+          >
+            <path
+              d="M0,40 C10,15 25,35 40,10 C60,30 80,5 100,40"
+              fill="none"
+              stroke={t.c.primary}
+              strokeWidth="3.5"
+            />
+            <path
+              d="M0,40 C10,15 25,35 40,10 C60,30 80,5 100,40 L100,40 L0,40 Z"
+              fill={t.c.primary}
+            />
+          </svg>
           <div
             style={{
+              position: "relative",
+              zIndex: 1,
               display: "flex",
               alignItems: "flex-start",
               justifyContent: "space-between",
@@ -1797,8 +1824,8 @@ function WebLogin() {
         borderRight: `1px solid ${t.c.border}`,
       }}>
         {/* Decorative background blur blobs */}
-        <div style={{ position: "absolute", top: -100, right: -100, width: 300, height: 300, borderRadius: "50%", background: t.c.yellowSoft, filter: "blur(80px)", opacity: 0.6 }} />
-        <div style={{ position: "absolute", bottom: -50, left: -50, width: 250, height: 250, borderRadius: "50%", background: t.c.accentSoft, filter: "blur(60px)", opacity: 0.5 }} />
+        <div style={{ position: "absolute", top: -100, right: -100, width: 300, height: 300, borderRadius: "50%", background: t.c.yellow, filter: "blur(85px)", opacity: 0.15 }} />
+        <div style={{ position: "absolute", bottom: -50, left: -50, width: 250, height: 250, borderRadius: "50%", background: t.c.accent, filter: "blur(65px)", opacity: 0.15 }} />
 
         <div style={{ display: "flex", alignItems: "center", gap: 10, zIndex: 2 }}>
           <Icon name="sparkles" size={28} color={t.c.primary} />

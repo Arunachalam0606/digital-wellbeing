@@ -37,10 +37,37 @@ function MobParentFamily({ android = false }) {
           gap: 12,
         }}
       >
-        {/* Family hero card */}
-        <MobileCard pad={16} bg={t.c.primarySoft} border={false}>
+        <MobileCard pad={16} bg={t.c.primarySoft} border={false} style={{ position: "relative", overflow: "hidden" }}>
+          <svg
+            style={{
+              position: "absolute",
+              bottom: 0,
+              left: 0,
+              right: 0,
+              height: 48,
+              width: "100%",
+              opacity: 0.12,
+              pointerEvents: "none",
+              zIndex: 0,
+            }}
+            viewBox="0 0 100 40"
+            preserveAspectRatio="none"
+          >
+            <path
+              d="M0,40 C15,20 30,35 45,15 C60,35 75,10 90,30 C95,20 100,40 100,40"
+              fill="none"
+              stroke={t.c.primary}
+              strokeWidth="3.5"
+            />
+            <path
+              d="M0,40 C15,20 30,35 45,15 C60,35 75,10 90,30 C95,20 100,40 100,40 L100,40 L0,40 Z"
+              fill={t.c.primary}
+            />
+          </svg>
           <div
             style={{
+              position: "relative",
+              zIndex: 1,
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
@@ -457,6 +484,7 @@ function KidMobileCard({ kid }) {
 
 function QuickLink({ icon, label, value, sub, color }) {
   const t = useTokens();
+  const cTheme = color || t.c.primary;
   return (
     <div
       style={{
@@ -464,48 +492,81 @@ function QuickLink({ icon, label, value, sub, color }) {
         border: `1px solid ${t.c.border}`,
         borderRadius: 14,
         padding: 12,
+        position: "relative",
+        overflow: "hidden",
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-        <div
-          style={{
-            width: 26,
-            height: 26,
-            borderRadius: 8,
-            background: (color || t.c.primary) + "22",
-            color: color || t.c.primary,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Icon name={icon} size={14} />
-        </div>
-        <div
-          style={{
-            fontSize: 10.5,
-            color: t.c.textMute,
-            fontWeight: 600,
-            textTransform: "uppercase",
-            letterSpacing: ".05em",
-          }}
-        >
-          {label}
-        </div>
-      </div>
-      <div
+      {/* Sparkline background */}
+      <svg
         style={{
-          fontFamily: t.fontMono,
-          fontSize: 18,
-          fontWeight: 500,
-          marginTop: 8,
-          letterSpacing: "-.02em",
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: 22,
+          width: "100%",
+          opacity: t.dark ? 0.08 : 0.12,
+          pointerEvents: "none",
+          zIndex: 0,
         }}
+        viewBox="0 0 100 40"
+        preserveAspectRatio="none"
       >
-        {value}
-      </div>
-      <div style={{ fontSize: 10.5, color: t.c.textMute, marginTop: 2 }}>
-        {sub}
+        <path
+          d="M0,40 C15,15 35,35 50,10 C70,30 85,5 100,40"
+          fill="none"
+          stroke={cTheme}
+          strokeWidth="3.5"
+        />
+        <path
+          d="M0,40 C15,15 35,35 50,10 C70,30 85,5 100,40 L100,40 L0,40 Z"
+          fill={cTheme}
+        />
+      </svg>
+
+      <div style={{ position: "relative", zIndex: 1 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <div
+            style={{
+              width: 26,
+              height: 26,
+              borderRadius: 8,
+              background: cTheme + "22",
+              color: cTheme,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Icon name={icon} size={14} />
+          </div>
+          <div
+            style={{
+              fontSize: 10.5,
+              color: t.c.textMute,
+              fontWeight: 600,
+              textTransform: "uppercase",
+              letterSpacing: ".05em",
+            }}
+          >
+            {label}
+          </div>
+        </div>
+        <div
+          style={{
+            fontFamily: t.fontMono,
+            fontSize: 18,
+            fontWeight: 500,
+            marginTop: 8,
+            letterSpacing: "-.02em",
+            color: t.c.text,
+          }}
+        >
+          {value}
+        </div>
+        <div style={{ fontSize: 10.5, color: t.c.textMute, marginTop: 2 }}>
+          {sub}
+        </div>
       </div>
     </div>
   );
@@ -2977,7 +3038,7 @@ window.MobParentNotifLog = MobParentNotifLog;
 function MobOnboardLink({ android = false, onNext, onBack }) {
   const t = useTokens();
   return (
-    <MobileScreen android={android} scroll={false}>
+    <MobileScreen android={android} scroll={false} bg={`linear-gradient(135deg, ${t.c.primarySoft} 0%, ${t.c.surface2} 100%)`}>
       <div
         style={{
           padding: "16px 24px 24px",
@@ -2986,9 +3047,15 @@ function MobOnboardLink({ android = false, onNext, onBack }) {
           flexDirection: "column",
           justifyContent: "space-between",
           boxSizing: "border-box",
+          position: "relative",
+          overflow: "hidden",
         }}
       >
-        <div>
+        {/* Subtle glow circles */}
+        <div style={{ position: "absolute", top: -80, right: -80, width: 160, height: 160, borderRadius: "50%", background: t.c.primary, filter: "blur(50px)", opacity: 0.12 }} />
+        <div style={{ position: "absolute", bottom: -60, left: -60, width: 140, height: 140, borderRadius: "50%", background: t.c.accent, filter: "blur(40px)", opacity: 0.12 }} />
+        <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", height: "100%", justifyContent: "space-between" }}>
+          <div>
           {/* Step dots */}
           <div
             style={{
@@ -3098,6 +3165,7 @@ function MobOnboardLink({ android = false, onNext, onBack }) {
             I've scanned it
           </button>
         </div>
+        </div>
       </div>
     </MobileScreen>
   );
@@ -3114,7 +3182,7 @@ function MobLogin({ android = false, onLogin }) {
   };
 
   return (
-    <MobileScreen android={android} scroll={false}>
+    <MobileScreen android={android} scroll={false} bg={`linear-gradient(135deg, ${t.c.primarySoft} 0%, ${t.c.surface2} 100%)`}>
       {/* Decorative gradient canvas background wrapper */}
       <div style={{
         padding: "24px",
@@ -3123,13 +3191,12 @@ function MobLogin({ android = false, onLogin }) {
         flexDirection: "column",
         justifyContent: "space-between",
         boxSizing: "border-box",
-        background: `linear-gradient(135deg, ${t.c.primarySoft} 0%, ${t.c.surface2} 100%)`,
         position: "relative",
         overflow: "hidden",
       }}>
-        {/* Subtle blur circles */}
-        <div style={{ position: "absolute", top: -80, right: -80, width: 180, height: 180, borderRadius: "50%", background: t.c.yellowSoft, filter: "blur(50px)", opacity: 0.6 }} />
-        <div style={{ position: "absolute", bottom: -60, left: -60, width: 160, height: 160, borderRadius: "50%", background: t.c.accentSoft, filter: "blur(40px)", opacity: 0.5 }} />
+        {/* Subtle blur circles using vibrant primary and accent colors with opacity */}
+        <div style={{ position: "absolute", top: -80, right: -80, width: 180, height: 180, borderRadius: "50%", background: t.c.yellow, filter: "blur(55px)", opacity: 0.15 }} />
+        <div style={{ position: "absolute", bottom: -60, left: -60, width: 160, height: 160, borderRadius: "50%", background: t.c.accent, filter: "blur(45px)", opacity: 0.15 }} />
 
         <div style={{ textAlign: "center", marginTop: 24, zIndex: 2 }}>
           <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
@@ -3274,10 +3341,14 @@ function MobLogin({ android = false, onLogin }) {
 function MobOnboardWelcome({ android = false, onNext }) {
   const t = useTokens();
   return (
-    <MobileScreen android={android} scroll={false}>
-      <div style={{ padding: "16px 24px 24px", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", boxSizing: "border-box" }}>
-        <div>
-          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 20 }}>
+    <MobileScreen android={android} scroll={false} bg={`linear-gradient(135deg, ${t.c.primarySoft} 0%, ${t.c.surface2} 100%)`}>
+      <div style={{ padding: "16px 24px 24px", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", boxSizing: "border-box", position: "relative", overflow: "hidden" }}>
+        {/* Subtle glow circles */}
+        <div style={{ position: "absolute", top: -80, right: -80, width: 160, height: 160, borderRadius: "50%", background: t.c.primary, filter: "blur(50px)", opacity: 0.12 }} />
+        <div style={{ position: "absolute", bottom: -60, left: -60, width: 140, height: 140, borderRadius: "50%", background: t.c.accent, filter: "blur(40px)", opacity: 0.12 }} />
+        <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", height: "100%", justifyContent: "space-between" }}>
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 20 }}>
             <div style={{ width: 24, height: 4, background: t.c.primary, borderRadius: 2 }} />
             <div style={{ width: 24, height: 4, background: t.c.surface2, borderRadius: 2 }} />
             <div style={{ width: 24, height: 4, background: t.c.surface2, borderRadius: 2 }} />
@@ -3327,6 +3398,7 @@ function MobOnboardWelcome({ android = false, onNext }) {
             ))}
           </div>
         </div>
+        </div>
       </div>
     </MobileScreen>
   );
@@ -3339,9 +3411,13 @@ function MobOnboardCreateProfile({ android = false, onNext, onBack }) {
   const [deviceType, setDeviceType] = useState("iPhone");
 
   return (
-    <MobileScreen android={android} scroll={false}>
-      <div style={{ padding: "16px 24px 24px", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", boxSizing: "border-box" }}>
-        <div>
+    <MobileScreen android={android} scroll={false} bg={`linear-gradient(135deg, ${t.c.primarySoft} 0%, ${t.c.surface2} 100%)`}>
+      <div style={{ padding: "16px 24px 24px", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", boxSizing: "border-box", position: "relative", overflow: "hidden" }}>
+        {/* Subtle glow circles */}
+        <div style={{ position: "absolute", top: -80, right: -80, width: 160, height: 160, borderRadius: "50%", background: t.c.primary, filter: "blur(50px)", opacity: 0.12 }} />
+        <div style={{ position: "absolute", bottom: -60, left: -60, width: 140, height: 140, borderRadius: "50%", background: t.c.accent, filter: "blur(40px)", opacity: 0.12 }} />
+        <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", height: "100%", justifyContent: "space-between" }}>
+          <div>
           <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 20 }}>
             <div style={{ width: 24, height: 4, background: t.c.primary, borderRadius: 2 }} />
             <div style={{ width: 24, height: 4, background: t.c.primary, borderRadius: 2 }} />
@@ -3471,6 +3547,7 @@ function MobOnboardCreateProfile({ android = false, onNext, onBack }) {
             Create profile
           </button>
         </div>
+        </div>
       </div>
     </MobileScreen>
   );
@@ -3497,8 +3574,12 @@ function MobConnectingProgress({ android = false, onNext }) {
   }, []);
 
   return (
-    <MobileScreen android={android} scroll={false}>
-      <div style={{ padding: "16px 24px 24px", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", boxSizing: "border-box" }}>
+    <MobileScreen android={android} scroll={false} bg={`linear-gradient(135deg, ${t.c.primarySoft} 0%, ${t.c.surface2} 100%)`}>
+      <div style={{ padding: "16px 24px 24px", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", boxSizing: "border-box", position: "relative", overflow: "hidden" }}>
+        {/* Subtle glow circles */}
+        <div style={{ position: "absolute", top: -80, right: -80, width: 160, height: 160, borderRadius: "50%", background: t.c.primary, filter: "blur(50px)", opacity: 0.12 }} />
+        <div style={{ position: "absolute", bottom: -60, left: -60, width: 140, height: 140, borderRadius: "50%", background: t.c.accent, filter: "blur(40px)", opacity: 0.12 }} />
+        <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", height: "100%", justifyContent: "space-between" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 20 }}>
           <div style={{ width: 24, height: 4, background: t.c.primary, borderRadius: 2 }} />
           <div style={{ width: 24, height: 4, background: t.c.primary, borderRadius: 2 }} />
@@ -3524,6 +3605,7 @@ function MobConnectingProgress({ android = false, onNext }) {
           </div>
           <span style={{ fontSize: 11, fontFamily: t.fontMono, color: t.c.textMute }}>{pct}% configured</span>
         </div>
+        </div>
       </div>
     </MobileScreen>
   );
@@ -3535,9 +3617,13 @@ function MobOnboardConfigure({ android = false, onNext }) {
   const [socialCap, setSocialCap] = useState(60);
 
   return (
-    <MobileScreen android={android} scroll={false}>
-      <div style={{ padding: "16px 24px 24px", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", boxSizing: "border-box" }}>
-        <div>
+    <MobileScreen android={android} scroll={false} bg={`linear-gradient(135deg, ${t.c.primarySoft} 0%, ${t.c.surface2} 100%)`}>
+      <div style={{ padding: "16px 24px 24px", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", boxSizing: "border-box", position: "relative", overflow: "hidden" }}>
+        {/* Subtle glow circles */}
+        <div style={{ position: "absolute", top: -80, right: -80, width: 160, height: 160, borderRadius: "50%", background: t.c.primary, filter: "blur(50px)", opacity: 0.12 }} />
+        <div style={{ position: "absolute", bottom: -60, left: -60, width: 140, height: 140, borderRadius: "50%", background: t.c.accent, filter: "blur(40px)", opacity: 0.12 }} />
+        <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", height: "100%", justifyContent: "space-between" }}>
+          <div>
           <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 20 }}>
             <div style={{ width: 24, height: 4, background: t.c.primary, borderRadius: 2 }} />
             <div style={{ width: 24, height: 4, background: t.c.primary, borderRadius: 2 }} />
@@ -3619,6 +3705,7 @@ function MobOnboardConfigure({ android = false, onNext }) {
         >
           All set! Finish setup
         </button>
+        </div>
       </div>
     </MobileScreen>
   );

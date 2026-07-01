@@ -533,6 +533,69 @@ function App() {
             </div>
           </DCArtboard>
           <DCArtboard
+            id="m-settings-and"
+            label="Settings · Android"
+            width={phoneAB.width}
+            height={phoneAB.height}
+          >
+            <div
+              key={key}
+              style={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <PhoneFrame android>
+                <MobParentSettings android />
+              </PhoneFrame>
+            </div>
+          </DCArtboard>
+          <DCArtboard
+            id="m-settings-manage-children"
+            label="Settings · Manage Children"
+            width={phoneAB.width}
+            height={phoneAB.height}
+          >
+            <div
+              key={key}
+              style={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <PhoneFrame>
+                <MobParentManageChildren />
+              </PhoneFrame>
+            </div>
+          </DCArtboard>
+          <DCArtboard
+            id="m-settings-manage-devices"
+            label="Settings · Manage Devices"
+            width={phoneAB.width}
+            height={phoneAB.height}
+          >
+            <div
+              key={key}
+              style={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <PhoneFrame>
+                <MobParentManageDevices />
+              </PhoneFrame>
+            </div>
+          </DCArtboard>
+          <DCArtboard
             id="m-onboard-ios"
             label="Onboarding · interactive click-through demo"
             width={phoneAB.width}

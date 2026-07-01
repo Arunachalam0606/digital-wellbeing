@@ -276,3 +276,98 @@ function SettingsToggleRow({ icon, label, sub, on, last }) {
 }
 
 window.MobParentSettings = MobParentSettings;
+
+function MobParentManageChildren({ android = false, onBack }) {
+  const t = useTokens();
+  return (
+    <MobileScreen android={android} scroll={true}>
+      <MobileHeader title="Manage Children" onBack={onBack} back="Settings" />
+      <div style={{ padding: "0 18px", display: "flex", flexDirection: "column", gap: 16 }}>
+        {[
+          { name: "Maya Mitchell", age: 11, devices: 2, avatar: "Maya", color: t.c.primary },
+          { name: "Jaden Mitchell", age: 8, devices: 1, avatar: "Jaden", color: t.c.accent }
+        ].map((child, idx) => (
+          <MobileCard key={idx} pad={16}>
+            <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 16 }}>
+              <Avatar name={child.name} size={48} color={child.color} />
+              <div style={{ flex: 1 }}>
+                <div style={{ fontWeight: 600, fontSize: 16 }}>{child.name}</div>
+                <div style={{ fontSize: 12, color: t.c.textMute, marginTop: 2 }}>Age {child.age} · {child.devices} connected devices</div>
+              </div>
+              <button style={{ background: t.c.surface2, border: "none", borderRadius: 8, padding: "6px 12px", fontSize: 12, fontWeight: 600, color: t.c.text, fontFamily: "inherit", cursor: "pointer" }}>
+                Edit
+              </button>
+            </div>
+            <div style={{ height: 1, background: t.c.border, marginBottom: 14 }} />
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5 }}>
+                <span style={{ color: t.c.textMute }}>Screen Time Daily Limit</span>
+                <strong style={{ color: t.c.text }}>2h 30m</strong>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5 }}>
+                <span style={{ color: t.c.textMute }}>Bedtime Routine Lock</span>
+                <strong style={{ color: t.c.primary }}>9:00 PM – 7:00 AM</strong>
+              </div>
+            </div>
+          </MobileCard>
+        ))}
+      </div>
+    </MobileScreen>
+  );
+}
+
+function MobParentManageDevices({ android = false, onBack }) {
+  const t = useTokens();
+  const [paused, setPaused] = React.useState({ "maya-phone": false, "jaden-tab": true });
+
+  const devices = [
+    { id: "maya-phone", name: "Maya's iPhone 14", type: "iPhone", status: "Active limits", color: t.c.primary },
+    { id: "maya-ipad", name: "Maya's iPad Pro", type: "iPad", status: "Quiet hours active", color: t.c.primary },
+    { id: "jaden-tab", name: "Jaden's Android Tab", type: "Tablet", status: "Paused by Parent", color: t.c.accent }
+  ];
+
+  return (
+    <MobileScreen android={android} scroll={true}>
+      <MobileHeader title="Manage Devices" onBack={onBack} back="Settings" />
+      <div style={{ padding: "0 18px", display: "flex", flexDirection: "column", gap: 12 }}>
+        {devices.map((device) => {
+          const isPaused = paused[device.id];
+          return (
+            <MobileCard key={device.id} pad={16}>
+              <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                <div style={{ width: 40, height: 40, borderRadius: 10, background: isPaused ? t.c.dangerSoft : t.c.primarySoft, display: "flex", alignItems: "center", justifyItems: "center", justifyContent: "center", color: isPaused ? t.c.danger : t.c.primary }}>
+                  <Icon name="phone" size={18} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontWeight: 600, fontSize: 14.5 }}>{device.name}</div>
+                  <div style={{ fontSize: 12, color: isPaused ? t.c.danger : t.c.textMute, marginTop: 2 }}>
+                    {isPaused ? "Connection Paused" : device.status}
+                  </div>
+                </div>
+                <button
+                  onClick={() => setPaused({ ...paused, [device.id]: !isPaused })}
+                  style={{
+                    background: isPaused ? t.c.danger : t.c.surface2,
+                    border: "none",
+                    borderRadius: 8,
+                    padding: "8px 14px",
+                    fontSize: 12,
+                    fontWeight: 600,
+                    color: isPaused ? "white" : t.c.text,
+                    fontFamily: "inherit",
+                    cursor: "pointer",
+                  }}
+                >
+                  {isPaused ? "Resume" : "Pause"}
+                </button>
+              </div>
+            </MobileCard>
+          );
+        })}
+      </div>
+    </MobileScreen>
+  );
+}
+
+window.MobParentManageChildren = MobParentManageChildren;
+window.MobParentManageDevices = MobParentManageDevices;
