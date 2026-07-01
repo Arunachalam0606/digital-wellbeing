@@ -1651,3 +1651,117 @@ function AppLeaderboard({ apps }) {
 }
 window.AppLeaderboard = AppLeaderboard;
 window.ChildDetail = ChildDetail;
+
+function AICoachWeb() {
+  const t = useTokens();
+  const tips = [
+    {
+      category: "ROUTINE",
+      title: "TikTok Homework Peak",
+      desc: "Maya's pickups on TikTok spike between 4:00 PM and 6:00 PM. She unlocks TikTok 8 times during this period.",
+      action: "Pause TikTok during homework hours",
+      time: "Just now",
+      color: t.c.accent,
+      bg: t.c.accentSoft,
+    },
+    {
+      category: "SLEEP",
+      title: "Late night check-ins",
+      desc: "Jaden opened Spotify 3 times after 10:30 PM last night. A relaxing audio check is fine, but it might interfere with deep sleep.",
+      action: "Set Music schedule lock to 10:30 PM",
+      time: "2 hours ago",
+      color: t.c.primary,
+      bg: t.c.primarySoft,
+    },
+    {
+      category: "BALANCE",
+      title: "Reclaimed screen time",
+      desc: "Excellent progress! The family reclaimed 4h 12m this week. Streaks are at a record high.",
+      action: "Share praise with Maya & Jaden",
+      time: "Yesterday",
+      color: t.c.yellowText,
+      bg: t.c.yellowSoft,
+    }
+  ];
+
+  return (
+    <WebShell role="parent" active="overview" title="AI Coach" subtitle="Personalized family screen tips & trends">
+      <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 18 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+          <Card>
+            <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
+              <div style={{ width: 48, height: 48, borderRadius: "50%", background: t.c.primarySoft, color: t.c.primary, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <Icon name="sparkles" size={24} />
+              </div>
+              <div>
+                <h3 style={{ fontFamily: t.fontSerif, fontSize: 20, fontWeight: 500, margin: 0 }}>Atrium AI Assistant</h3>
+                <p style={{ fontSize: 13, color: t.c.textMute, margin: "4px 0 0" }}>Analyzing patterns for Maya & Jaden. Updated 10 minutes ago.</p>
+              </div>
+            </div>
+          </Card>
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+            {tips.slice(0, 2).map((tip, idx) => (
+              <Card key={idx}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+                  <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 100, background: tip.bg, color: tip.color, letterSpacing: ".05em" }}>
+                    {tip.category}
+                  </span>
+                  <span style={{ fontSize: 11, color: t.c.textMute }}>{tip.time}</span>
+                </div>
+                <h4 style={{ fontSize: 16, fontWeight: 600, margin: "0 0 8px" }}>{tip.title}</h4>
+                <p style={{ fontSize: 13, color: t.c.textMute, lineHeight: 1.5, margin: "0 0 16px" }}>{tip.desc}</p>
+                <Button variant="secondary" size="sm" icon="arrowRight" style={{ width: "100%", justifyContent: "center" }}>
+                  {tip.action}
+                </Button>
+              </Card>
+            ))}
+          </div>
+
+          <Card>
+            <h4 style={{ fontFamily: t.fontSerif, fontSize: 18, fontWeight: 500, margin: "0 0 12px" }}>Habit Analysis Graph</h4>
+            <div style={{ height: 160, display: "flex", alignItems: "flex-end", gap: 12, padding: "10px 0" }}>
+              {[35, 45, 60, 25, 40, 20, 15].map((val, idx) => (
+                <div key={idx} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
+                  <div style={{ width: "100%", height: val * 2, background: idx === 2 ? t.c.accent : t.c.primarySoft, borderRadius: 4 }} />
+                  <span style={{ fontSize: 10, color: t.c.textMute }}>{["M", "T", "W", "T", "F", "S", "S"][idx]}</span>
+                </div>
+              ))}
+            </div>
+            <div style={{ fontSize: 12, color: t.c.textMute, marginTop: 10, textAlign: "center" }}>
+              Spike on Wednesday homework hours due to TikTok usage.
+            </div>
+          </Card>
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+          <Card>
+            <h4 style={{ fontFamily: t.fontSerif, fontSize: 18, fontWeight: 500, margin: "0 0 12px" }}>Family Streak</h4>
+            <div style={{ textAlign: "center", padding: "10px 0" }}>
+              <span style={{ fontSize: 48 }}>🔥</span>
+              <div style={{ fontSize: 24, fontWeight: "bold", margin: "8px 0 4px" }}>12 Days</div>
+              <div style={{ fontSize: 12.5, color: t.c.textMute }}>Maya and Jaden both hit their goals.</div>
+            </div>
+          </Card>
+
+          <Card>
+            <h4 style={{ fontFamily: t.fontSerif, fontSize: 18, fontWeight: 500, margin: "0 0 12px" }}>Coach Tips Checklist</h4>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {[
+                "Talk to Maya about Wednesday's streak",
+                "Review Jaden's late night music routine",
+                "Approve pending Roblox time request"
+              ].map((item, idx) => (
+                <div key={idx} style={{ display: "flex", gap: 10, alignItems: "center" }}>
+                  <input type="checkbox" defaultChecked={idx === 0} style={{ accentColor: t.c.primary }} />
+                  <span style={{ fontSize: 12.5, color: t.c.text }}>{item}</span>
+                </div>
+              ))}
+            </div>
+          </Card>
+        </div>
+      </div>
+    </WebShell>
+  );
+}
+window.AICoachWeb = AICoachWeb;

@@ -1,9 +1,12 @@
 // Child mobile screens — Today (home), Apps list, Streak/Awards, Request more time, Locked app
 
+const { useState, useEffect, useMemo, useRef } = React;
+
 const childTabs = [
   { id: "today", label: "Today", icon: "home" },
   { id: "apps", label: "Apps", icon: "grid" },
   { id: "streak", label: "Streak", icon: "flame" },
+  { id: "rewards", label: "Rewards", icon: "sparkles" },
   { id: "ask", label: "Ask", icon: "message" },
 ];
 
@@ -1194,3 +1197,81 @@ function MobChildLocked({ android = false }) {
 }
 window.MobChildLocked = MobChildLocked;
 window.childTabs = childTabs;
+
+function MobChildRewards({ android = false }) {
+  const t = useTokens();
+  const [points, setPoints] = useState(120);
+
+  const rewards = [
+    { name: "30 min extra gaming", cost: 50, icon: "play", desc: "Instantly approve 30 min of Games" },
+    { name: "Bedtime extension 1h", cost: 100, icon: "lock", desc: "Stay up until 10:00 PM tonight" },
+    { name: "Pizza Movie Night", cost: 200, icon: "sparkles", desc: "Send pizza request to Parent" }
+  ];
+
+  const handleRedeem = (name, cost) => {
+    if (points < cost) {
+      alert("Not enough points!");
+      return;
+    }
+    alert(`Redeemed: ${name}!`);
+    setPoints(points - cost);
+  };
+
+  return (
+    <MobileScreen android={android} scroll={true} tab={<MobileTabBar items={childTabs} active="rewards" />}>
+      <MobileHeader
+        title="Rewards Store"
+        eyebrow="Earn & Redeem"
+        action={<span style={{ fontWeight: 600, fontSize: 13, background: t.c.yellowSoft, color: t.c.yellowText, padding: "4px 10px", borderRadius: 8 }}>🪙 {points} pts</span>}
+      />
+
+      <div style={{ padding: "0 18px", display: "flex", flexDirection: "column", gap: 14 }}>
+        {/* Points Banner */}
+        <MobileCard bg={t.c.primarySoft} border={false} pad={18}>
+          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+            <div style={{ width: 44, height: 44, borderRadius: "50%", background: t.c.primary, color: "white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20 }}>
+              🪙
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 15, fontWeight: 700, color: t.c.primary }}>You're doing great!</div>
+              <div style={{ fontSize: 12, color: t.c.text, marginTop: 4 }}>Earn points by staying under limits and completing focus presets.</div>
+            </div>
+          </div>
+        </MobileCard>
+
+        <div style={{ fontSize: 13, fontWeight: 600, marginTop: 6, color: t.c.textMute, textTransform: "uppercase", letterSpacing: ".05em" }}>Available Rewards</div>
+
+        {rewards.map((r, idx) => (
+          <MobileCard key={idx} pad={14}>
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <div style={{ width: 36, height: 36, borderRadius: 10, background: t.c.surface2, display: "flex", alignItems: "center", justifyContent: "center", color: t.c.primary }}>
+                <Icon name={r.icon} size={16} />
+              </div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontWeight: 600, fontSize: 13.5 }}>{r.name}</div>
+                <div style={{ fontSize: 11, color: t.c.textMute, marginTop: 2 }}>{r.desc}</div>
+              </div>
+              <button
+                onClick={() => handleRedeem(r.name, r.cost)}
+                style={{
+                  background: t.c.primarySoft,
+                  color: t.c.primary,
+                  border: "none",
+                  borderRadius: 8,
+                  padding: "8px 12px",
+                  fontSize: 12,
+                  fontWeight: 600,
+                  fontFamily: "inherit",
+                  cursor: "pointer",
+                }}
+              >
+                {r.cost} pts
+              </button>
+            </div>
+          </MobileCard>
+        ))}
+      </div>
+    </MobileScreen>
+  );
+}
+window.MobChildRewards = MobChildRewards;

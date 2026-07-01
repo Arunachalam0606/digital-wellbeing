@@ -146,6 +146,16 @@ function App() {
               <Schedules />
             </div>
           </DCArtboard>
+          <DCArtboard
+            id="coach-web"
+            label="AI Coach · personalized screen-time coach insights & tips"
+            width={1440}
+            height={1080}
+          >
+            <div key={key} style={{ width: "100%", height: "100%" }}>
+              <AICoachWeb />
+            </div>
+          </DCArtboard>
         </DCSection>
 
         {/* ────────────────  Web — Personal & Reports  ──────────────── */}
@@ -464,7 +474,7 @@ function App() {
           </DCArtboard>
           <DCArtboard
             id="m-onboard-ios"
-            label="Onboarding · link a child device"
+            label="Onboarding · interactive click-through demo"
             width={phoneAB.width}
             height={phoneAB.height}
           >
@@ -480,6 +490,189 @@ function App() {
             >
               <PhoneFrame>
                 <MobOnboarding />
+              </PhoneFrame>
+            </div>
+          </DCArtboard>
+
+          <DCArtboard
+            id="m-parent-coach-screen"
+            label="AI Coach · insights & tips"
+            width={phoneAB.width}
+            height={phoneAB.height}
+          >
+            <div
+              key={key}
+              style={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <PhoneFrame>
+                <MobParentCoach />
+              </PhoneFrame>
+            </div>
+          </DCArtboard>
+
+          <DCArtboard
+            id="m-parent-bypass-hub-screen"
+            label="Bypass Hub · time approvals"
+            width={phoneAB.width}
+            height={phoneAB.height}
+          >
+            <div
+              key={key}
+              style={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <PhoneFrame>
+                <MobParentBypassHub />
+              </PhoneFrame>
+            </div>
+          </DCArtboard>
+        </DCSection>
+
+        {/* ────────────────  Mobile — Onboarding & Auth  ──────────────── */}
+        <DCSection
+          id="mob-onboard-auth"
+          title="Mobile — Onboarding & Auth"
+          subtitle="First-time setup steps, sign-in, and pairing process side-by-side."
+        >
+          <DCArtboard
+            id="m-login-screen"
+            label="Login · email & social oauth"
+            width={phoneAB.width}
+            height={phoneAB.height}
+          >
+            <div
+              key={key}
+              style={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <PhoneFrame>
+                <MobLogin />
+              </PhoneFrame>
+            </div>
+          </DCArtboard>
+
+          <DCArtboard
+            id="m-onboard-welcome-screen"
+            label="Onboarding 1 · welcome & role"
+            width={phoneAB.width}
+            height={phoneAB.height}
+          >
+            <div
+              key={key}
+              style={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <PhoneFrame>
+                <MobOnboardWelcome />
+              </PhoneFrame>
+            </div>
+          </DCArtboard>
+
+          <DCArtboard
+            id="m-onboard-create-screen"
+            label="Onboarding 2 · child profile"
+            width={phoneAB.width}
+            height={phoneAB.height}
+          >
+            <div
+              key={key}
+              style={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <PhoneFrame>
+                <MobOnboardCreateProfile />
+              </PhoneFrame>
+            </div>
+          </DCArtboard>
+
+          <DCArtboard
+            id="m-onboard-link-screen"
+            label="Onboarding 3 · scan QR code"
+            width={phoneAB.width}
+            height={phoneAB.height}
+          >
+            <div
+              key={key}
+              style={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <PhoneFrame>
+                <MobOnboardLink />
+              </PhoneFrame>
+            </div>
+          </DCArtboard>
+
+          <DCArtboard
+            id="m-onboard-connecting-screen"
+            label="Onboarding 3b · connecting progress"
+            width={phoneAB.width}
+            height={phoneAB.height}
+          >
+            <div
+              key={key}
+              style={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <PhoneFrame>
+                <MobConnectingProgress />
+              </PhoneFrame>
+            </div>
+          </DCArtboard>
+
+          <DCArtboard
+            id="m-onboard-configure-screen"
+            label="Onboarding 4 · initial rules"
+            width={phoneAB.width}
+            height={phoneAB.height}
+          >
+            <div
+              key={key}
+              style={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <PhoneFrame>
+                <MobOnboardConfigure />
               </PhoneFrame>
             </div>
           </DCArtboard>
@@ -635,6 +828,27 @@ function App() {
             >
               <PhoneFrame android>
                 <MobChildLocked android />
+              </PhoneFrame>
+            </div>
+          </DCArtboard>
+          <DCArtboard
+            id="m-c-rewards"
+            label="⑤ Rewards · gamified store"
+            width={phoneAB.width}
+            height={phoneAB.height}
+          >
+            <div
+              key={key}
+              style={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <PhoneFrame>
+                <MobChildRewards />
               </PhoneFrame>
             </div>
           </DCArtboard>
