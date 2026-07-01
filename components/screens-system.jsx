@@ -76,37 +76,44 @@ function BrandSystem() {
             gap: 16,
           }}
         >
-          {Object.entries(palettes).map(([key, p]) => (
-            <div
-              key={key}
-              style={{
-                border: `1px solid ${t.c.border}`,
-                borderRadius: 14,
-                overflow: "hidden",
-                background: p.bg,
-              }}
-            >
+          {Object.entries(palettes).map(([key, p]) => {
+            const activeColors = t.dark ? p.dark : p.light;
+            return (
               <div
+                key={key}
                 style={{
-                  height: 80,
-                  display: "grid",
-                  gridTemplateColumns: "1fr 1fr",
-                  gap: 0,
+                  border: `1px solid ${t.c.border}`,
+                  borderRadius: 14,
+                  overflow: "hidden",
+                  background: activeColors.bg,
                 }}
               >
-                <div style={{ background: p.primary }} />
-                <div style={{ display: "grid", gridTemplateRows: "1fr 1fr" }}>
-                  <div style={{ background: p.accent }} />
-                  <div style={{ background: p.yellow }} />
+                <div
+                  style={{
+                    height: 80,
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr",
+                    gap: 0,
+                  }}
+                >
+                  <div style={{ background: activeColors.primary }} />
+                  <div style={{ display: "grid", gridTemplateRows: "1fr 1fr" }}>
+                    <div style={{ background: activeColors.accent }} />
+                    <div style={{ background: activeColors.yellow }} />
+                  </div>
                 </div>
-              </div>
-              <div style={{ padding: 12 }}>
-                <div style={{ fontWeight: 600, fontSize: 13, marginBottom: 8 }}>
-                  {p.name}
-                </div>
-                <div style={{ display: "flex", gap: 4 }}>
-                  {[p.primary, p.accent, p.yellow, p.lavender, p.blue].map(
-                    (c, i) => (
+                <div style={{ padding: 12 }}>
+                  <div style={{ fontWeight: 600, fontSize: 13, marginBottom: 8 }}>
+                    {p.name}
+                  </div>
+                  <div style={{ display: "flex", gap: 4 }}>
+                    {[
+                      activeColors.primary,
+                      activeColors.accent,
+                      activeColors.yellow,
+                      activeColors.lavender,
+                      activeColors.blue,
+                    ].map((c, i) => (
                       <div
                         key={i}
                         title={c}
@@ -118,12 +125,12 @@ function BrandSystem() {
                           border: `1px solid rgba(0,0,0,.06)`,
                         }}
                       />
-                    ),
-                  )}
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </Card>
 

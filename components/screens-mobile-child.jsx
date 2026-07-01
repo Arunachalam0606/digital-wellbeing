@@ -1011,7 +1011,7 @@ function MobChildLocked({ android = false }) {
         <div style={{ display: "flex", justifyContent: "flex-end" }}>
           <button
             style={{
-              background: "rgba(255,255,255,.7)",
+              background: t.c.surface2,
               border: `1px solid ${t.c.border}`,
               borderRadius: 10,
               padding: "6px 12px",
@@ -1049,8 +1049,8 @@ function MobChildLocked({ android = false }) {
                 position: "absolute",
                 inset: 0,
                 borderRadius: "50%",
-                background: "white",
-                boxShadow: "0 10px 40px rgba(40,30,20,.08)",
+                background: t.c.surface,
+                boxShadow: t.dark ? "none" : "0 10px 40px rgba(40,30,20,.08)",
               }}
             />
             <div
@@ -1098,7 +1098,7 @@ function MobChildLocked({ android = false }) {
           <div
             style={{
               marginTop: 24,
-              background: "white",
+              background: t.c.surface,
               borderRadius: 18,
               padding: 18,
               border: `1px solid ${t.c.border}`,

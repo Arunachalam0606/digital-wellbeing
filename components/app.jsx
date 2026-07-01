@@ -25,7 +25,7 @@ function PhoneFrame({ children, android = false }) {
           padding: 24,
         }}
       >
-        <AndroidDevice width={412} height={892}>
+        <AndroidDevice width={412} height={892} dark={t.dark}>
           {children}
         </AndroidDevice>
       </div>
