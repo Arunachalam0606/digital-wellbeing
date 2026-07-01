@@ -2462,3 +2462,267 @@ window.WebOnboardWizard = WebOnboardWizard;
 window.WebOnboardStep1Preview = WebOnboardStep1Preview;
 window.WebOnboardStep2Preview = WebOnboardStep2Preview;
 window.WebOnboardStep3Preview = WebOnboardStep3Preview;
+
+function WebParentSettings() {
+  const t = useTokens();
+  const [activeTab, setActiveTab] = React.useState("profile");
+
+  const tabs = [
+    { id: "profile", label: "Account Profile", icon: "users" },
+    { id: "family", label: "Family & Devices", icon: "phone" },
+    { id: "billing", label: "Billing & Plan", icon: "chart" },
+    { id: "notifications", label: "Notification Alerts", icon: "bell" },
+    { id: "privacy", label: "Privacy & Security", icon: "shieldCheck" },
+  ];
+
+  return (
+    <WebShell
+      role="parent"
+      active=""
+      title="Parent Settings"
+      subtitle="Manage your family account, billing, and global settings"
+    >
+      <div style={{ display: "grid", gridTemplateColumns: "220px 1fr", gap: 32, padding: "0 32px 32px", boxSizing: "border-box" }}>
+        
+        {/* Left Tabs Nav */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+          {tabs.map((tab) => {
+            const isAct = tab.id === activeTab;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  padding: "10px 14px",
+                  borderRadius: 10,
+                  background: isAct ? t.c.primarySoft : "transparent",
+                  color: isAct ? t.c.primary : t.c.text,
+                  fontWeight: isAct ? 600 : 500,
+                  fontSize: 13.5,
+                  border: "none",
+                  cursor: "pointer",
+                  textAlign: "left",
+                  fontFamily: "inherit",
+                }}
+              >
+                <Icon name={tab.icon} size={15} color={isAct ? t.c.primary : t.c.textMute} />
+                <span>{tab.label}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Right Tab Content */}
+        <div style={{ background: t.c.surface, border: `1px solid ${t.c.border}`, borderRadius: 20, padding: 32, boxShadow: "0 4px 20px rgba(0,0,0,.01)" }}>
+          {activeTab === "profile" && (
+            <div>
+              <h3 style={{ fontFamily: t.fontSerif, fontSize: 22, fontWeight: 500, margin: "0 0 8px" }}>Account Profile</h3>
+              <p style={{ fontSize: 13, color: t.c.textMute, margin: "0 0 24px" }}>Manage your parent administration credentials</p>
+
+              <div style={{ display: "flex", alignItems: "center", gap: 20, marginBottom: 32 }}>
+                <Avatar name="Sarah Mitchell" size={64} color={t.c.primary} />
+                <div>
+                  <button style={{ background: t.c.primarySoft, color: t.c.primary, border: "none", padding: "8px 16px", borderRadius: 8, fontWeight: 600, fontSize: 12.5, fontFamily: "inherit", cursor: "pointer" }}>
+                    Change Avatar
+                  </button>
+                  <div style={{ fontSize: 11, color: t.c.textMute, marginTop: 6 }}>JPG or PNG. Max size of 800K.</div>
+                </div>
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 20 }}>
+                <div>
+                  <label style={{ fontSize: 11, fontWeight: 600, color: t.c.textMute, textTransform: "uppercase", display: "block", marginBottom: 8 }}>Parent Name</label>
+                  <input
+                    type="text"
+                    defaultValue="Sarah Mitchell"
+                    style={{
+                      width: "100%",
+                      padding: "12px 14px",
+                      borderRadius: 10,
+                      background: t.c.bg,
+                      border: `1px solid ${t.c.border}`,
+                      color: t.c.text,
+                      fontSize: 14,
+                      fontFamily: "inherit",
+                      boxSizing: "border-box",
+                    }}
+                  />
+                </div>
+                <div>
+                  <label style={{ fontSize: 11, fontWeight: 600, color: t.c.textMute, textTransform: "uppercase", display: "block", marginBottom: 8 }}>Email Address</label>
+                  <input
+                    type="email"
+                    defaultValue="sarah.m@gmail.com"
+                    style={{
+                      width: "100%",
+                      padding: "12px 14px",
+                      borderRadius: 10,
+                      background: t.c.bg,
+                      border: `1px solid ${t.c.border}`,
+                      color: t.c.text,
+                      fontSize: 14,
+                      fontFamily: "inherit",
+                      boxSizing: "border-box",
+                    }}
+                  />
+                </div>
+              </div>
+
+              <button style={{ background: t.c.primary, color: "white", border: "none", padding: "12px 24px", borderRadius: 10, fontWeight: 600, fontSize: 13.5, fontFamily: "inherit", cursor: "pointer" }}>
+                Save Changes
+              </button>
+            </div>
+          )}
+
+          {activeTab === "family" && (
+            <div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+                <div>
+                  <h3 style={{ fontFamily: t.fontSerif, fontSize: 22, fontWeight: 500, margin: "0 0 8px" }}>Family & Devices</h3>
+                  <p style={{ fontSize: 13, color: t.c.textMute, margin: 0 }}>Add children and view their connected device status</p>
+                </div>
+                <button style={{ background: t.c.primary, color: "white", border: "none", padding: "10px 18px", borderRadius: 10, fontWeight: 600, fontSize: 13, fontFamily: "inherit", cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}>
+                  <Icon name="plus" size={14} /> Add Child
+                </button>
+              </div>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                {[
+                  { name: "Maya Mitchell", age: 11, devices: ["Maya's iPhone 14", "Maya's iPad Pro"], status: "Active limits" },
+                  { name: "Jaden Mitchell", age: 8, devices: ["Jaden's Android Tab"], status: "Paused until 4 PM" }
+                ].map((child, idx) => (
+                  <div key={idx} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 24px", background: t.c.bg, borderRadius: 16, border: `1px solid ${t.c.border}` }}>
+                    <div>
+                      <div style={{ fontWeight: 600, fontSize: 15 }}>{child.name}</div>
+                      <div style={{ fontSize: 12.5, color: t.c.textMute, marginTop: 4 }}>
+                        Age {child.age} · {child.devices.join(", ")}
+                      </div>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                      <Chip bg={idx === 0 ? t.c.primarySoft : t.c.accentSoft} color={idx === 0 ? t.c.primary : t.c.accent}>
+                        {child.status}
+                      </Chip>
+                      <button style={{ background: "transparent", border: "none", cursor: "pointer", color: t.c.textMute }}>
+                        <Icon name="settings" size={15} />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {activeTab === "billing" && (
+            <div>
+              <h3 style={{ fontFamily: t.fontSerif, fontSize: 22, fontWeight: 500, margin: "0 0 8px" }}>Billing & Plan</h3>
+              <p style={{ fontSize: 13, color: t.c.textMute, margin: "0 0 24px" }}>View billing history, invoices, and active plans</p>
+
+              {/* Plan overview card */}
+              <div style={{ background: `linear-gradient(135deg, ${t.c.primarySoft} 0%, ${t.c.surface2} 100%)`, borderRadius: 16, padding: 24, border: `1px solid ${t.c.border}`, display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 32 }}>
+                <div>
+                  <span style={{ fontSize: 10.5, fontWeight: 700, color: t.c.primary, textTransform: "uppercase", letterSpacing: ".05em" }}>Current Plan</span>
+                  <div style={{ fontFamily: t.fontSerif, fontSize: 24, fontWeight: 500, marginTop: 4 }}>Atrium Family Premium</div>
+                  <div style={{ fontSize: 12.5, color: t.c.textMute, marginTop: 4 }}>Billed annually ($89/yr) · Next renewal June 20, 2027</div>
+                </div>
+                <div style={{ textAlign: "right" }}>
+                  <div style={{ fontSize: 28, fontWeight: "bold", color: t.c.primary }}>$89<span style={{ fontSize: 14, fontWeight: "normal", color: t.c.textMute }}>/yr</span></div>
+                  <button style={{ background: t.c.surface, color: t.c.text, border: `1px solid ${t.c.border}`, padding: "8px 14px", borderRadius: 8, fontSize: 12, fontWeight: 600, fontFamily: "inherit", cursor: "pointer", marginTop: 8 }}>
+                    Upgrade Plan
+                  </button>
+                </div>
+              </div>
+
+              {/* Invoices table */}
+              <h4 style={{ fontWeight: 600, fontSize: 14.5, marginBottom: 16 }}>Billing History</h4>
+              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+                <thead>
+                  <tr style={{ borderBottom: `1px solid ${t.c.border}`, textAlign: "left" }}>
+                    <th style={{ padding: "12px 8px", color: t.c.textMute, fontWeight: 500 }}>Date</th>
+                    <th style={{ padding: "12px 8px", color: t.c.textMute, fontWeight: 500 }}>Invoice ID</th>
+                    <th style={{ padding: "12px 8px", color: t.c.textMute, fontWeight: 500 }}>Amount</th>
+                    <th style={{ padding: "12px 8px", color: t.c.textMute, fontWeight: 500 }}>Status</th>
+                    <th style={{ padding: "12px 8px", textAlign: "right" }} />
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    { date: "Jun 20, 2026", id: "INV-8902-12", amount: "$89.00", status: "Paid" },
+                    { date: "Jun 20, 2025", id: "INV-7212-09", amount: "$89.00", status: "Paid" }
+                  ].map((inv, idx) => (
+                    <tr key={idx} style={{ borderBottom: idx === 1 ? "none" : `1px solid ${t.c.border}` }}>
+                      <td style={{ padding: "14px 8px" }}>{inv.date}</td>
+                      <td style={{ padding: "14px 8px", fontFamily: t.fontMono }}>{inv.id}</td>
+                      <td style={{ padding: "14px 8px" }}>{inv.amount}</td>
+                      <td style={{ padding: "14px 8px" }}><span style={{ color: t.c.primary, fontWeight: 600 }}>{inv.status}</span></td>
+                      <td style={{ padding: "14px 8px", textAlign: "right" }}><a href="#" style={{ color: t.c.primary, textDecoration: "none", fontWeight: 600 }}>Download PDF</a></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {activeTab === "notifications" && (
+            <div>
+              <h3 style={{ fontFamily: t.fontSerif, fontSize: 22, fontWeight: 500, margin: "0 0 8px" }}>Notification Alerts</h3>
+              <p style={{ fontSize: 13, color: t.c.textMute, margin: "0 0 24px" }}>Configure how and when you receive limits and coaching notifications</p>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+                {[
+                  { title: "Bypass Requests", desc: "Instantly alert my dashboard when a child requests device time extensions.", on: true },
+                  { title: "Daily Limit Warnings", desc: "Notify me when Jaden or Maya are within 80% of their daily app categories budget.", on: true },
+                  { title: "Bedtime Reminders", desc: "Ping my phone when bedtime routine is about to lock child screens.", on: false },
+                  { title: "Weekly Coaching Summaries", desc: "Email me personalized routine audits and tip checklist summaries every Sunday.", on: true }
+                ].map((notif, idx) => (
+                  <div key={idx} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div style={{ flex: 1, paddingRight: 24 }}>
+                      <div style={{ fontWeight: 600, fontSize: 14.5 }}>{notif.title}</div>
+                      <div style={{ fontSize: 12.5, color: t.c.textMute, marginTop: 4 }}>{notif.desc}</div>
+                    </div>
+                    <Toggle on={notif.on} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {activeTab === "privacy" && (
+            <div>
+              <h3 style={{ fontFamily: t.fontSerif, fontSize: 22, fontWeight: 500, margin: "0 0 8px" }}>Privacy & Security</h3>
+              <p style={{ fontSize: 13, color: t.c.textMute, margin: "0 0 24px" }}>Review data storage parameters, retention controls, and exporting logs</p>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+                <div>
+                  <div style={{ fontWeight: 600, fontSize: 14.5, marginBottom: 8 }}>Retention Policy</div>
+                  <p style={{ fontSize: 13, color: t.c.textMute, margin: "0 0 12px", lineHeight: 1.5 }}>
+                    Configure how long child screen activity records (pickups, session durations, categories) are kept on Atrium secure servers.
+                  </p>
+                  <select style={{ padding: "10px 14px", borderRadius: 8, background: t.c.bg, border: `1px solid ${t.c.border}`, color: t.c.text, fontFamily: "inherit", fontSize: 13 }}>
+                    <option>Keep activity logs for 90 days (Recommended)</option>
+                    <option>Keep activity logs for 30 days</option>
+                    <option>Keep activity logs indefinitely</option>
+                  </select>
+                </div>
+
+                <div style={{ height: 1, background: t.c.border }} />
+
+                <div>
+                  <div style={{ fontWeight: 600, fontSize: 14.5, marginBottom: 8 }}>Export Family Logs</div>
+                  <p style={{ fontSize: 13, color: t.c.textMute, margin: "0 0 12px" }}>Retrieve all stored screen time and ad blocker analytics logs in structured JSON format.</p>
+                  <button style={{ background: t.c.surface2, border: `1px solid ${t.c.border}`, padding: "10px 18px", borderRadius: 8, fontSize: 13, color: t.c.text, fontWeight: 600, fontFamily: "inherit", cursor: "pointer" }}>
+                    Request Export
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </WebShell>
+  );
+}
+
+window.WebParentSettings = WebParentSettings;

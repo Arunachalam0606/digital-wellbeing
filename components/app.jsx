@@ -206,6 +206,16 @@ function App() {
               <WebOnboardStep3Preview />
             </div>
           </DCArtboard>
+          <DCArtboard
+            id="web-settings"
+            label="Settings · Parent Web settings & billing portal"
+            width={1440}
+            height={980}
+          >
+            <div key={key} style={{ width: "100%", height: "100%" }}>
+              <WebParentSettings />
+            </div>
+          </DCArtboard>
         </DCSection>
 
         {/* ────────────────  Web — Personal & Reports  ──────────────── */}
