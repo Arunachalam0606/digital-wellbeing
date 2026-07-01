@@ -2980,133 +2980,88 @@ function MobOnboardLink({ android = false, onNext, onBack }) {
     <MobileScreen android={android} scroll={false}>
       <div
         style={{
-          padding: "4px 22px 24px",
+          padding: "16px 24px 24px",
           height: "100%",
           display: "flex",
           flexDirection: "column",
+          justifyContent: "space-between",
           boxSizing: "border-box",
         }}
       >
-        {/* Step dots */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 6,
-            marginBottom: 24,
-          }}
-        >
+        <div>
+          {/* Step dots */}
           <div
             style={{
-              width: 24,
-              height: 4,
-              background: t.c.primary,
-              borderRadius: 2,
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              marginBottom: 20,
             }}
-          />
-          <div
-            style={{
-              width: 24,
-              height: 4,
-              background: t.c.primary,
-              borderRadius: 2,
-            }}
-          />
-          <div
-            style={{
-              width: 24,
-              height: 4,
-              background: t.c.primary,
-              borderRadius: 2,
-            }}
-          />
-          <span
-            style={{ fontSize: 11, color: t.c.textMute, marginLeft: "auto" }}
           >
-            Step 3 of 4
-          </span>
-        </div>
+            <div style={{ width: 24, height: 4, background: t.c.primary, borderRadius: 2 }} />
+            <div style={{ width: 24, height: 4, background: t.c.primary, borderRadius: 2 }} />
+            <div style={{ width: 24, height: 4, background: t.c.primary, borderRadius: 2 }} />
+            <span style={{ fontSize: 11, color: t.c.textMute, marginLeft: "auto" }}>Step 3 of 4</span>
+          </div>
 
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            overflow: "auto",
-          }}
-        >
-          <div
+          <h2
             style={{
               fontFamily: t.fontSerif,
               fontSize: 28,
               fontWeight: 500,
               letterSpacing: "-.02em",
               lineHeight: 1.15,
+              color: t.c.text,
+              margin: "0 0 8px",
             }}
           >
             Link Maya's phone
-          </div>
-          <div
+          </h2>
+          <p
             style={{
-              fontSize: 14,
+              fontSize: 13.5,
               color: t.c.textMute,
-              marginTop: 10,
               lineHeight: 1.5,
+              margin: "0 0 20px",
             }}
           >
-            Open Atrium on Maya's iPhone and point the camera at this code. We
-            never need her Apple ID.
-          </div>
+            Open Atrium on Maya's iPhone and point the camera at this code. No sign-in required on her end.
+          </p>
 
-          {/* QR */}
+          {/* QR Container */}
           <div
             style={{
-              marginTop: 24,
               background: t.c.surface,
-              borderRadius: 22,
-              padding: 22,
+              borderRadius: 24,
+              padding: 24,
               border: `1px solid ${t.c.border}`,
               textAlign: "center",
-              boxShadow: "0 8px 32px rgba(40,30,20,.05)",
+              boxShadow: "0 12px 36px rgba(40,30,20,.04)",
             }}
           >
-            <QRCodeMock size={170} fg={t.c.text} bg={t.c.surface} />
+            <div style={{ display: "inline-block", background: t.c.surface2, padding: 12, borderRadius: 16, border: `1px solid ${t.c.border}` }}>
+              <QRCodeMock size={150} fg={t.c.text} bg={t.c.surface2} />
+            </div>
+            
             <div
               style={{
-                marginTop: 14,
+                marginTop: 16,
                 fontFamily: t.fontMono,
-                fontSize: 13,
-                color: t.c.textMute,
-                letterSpacing: ".1em",
+                fontSize: 18,
+                fontWeight: "bold",
+                color: t.c.primary,
+                letterSpacing: ".15em",
               }}
             >
               F4-9K-2A-7P
             </div>
-            <div style={{ fontSize: 11, color: t.c.textMute, marginTop: 4 }}>
-              Or type this on her phone
+            <div style={{ fontSize: 11.5, color: t.c.textMute, marginTop: 4 }}>
+              Or enter this code on her device
             </div>
-          </div>
-
-          <div
-            style={{
-              marginTop: 16,
-              padding: 12,
-              borderRadius: 12,
-              background: t.c.primarySoft,
-              fontSize: 12,
-              color: t.c.primary,
-              display: "flex",
-              gap: 8,
-              alignItems: "flex-start",
-            }}
-          >
-            <Icon name="shieldCheck" size={15} />
-            <div style={{ lineHeight: 1.4 }}>QR expires in 10 minutes.</div>
           </div>
         </div>
 
-        <div style={{ display: "flex", gap: 10 }}>
+        <div style={{ display: "flex", gap: 12 }}>
           <button
             onClick={onBack}
             style={{
@@ -3137,6 +3092,7 @@ function MobOnboardLink({ android = false, onNext, onBack }) {
               fontSize: 14,
               fontFamily: "inherit",
               cursor: "pointer",
+              boxShadow: "0 4px 16px rgba(92,138,107,.15)",
             }}
           >
             I've scanned it
@@ -3159,16 +3115,43 @@ function MobLogin({ android = false, onLogin }) {
 
   return (
     <MobileScreen android={android} scroll={false}>
-      <div style={{ padding: "16px 24px 24px", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", boxSizing: "border-box" }}>
-        <div style={{ textAlign: "center", marginTop: 24 }}>
+      {/* Decorative gradient canvas background wrapper */}
+      <div style={{
+        padding: "24px",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        boxSizing: "border-box",
+        background: `linear-gradient(135deg, ${t.c.primarySoft} 0%, ${t.c.surface2} 100%)`,
+        position: "relative",
+        overflow: "hidden",
+      }}>
+        {/* Subtle blur circles */}
+        <div style={{ position: "absolute", top: -80, right: -80, width: 180, height: 180, borderRadius: "50%", background: t.c.yellowSoft, filter: "blur(50px)", opacity: 0.6 }} />
+        <div style={{ position: "absolute", bottom: -60, left: -60, width: 160, height: 160, borderRadius: "50%", background: t.c.accentSoft, filter: "blur(40px)", opacity: 0.5 }} />
+
+        <div style={{ textAlign: "center", marginTop: 24, zIndex: 2 }}>
           <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
             <Icon name="sparkles" size={40} color={t.c.primary} />
           </div>
           <h1 style={{ fontFamily: t.fontSerif, fontSize: 32, fontWeight: 500, color: t.c.text, margin: "0 0 8px" }}>Atrium</h1>
-          <p style={{ fontSize: 13.5, color: t.c.textMute, margin: 0 }}>Calm screen time for the whole family</p>
+          <p style={{ fontSize: 14, color: t.c.textMute, margin: 0 }}>Empathetic boundaries for family screens</p>
         </div>
 
-        <form onSubmit={handleLogin} style={{ display: "flex", flexDirection: "column", gap: 14, margin: "32px 0 16px" }}>
+        {/* Login form styled as a premium card */}
+        <form onSubmit={handleLogin} style={{
+          background: t.c.surface,
+          borderRadius: 20,
+          padding: 20,
+          border: `1px solid ${t.c.border}`,
+          boxShadow: "0 12px 32px rgba(40,30,20,.05)",
+          display: "flex",
+          flexDirection: "column",
+          gap: 16,
+          zIndex: 2,
+          margin: "16px 0",
+        }}>
           <div>
             <label style={{ fontSize: 11, fontWeight: 600, color: t.c.textMute, textTransform: "uppercase", display: "block", marginBottom: 6 }}>Email Address</label>
             <input
@@ -3178,14 +3161,15 @@ function MobLogin({ android = false, onLogin }) {
               placeholder="sarah@atrium.com"
               style={{
                 width: "100%",
-                padding: "12px 16px",
-                borderRadius: 12,
-                background: t.c.surface,
+                padding: "12px 14px",
+                borderRadius: 10,
+                background: t.c.surface2,
                 border: `1px solid ${t.c.border}`,
                 color: t.c.text,
                 fontSize: 14,
                 fontFamily: "inherit",
                 boxSizing: "border-box",
+                outline: "none",
               }}
             />
           </div>
@@ -3199,14 +3183,15 @@ function MobLogin({ android = false, onLogin }) {
               placeholder="••••••••"
               style={{
                 width: "100%",
-                padding: "12px 16px",
-                borderRadius: 12,
-                background: t.c.surface,
+                padding: "12px 14px",
+                borderRadius: 10,
+                background: t.c.surface2,
                 border: `1px solid ${t.c.border}`,
                 color: t.c.text,
                 fontSize: 14,
                 fontFamily: "inherit",
                 boxSizing: "border-box",
+                outline: "none",
               }}
             />
           </div>
@@ -3217,13 +3202,13 @@ function MobLogin({ android = false, onLogin }) {
               background: t.c.primary,
               color: "white",
               border: "none",
-              borderRadius: 12,
-              padding: "14px 0",
+              borderRadius: 10,
+              padding: "13px 0",
               fontWeight: 600,
               fontSize: 14,
               fontFamily: "inherit",
               cursor: "pointer",
-              marginTop: 10,
+              marginTop: 4,
               boxShadow: "0 4px 16px rgba(92,138,107,.15)",
             }}
           >
@@ -3231,8 +3216,8 @@ function MobLogin({ android = false, onLogin }) {
           </button>
         </form>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10, color: t.c.textMute, fontSize: 12, margin: "10px 0" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10, zIndex: 2 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, color: t.c.textMute, fontSize: 12, margin: "4px 0" }}>
             <div style={{ flex: 1, height: 1, background: t.c.border }} />
             <span>or sign in with</span>
             <div style={{ flex: 1, height: 1, background: t.c.border }} />
@@ -3244,7 +3229,7 @@ function MobLogin({ android = false, onLogin }) {
               style={{
                 background: t.c.surface,
                 border: `1px solid ${t.c.border}`,
-                borderRadius: 12,
+                borderRadius: 10,
                 padding: "10px 0",
                 fontSize: 13,
                 fontWeight: 600,
@@ -3264,7 +3249,7 @@ function MobLogin({ android = false, onLogin }) {
               style={{
                 background: t.c.surface,
                 border: `1px solid ${t.c.border}`,
-                borderRadius: 12,
+                borderRadius: 10,
                 padding: "10px 0",
                 fontSize: 13,
                 fontWeight: 600,
@@ -3292,26 +3277,26 @@ function MobOnboardWelcome({ android = false, onNext }) {
     <MobileScreen android={android} scroll={false}>
       <div style={{ padding: "16px 24px 24px", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", boxSizing: "border-box" }}>
         <div>
-          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 24 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 20 }}>
             <div style={{ width: 24, height: 4, background: t.c.primary, borderRadius: 2 }} />
             <div style={{ width: 24, height: 4, background: t.c.surface2, borderRadius: 2 }} />
             <div style={{ width: 24, height: 4, background: t.c.surface2, borderRadius: 2 }} />
             <span style={{ fontSize: 11, color: t.c.textMute, marginLeft: "auto" }}>Step 1 of 4</span>
           </div>
 
-          <h2 style={{ fontFamily: t.fontSerif, fontSize: 30, fontWeight: 500, color: t.c.text, lineHeight: 1.15, marginBottom: 12 }}>
-            Welcome to a calmer home.
+          <h2 style={{ fontFamily: t.fontSerif, fontSize: 28, fontWeight: 500, color: t.c.text, lineHeight: 1.15, marginBottom: 8 }}>
+            Welcome to Atrium
           </h2>
-          <p style={{ fontSize: 14, color: t.c.textMute, lineHeight: 1.5 }}>
-            Atrium helps families sit with digital habits without feeling judged. We coach, we never scold.
+          <p style={{ fontSize: 13.5, color: t.c.textMute, lineHeight: 1.5, margin: "0 0 24px" }}>
+            Mindful daily screen habits for your family. Empathetic guidance instead of rigid blocks.
           </p>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 32 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             <div style={{ fontSize: 11, fontWeight: 600, color: t.c.textMute, textTransform: "uppercase", letterSpacing: ".05em" }}>Who is using this device?</div>
             {[
-              { role: "parent", label: "I am a Parent", desc: "Manage children's limits, schedules, and view tips." },
-              { role: "child", label: "I am a Child", desc: "Track your streak, check app caps, and request time." },
-              { role: "personal", label: "Independent", desc: "Configure screen wellbeing for yourself." }
+              { role: "parent", label: "I am a Parent", desc: "Manage children's limits, schedules, and view AI tips.", icon: "sparkles", color: t.c.primary },
+              { role: "child", label: "I am a Child", desc: "Track streaks, earn points, and view schedules.", icon: "gift", color: t.c.accent },
+              { role: "personal", label: "Independent", desc: "Manage limits for yourself without child pairing.", icon: "phone", color: t.c.textMute }
             ].map(r => (
               <button
                 key={r.role}
@@ -3319,19 +3304,25 @@ function MobOnboardWelcome({ android = false, onNext }) {
                 style={{
                   background: t.c.surface,
                   border: `1px solid ${t.c.border}`,
-                  borderRadius: 14,
-                  padding: 14,
+                  borderRadius: 16,
+                  padding: 16,
                   textAlign: "left",
                   fontFamily: "inherit",
                   cursor: "pointer",
                   display: "flex",
-                  flexDirection: "column",
-                  gap: 4,
+                  gap: 14,
+                  alignItems: "center",
                   color: t.c.text,
+                  boxShadow: "0 4px 12px rgba(0,0,0,.01)",
                 }}
               >
-                <div style={{ fontWeight: 600, fontSize: 14.5 }}>{r.label}</div>
-                <div style={{ fontSize: 12, color: t.c.textMute }}>{r.desc}</div>
+                <div style={{ width: 36, height: 36, borderRadius: 10, background: `${r.color}15`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <Icon name={r.icon} size={18} color={r.color} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontWeight: 600, fontSize: 14.5 }}>{r.label}</div>
+                  <div style={{ fontSize: 11.5, color: t.c.textMute, marginTop: 2 }}>{r.desc}</div>
+                </div>
               </button>
             ))}
           </div>
@@ -3345,90 +3336,105 @@ function MobOnboardCreateProfile({ android = false, onNext, onBack }) {
   const t = useTokens();
   const [name, setName] = useState("Maya");
   const [age, setAge] = useState("11");
-  const [device, setDevice] = useState("iPhone 14");
+  const [deviceType, setDeviceType] = useState("iPhone");
 
   return (
     <MobileScreen android={android} scroll={false}>
       <div style={{ padding: "16px 24px 24px", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", boxSizing: "border-box" }}>
         <div>
-          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 24 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 20 }}>
             <div style={{ width: 24, height: 4, background: t.c.primary, borderRadius: 2 }} />
             <div style={{ width: 24, height: 4, background: t.c.primary, borderRadius: 2 }} />
             <div style={{ width: 24, height: 4, background: t.c.surface2, borderRadius: 2 }} />
             <span style={{ fontSize: 11, color: t.c.textMute, marginLeft: "auto" }}>Step 2 of 4</span>
           </div>
 
-          <h2 style={{ fontFamily: t.fontSerif, fontSize: 30, fontWeight: 500, color: t.c.text, lineHeight: 1.15, marginBottom: 12 }}>
-            Create child profile
+          <h2 style={{ fontFamily: t.fontSerif, fontSize: 28, fontWeight: 500, color: t.c.text, lineHeight: 1.15, marginBottom: 8 }}>
+            Create kid profile
           </h2>
-          <p style={{ fontSize: 14, color: t.c.textMute, lineHeight: 1.5, marginBottom: 24 }}>
-            Set up their details to configure device linking.
+          <p style={{ fontSize: 13.5, color: t.c.textMute, lineHeight: 1.5, marginBottom: 20 }}>
+            Setup details to configure age-appropriate smart limits.
           </p>
 
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            <div>
-              <label style={{ fontSize: 11, fontWeight: 600, color: t.c.textMute, textTransform: "uppercase", display: "block", marginBottom: 6 }}>Child's Name</label>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                style={{
-                  width: "100%",
-                  padding: "12px 16px",
-                  borderRadius: 12,
-                  background: t.c.surface,
-                  border: `1px solid ${t.c.border}`,
-                  color: t.c.text,
-                  fontSize: 14,
-                  fontFamily: "inherit",
-                  boxSizing: "border-box",
-                }}
-              />
+            <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: 12 }}>
+              <div>
+                <label style={{ fontSize: 11, fontWeight: 600, color: t.c.textMute, textTransform: "uppercase", display: "block", marginBottom: 6 }}>Child's Name</label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  style={{
+                    width: "100%",
+                    padding: "12px 14px",
+                    borderRadius: 10,
+                    background: t.c.surface,
+                    border: `1px solid ${t.c.border}`,
+                    color: t.c.text,
+                    fontSize: 14,
+                    fontFamily: "inherit",
+                    boxSizing: "border-box",
+                  }}
+                />
+              </div>
+
+              <div>
+                <label style={{ fontSize: 11, fontWeight: 600, color: t.c.textMute, textTransform: "uppercase", display: "block", marginBottom: 6 }}>Age</label>
+                <input
+                  type="text"
+                  value={age}
+                  onChange={(e) => setAge(e.target.value)}
+                  style={{
+                    width: "100%",
+                    padding: "12px 14px",
+                    borderRadius: 10,
+                    background: t.c.surface,
+                    border: `1px solid ${t.c.border}`,
+                    color: t.c.text,
+                    fontSize: 14,
+                    fontFamily: "inherit",
+                    boxSizing: "border-box",
+                  }}
+                />
+              </div>
             </div>
 
+            {/* Device selector buttons instead of input box */}
             <div>
-              <label style={{ fontSize: 11, fontWeight: 600, color: t.c.textMute, textTransform: "uppercase", display: "block", marginBottom: 6 }}>Age</label>
-              <input
-                type="text"
-                value={age}
-                onChange={(e) => setAge(e.target.value)}
-                style={{
-                  width: "100%",
-                  padding: "12px 16px",
-                  borderRadius: 12,
-                  background: t.c.surface,
-                  border: `1px solid ${t.c.border}`,
-                  color: t.c.text,
-                  fontSize: 14,
-                  fontFamily: "inherit",
-                  boxSizing: "border-box",
-                }}
-              />
-            </div>
-
-            <div>
-              <label style={{ fontSize: 11, fontWeight: 600, color: t.c.textMute, textTransform: "uppercase", display: "block", marginBottom: 6 }}>Device Model</label>
-              <input
-                type="text"
-                value={device}
-                onChange={(e) => setDevice(e.target.value)}
-                style={{
-                  width: "100%",
-                  padding: "12px 16px",
-                  borderRadius: 12,
-                  background: t.c.surface,
-                  border: `1px solid ${t.c.border}`,
-                  color: t.c.text,
-                  fontSize: 14,
-                  fontFamily: "inherit",
-                  boxSizing: "border-box",
-                }}
-              />
+              <label style={{ fontSize: 11, fontWeight: 600, color: t.c.textMute, textTransform: "uppercase", display: "block", marginBottom: 8 }}>Device Type</label>
+              <div style={{ display: "flex", gap: 8 }}>
+                {["iPhone", "Android", "iPad"].map(d => (
+                  <button
+                    key={d}
+                    type="button"
+                    onClick={() => setDeviceType(d)}
+                    style={{
+                      flex: 1,
+                      padding: "12px 0",
+                      borderRadius: 10,
+                      background: deviceType === d ? t.c.primarySoft : t.c.surface,
+                      border: `1px solid ${deviceType === d ? t.c.primary : t.c.border}`,
+                      color: deviceType === d ? t.c.primary : t.c.text,
+                      fontWeight: 600,
+                      fontSize: 13,
+                      fontFamily: "inherit",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 6,
+                    }}
+                  >
+                    <Icon name="phone" size={13} color={deviceType === d ? t.c.primary : t.c.textMute} />
+                    <span>{d}</span>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
 
-        <div style={{ display: "flex", gap: 10 }}>
+        <div style={{ display: "flex", gap: 12 }}>
           <button
             onClick={onBack}
             style={{
@@ -3459,9 +3465,10 @@ function MobOnboardCreateProfile({ android = false, onNext, onBack }) {
               fontSize: 14,
               fontFamily: "inherit",
               cursor: "pointer",
+              boxShadow: "0 4px 16px rgba(92,138,107,.15)",
             }}
           >
-            Create child
+            Create profile
           </button>
         </div>
       </div>
@@ -3492,7 +3499,7 @@ function MobConnectingProgress({ android = false, onNext }) {
   return (
     <MobileScreen android={android} scroll={false}>
       <div style={{ padding: "16px 24px 24px", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", boxSizing: "border-box" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 24 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 20 }}>
           <div style={{ width: 24, height: 4, background: t.c.primary, borderRadius: 2 }} />
           <div style={{ width: 24, height: 4, background: t.c.primary, borderRadius: 2 }} />
           <div style={{ width: 24, height: 4, background: t.c.primary, borderRadius: 2 }} />
@@ -3500,22 +3507,22 @@ function MobConnectingProgress({ android = false, onNext }) {
         </div>
 
         <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 24 }}>
-          <div style={{ position: "relative", width: 100, height: 100, display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <div style={{ position: "absolute", inset: 0, borderRadius: "50%", background: t.c.primarySoft, opacity: 0.4, transform: "scale(1.3)", animation: "pulse 1.8s infinite" }} />
+          <div style={{ position: "relative", width: 90, height: 90, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <div style={{ position: "absolute", inset: 0, borderRadius: "50%", background: t.c.primarySoft, opacity: 0.3, transform: "scale(1.4)", animation: "pulse 1.8s infinite" }} />
             <div style={{ position: "absolute", inset: 10, borderRadius: "50%", background: t.c.primarySoft, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <Icon name="phone" size={32} color={t.c.primary} />
+              <Icon name="phone" size={28} color={t.c.primary} />
             </div>
           </div>
 
-          <div style={{ textAlign: "center", marginTop: 12 }}>
-            <h3 style={{ fontFamily: t.fontSerif, fontSize: 24, fontWeight: 500, color: t.c.text, marginBottom: 6 }}>Connecting device</h3>
-            <p style={{ fontSize: 13, color: t.c.textMute }}>Waiting for Maya's iPhone 14...</p>
+          <div style={{ textAlign: "center" }}>
+            <h3 style={{ fontFamily: t.fontSerif, fontSize: 22, fontWeight: 500, color: t.c.text, marginBottom: 6 }}>Linking devices</h3>
+            <p style={{ fontSize: 13, color: t.c.textMute }}>Waiting for confirmation...</p>
           </div>
 
-          <div style={{ width: "80%", height: 6, background: t.c.surface2, borderRadius: 3, overflow: "hidden", marginTop: 10 }}>
+          <div style={{ width: "80%", height: 6, background: t.c.surface2, borderRadius: 3, overflow: "hidden", marginTop: 8 }}>
             <div style={{ width: `${pct}%`, height: "100%", background: t.c.primary, borderRadius: 3, transition: "width 0.15s ease-out" }} />
           </div>
-          <span style={{ fontSize: 11, fontFamily: t.fontMono, color: t.c.textMute }}>{pct}% linked</span>
+          <span style={{ fontSize: 11, fontFamily: t.fontMono, color: t.c.textMute }}>{pct}% configured</span>
         </div>
       </div>
     </MobileScreen>
@@ -3531,23 +3538,23 @@ function MobOnboardConfigure({ android = false, onNext }) {
     <MobileScreen android={android} scroll={false}>
       <div style={{ padding: "16px 24px 24px", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", boxSizing: "border-box" }}>
         <div>
-          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 24 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 20 }}>
             <div style={{ width: 24, height: 4, background: t.c.primary, borderRadius: 2 }} />
             <div style={{ width: 24, height: 4, background: t.c.primary, borderRadius: 2 }} />
             <div style={{ width: 24, height: 4, background: t.c.primary, borderRadius: 2 }} />
             <span style={{ fontSize: 11, color: t.c.textMute, marginLeft: "auto" }}>Step 4 of 4</span>
           </div>
 
-          <h2 style={{ fontFamily: t.fontSerif, fontSize: 30, fontWeight: 500, color: t.c.text, lineHeight: 1.15, marginBottom: 12 }}>
-            Setup core controls
+          <h2 style={{ fontFamily: t.fontSerif, fontSize: 28, fontWeight: 500, color: t.c.text, lineHeight: 1.15, marginBottom: 8 }}>
+            Set smart bounds
           </h2>
-          <p style={{ fontSize: 14, color: t.c.textMute, lineHeight: 1.5, marginBottom: 24 }}>
-            Choose simple starting configurations. You can tweak this any time.
+          <p style={{ fontSize: 13.5, color: t.c.textMute, lineHeight: 1.5, marginBottom: 20 }}>
+            Start with soft guides. Refine routine bounds anytime.
           </p>
 
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             {/* Bedtime Card */}
-            <div style={{ background: t.c.surface, border: `1px solid ${t.c.border}`, borderRadius: 14, padding: 16, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div style={{ background: t.c.surface, border: `1px solid ${t.c.border}`, borderRadius: 16, padding: 16, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <div>
                 <div style={{ fontWeight: 600, fontSize: 14, color: t.c.text }}>Enable Bedtime Lock</div>
                 <div style={{ fontSize: 12, color: t.c.textMute, marginTop: 2 }}>Locks device 9:00 PM – 7:00 AM</div>
@@ -3556,11 +3563,11 @@ function MobOnboardConfigure({ android = false, onNext }) {
             </div>
 
             {/* Category Cap */}
-            <div style={{ background: t.c.surface, border: `1px solid ${t.c.border}`, borderRadius: 14, padding: 16 }}>
+            <div style={{ background: t.c.surface, border: `1px solid ${t.c.border}`, borderRadius: 16, padding: 16 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
                 <div>
-                  <div style={{ fontWeight: 600, fontSize: 14, color: t.c.text }}>Social App limits</div>
-                  <div style={{ fontSize: 12, color: t.c.textMute, marginTop: 2 }}>Daily max for TikTok, Snapchat...</div>
+                  <div style={{ fontWeight: 600, fontSize: 14, color: t.c.text }}>Social app limits</div>
+                  <div style={{ fontSize: 12, color: t.c.textMute, marginTop: 2 }}>Daily cap for TikTok, Snapchat...</div>
                 </div>
                 <span style={{ fontFamily: t.fontMono, fontSize: 15, fontWeight: 600, color: t.c.primary }}>{socialCap}m</span>
               </div>
