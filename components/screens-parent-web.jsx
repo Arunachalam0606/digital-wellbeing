@@ -3334,7 +3334,6 @@ function WebOnboardWizard() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          minHeight: 520,
         }}
       >
         {/* Progress indicator */}
@@ -3451,7 +3450,6 @@ function WebOnboardStep1Preview() {
           padding: 40,
           boxShadow: "0 24px 64px rgba(40,30,20,.06)",
           boxSizing: "border-box",
-          minHeight: 520,
         }}
       >
         <div
@@ -3525,7 +3523,6 @@ function WebOnboardStep2Preview() {
           padding: 40,
           boxShadow: "0 24px 64px rgba(40,30,20,.06)",
           boxSizing: "border-box",
-          minHeight: 520,
         }}
       >
         <div
@@ -3595,7 +3592,6 @@ function WebOnboardStep3Preview() {
           padding: 40,
           boxShadow: "0 24px 64px rgba(40,30,20,.06)",
           boxSizing: "border-box",
-          minHeight: 520,
         }}
       >
         <div
@@ -3724,7 +3720,6 @@ function WebOnboardWelcomePreview() {
           padding: 40,
           boxShadow: "0 24px 64px rgba(40,30,20,.06)",
           boxSizing: "border-box",
-          minHeight: 520,
         }}
       >
         <WebOnboardWelcomeScreen onSelect={() => {}} />
@@ -3757,7 +3752,6 @@ function WebOnboardRoleQuestionPreview() {
           padding: 40,
           boxShadow: "0 24px 64px rgba(40,30,20,.06)",
           boxSizing: "border-box",
-          minHeight: 520,
         }}
       >
         <WebOnboardRoleQuestion onAnswer={() => {}} onBack={() => {}} />
