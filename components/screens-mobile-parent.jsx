@@ -2347,6 +2347,8 @@ function MobParentKidDetail({ android = false, kidIndex = 1 }) {
   const k = APP_DATA.kids[kidIndex]; // default Jaden (interesting "over" case)
   const over = k.status === "over";
 
+  const [showPause, setShowPause] = React.useState(false);
+
   return (
     <MobileScreen android={android}>
       <MobileHeader
@@ -2356,6 +2358,7 @@ function MobParentKidDetail({ android = false, kidIndex = 1 }) {
         subtitle={`age ${k.age} · ${k.device} · last active ${k.lastActive}`}
         action={
           <button
+            onClick={() => setShowPause(true)}
             style={{
               background: t.c.surface,
               border: `1px solid ${t.c.border}`,
@@ -2665,6 +2668,117 @@ function MobParentKidDetail({ android = false, kidIndex = 1 }) {
 
         <div style={{ height: 16 }} />
       </div>
+
+      {/* Pause Confirmation Modal (Mobile absolute overlay) */}
+      {showPause && (
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            zIndex: 11000,
+            background: "rgba(0,0,0,0.6)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 24,
+          }}
+          onClick={() => setShowPause(false)}
+        >
+          <div
+            style={{
+              width: "100%",
+              maxWidth: 300,
+              background: t.c.surface,
+              borderRadius: 20,
+              padding: 24,
+              border: `1px solid ${t.c.border}`,
+              color: t.c.text,
+              textAlign: "center",
+              boxShadow: "0 15px 40px rgba(0,0,0,0.2)",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div
+              style={{
+                width: 50,
+                height: 50,
+                borderRadius: "50%",
+                background: t.c.dangerSoft,
+                color: t.c.danger,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                margin: "0 auto 16px",
+              }}
+            >
+              <Icon name="lock" size={24} />
+            </div>
+
+            <div
+              style={{
+                fontFamily: t.fontSerif,
+                fontSize: 20,
+                fontWeight: 500,
+                marginBottom: 8,
+              }}
+            >
+              Pause {k.name}'s Device?
+            </div>
+
+            <div
+              style={{
+                fontSize: 13,
+                color: t.c.textMute,
+                lineHeight: 1.45,
+                marginBottom: 20,
+              }}
+            >
+              This will lock all non-allowed apps on {k.name}'s device
+              immediately.
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              <button
+                onClick={() => {
+                  alert(`${k.name}'s device paused!`);
+                  setShowPause(false);
+                }}
+                style={{
+                  width: "100%",
+                  background: t.c.danger,
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: 10,
+                  padding: "10px 14px",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  fontFamily: "inherit",
+                  cursor: "pointer",
+                }}
+              >
+                Pause immediately
+              </button>
+              <button
+                onClick={() => setShowPause(false)}
+                style={{
+                  width: "100%",
+                  background: t.c.surface2,
+                  color: t.c.text,
+                  border: `1px solid ${t.c.border}`,
+                  borderRadius: 10,
+                  padding: "10px 14px",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  fontFamily: "inherit",
+                  cursor: "pointer",
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </MobileScreen>
   );
 }

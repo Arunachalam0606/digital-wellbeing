@@ -728,6 +728,7 @@ function MobPersonalFocus({ android = false }) {
                   border: `1px solid ${t.c.border}`,
                   borderRadius: 12,
                   padding: 12,
+                  color: t.c.text,
                   textAlign: "left",
                   fontFamily: "inherit",
                   cursor: "pointer",

@@ -399,6 +399,9 @@ function KidCard({ kid }) {
   const pctWeek = kid.weekMinutes / kid.weekGoal;
   const over = kid.status === "over";
 
+  const [showDetail, setShowDetail] = React.useState(false);
+  const [showPause, setShowPause] = React.useState(false);
+
   return (
     <Card style={{ padding: 0 }}>
       <div
@@ -516,10 +519,20 @@ function KidCard({ kid }) {
           borderRadius: "0 0 18px 18px",
         }}
       >
-        <Button variant="primary" size="sm" icon="eye">
+        <Button
+          variant="primary"
+          size="sm"
+          icon="eye"
+          onClick={() => setShowDetail(true)}
+        >
           Open detail
         </Button>
-        <Button variant="outline" size="sm" icon="lock">
+        <Button
+          variant="outline"
+          size="sm"
+          icon="lock"
+          onClick={() => setShowPause(true)}
+        >
           Pause device
         </Button>
         <Button
@@ -529,6 +542,396 @@ function KidCard({ kid }) {
           style={{ marginLeft: "auto" }}
         />
       </div>
+
+      {/* Detailed Drawer */}
+      {showDetail && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 10000,
+            background: "rgba(0,0,0,0.4)",
+            display: "flex",
+            justifyContent: "flex-end",
+            animation: "fadeIn 0.2s ease-out",
+          }}
+          onClick={() => setShowDetail(false)}
+        >
+          <div
+            style={{
+              width: 480,
+              height: "100%",
+              background: t.c.bg,
+              borderLeft: `1px solid ${t.c.border}`,
+              padding: 32,
+              display: "flex",
+              flexDirection: "column",
+              color: t.c.text,
+              boxShadow: "-10px 0 30px rgba(0,0,0,0.15)",
+              textAlign: "left",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: 24,
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <Avatar name={kid.name} color={kid.avatar} size={36} />
+                <div>
+                  <div
+                    style={{
+                      fontFamily: t.fontSerif,
+                      fontSize: 24,
+                      fontWeight: 500,
+                    }}
+                  >
+                    {kid.name}'s Details
+                  </div>
+                  <div style={{ fontSize: 12, color: t.c.textMute }}>
+                    Last active {kid.lastActive}
+                  </div>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowDetail(false)}
+                style={{
+                  background: t.c.surface2,
+                  border: `1px solid ${t.c.border}`,
+                  borderRadius: "50%",
+                  width: 32,
+                  height: 32,
+                  cursor: "pointer",
+                  color: t.c.text,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                ✕
+              </button>
+            </div>
+
+            <div
+              style={{
+                flex: 1,
+                overflow: "auto",
+                display: "flex",
+                flexDirection: "column",
+                gap: 20,
+              }}
+            >
+              {/* Daily screen time */}
+              <div
+                style={{
+                  background: t.c.surface,
+                  borderRadius: 14,
+                  padding: 18,
+                  border: `1px solid ${t.c.border}`,
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: 12,
+                    color: t.c.textMute,
+                    fontWeight: 600,
+                    textTransform: "uppercase",
+                    letterSpacing: ".05em",
+                    marginBottom: 8,
+                  }}
+                >
+                  Daily Screen Time
+                </div>
+                <div
+                  style={{ display: "flex", alignItems: "baseline", gap: 6 }}
+                >
+                  <span style={{ fontSize: 32, fontWeight: "bold" }}>
+                    {fmtTime(kid.todayMinutes)}
+                  </span>
+                  <span style={{ fontSize: 14, color: t.c.textMute }}>
+                    of {fmtTime(kid.todayGoal)} goal
+                  </span>
+                </div>
+                <div
+                  style={{
+                    height: 6,
+                    background: t.c.surface2,
+                    borderRadius: 3,
+                    marginTop: 12,
+                    overflow: "hidden",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: `${Math.min(100, pctDay * 100)}%`,
+                      height: "100%",
+                      background: over ? t.c.danger : t.c.primary,
+                      borderRadius: 3,
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Device and status */}
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: 12,
+                }}
+              >
+                <div
+                  style={{
+                    background: t.c.surface,
+                    borderRadius: 14,
+                    padding: 14,
+                    border: `1px solid ${t.c.border}`,
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: 11,
+                      color: t.c.textMute,
+                      fontWeight: 600,
+                      textTransform: "uppercase",
+                      marginBottom: 4,
+                    }}
+                  >
+                    Device
+                  </div>
+                  <div style={{ fontSize: 14, fontWeight: 500 }}>
+                    {kid.device}
+                  </div>
+                </div>
+                <div
+                  style={{
+                    background: t.c.surface,
+                    borderRadius: 14,
+                    padding: 14,
+                    border: `1px solid ${t.c.border}`,
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: 11,
+                      color: t.c.textMute,
+                      fontWeight: 600,
+                      textTransform: "uppercase",
+                      marginBottom: 4,
+                    }}
+                  >
+                    Status
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 14,
+                      fontWeight: 500,
+                      color: over ? t.c.danger : t.c.primary,
+                    }}
+                  >
+                    {over ? "Over Limit" : "On Track"}
+                  </div>
+                </div>
+              </div>
+
+              {/* App limits details list */}
+              <div
+                style={{
+                  background: t.c.surface,
+                  borderRadius: 14,
+                  padding: 18,
+                  border: `1px solid ${t.c.border}`,
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: 12,
+                    color: t.c.textMute,
+                    fontWeight: 600,
+                    textTransform: "uppercase",
+                    letterSpacing: ".05em",
+                    marginBottom: 12,
+                  }}
+                >
+                  Today's Apps Usage
+                </div>
+                <div
+                  style={{ display: "flex", flexDirection: "column", gap: 12 }}
+                >
+                  {kid.topApps.map((app, idx) => (
+                    <div
+                      key={idx}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 10,
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: 10,
+                            height: 10,
+                            borderRadius: "50%",
+                            background: app.color,
+                          }}
+                        />
+                        <span style={{ fontWeight: 500 }}>{app.name}</span>
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 8,
+                        }}
+                      >
+                        <span style={{ fontFamily: t.fontMono }}>
+                          {fmtTime(app.mins)}
+                        </span>
+                        {app.limit && (
+                          <span style={{ fontSize: 11, color: t.c.textMute }}>
+                            / {fmtTime(app.limit)}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div
+              style={{
+                paddingTop: 20,
+                borderTop: `1px solid ${t.c.border}`,
+                display: "flex",
+                gap: 12,
+              }}
+            >
+              <Button
+                variant="outline"
+                size="sm"
+                icon="lock"
+                onClick={() => {
+                  setShowDetail(false);
+                  setShowPause(true);
+                }}
+                style={{ flex: 1, justifyContent: "center" }}
+              >
+                Pause device
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Pause Confirmation Modal */}
+      {showPause && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 11000,
+            background: "rgba(0,0,0,0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            animation: "fadeIn 0.2s ease-out",
+          }}
+          onClick={() => setShowPause(false)}
+        >
+          <div
+            style={{
+              width: 380,
+              background: t.c.surface,
+              borderRadius: 20,
+              padding: 24,
+              border: `1px solid ${t.c.border}`,
+              color: t.c.text,
+              textAlign: "center",
+              boxShadow: "0 15px 40px rgba(0,0,0,0.2)",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div
+              style={{
+                width: 56,
+                height: 56,
+                borderRadius: "50%",
+                background: t.c.dangerSoft,
+                color: t.c.danger,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                margin: "0 auto 16px",
+              }}
+            >
+              <Icon name="lock" size={28} />
+            </div>
+
+            <div
+              style={{
+                fontFamily: t.fontSerif,
+                fontSize: 22,
+                fontWeight: 500,
+                marginBottom: 8,
+              }}
+            >
+              Pause {kid.name}'s Device?
+            </div>
+
+            <div
+              style={{
+                fontSize: 13.5,
+                color: t.c.textMute,
+                lineHeight: 1.5,
+                marginBottom: 24,
+              }}
+            >
+              This will lock all non-allowed apps on {kid.name}'s {kid.device}{" "}
+              immediately. You can unpause it at any time.
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={() => {
+                  alert(`${kid.name}'s device paused!`);
+                  setShowPause(false);
+                }}
+                style={{
+                  width: "100%",
+                  background: t.c.danger,
+                  borderColor: t.c.danger,
+                  color: "#fff",
+                  justifyContent: "center",
+                }}
+              >
+                Pause immediately
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowPause(false)}
+                style={{ width: "100%", justifyContent: "center" }}
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </Card>
   );
 }
@@ -598,6 +1001,8 @@ function ChildDetail() {
   const t = useTokens();
   const k = APP_DATA.kids[0]; // Maya
 
+  const [showPause, setShowPause] = React.useState(false);
+
   return (
     <WebShell
       role="parent"
@@ -606,7 +1011,12 @@ function ChildDetail() {
       subtitle={"Family › Kids › Maya · iPhone 14 · Last active 12 min ago"}
       headerExtra={
         <>
-          <Button variant="outline" size="sm" icon="lock">
+          <Button
+            variant="outline"
+            size="sm"
+            icon="lock"
+            onClick={() => setShowPause(true)}
+          >
             Pause device
           </Button>
           <Button variant="primary" size="sm" icon="plus">
@@ -901,6 +1311,104 @@ function ChildDetail() {
           </div>
         </Card>
       </div>
+
+      {/* Pause Confirmation Modal */}
+      {showPause && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 11000,
+            background: "rgba(0,0,0,0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            animation: "fadeIn 0.2s ease-out",
+          }}
+          onClick={() => setShowPause(false)}
+        >
+          <div
+            style={{
+              width: 380,
+              background: t.c.surface,
+              borderRadius: 20,
+              padding: 24,
+              border: `1px solid ${t.c.border}`,
+              color: t.c.text,
+              textAlign: "center",
+              boxShadow: "0 15px 40px rgba(0,0,0,0.2)",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div
+              style={{
+                width: 56,
+                height: 56,
+                borderRadius: "50%",
+                background: t.c.dangerSoft,
+                color: t.c.danger,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                margin: "0 auto 16px",
+              }}
+            >
+              <Icon name="lock" size={28} />
+            </div>
+
+            <div
+              style={{
+                fontFamily: t.fontSerif,
+                fontSize: 22,
+                fontWeight: 500,
+                marginBottom: 8,
+              }}
+            >
+              Pause {k.name}'s Device?
+            </div>
+
+            <div
+              style={{
+                fontSize: 13.5,
+                color: t.c.textMute,
+                lineHeight: 1.5,
+                marginBottom: 24,
+              }}
+            >
+              This will lock all non-allowed apps on {k.name}'s {k.device}{" "}
+              immediately. You can unpause it at any time.
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={() => {
+                  alert(`${k.name}'s device paused!`);
+                  setShowPause(false);
+                }}
+                style={{
+                  width: "100%",
+                  background: t.c.danger,
+                  borderColor: t.c.danger,
+                  color: "#fff",
+                  justifyContent: "center",
+                }}
+              >
+                Pause immediately
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowPause(false)}
+                style={{ width: "100%", justifyContent: "center" }}
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </WebShell>
   );
 }

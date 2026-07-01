@@ -32,7 +32,11 @@ function Icon({
         typeof dd === "string" ? (
           <path key={i} d={dd} />
         ) : (
-          React.cloneElement(dd, { key: i })
+          React.cloneElement(dd, {
+            key: i,
+            stroke: dd.props.stroke || c,
+            fill: dd.props.fill || "none",
+          })
         ),
       )}
     </svg>
@@ -961,6 +965,7 @@ function WebShell({
                 borderRadius: 10,
                 width: 36,
                 height: 36,
+                color: t.c.text,
                 cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
