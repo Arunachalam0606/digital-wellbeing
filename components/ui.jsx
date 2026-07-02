@@ -113,6 +113,8 @@ function Icon({
       return P("M6 6l12 12", "M18 6L6 18");
     case "arrowRight":
       return P("M5 12h14", "M13 6l6 6-6 6");
+    case "arrowLeft":
+      return P("M19 12H5", "M11 6l-6 6 6 6");
     case "arrowUp":
       return P("M12 19V5", "M6 11l6-6 6 6");
     case "arrowDown":
@@ -757,8 +759,18 @@ function WebShell({
           { id: "adblock", label: "Ad Blocker", icon: "shield" },
         ];
 
-  const displayTitle = currentRole === role ? title : (currentRole === "parent" ? "Good afternoon, Sarah" : "Less screen. More you.");
-  const displaySubtitle = currentRole === role ? subtitle : (currentRole === "parent" ? "Thursday, April 16 · Family overview" : "Personal · Thursday afternoon");
+  const displayTitle =
+    currentRole === role
+      ? title
+      : currentRole === "parent"
+        ? "Good afternoon, Sarah"
+        : "Less screen. More you.";
+  const displaySubtitle =
+    currentRole === role
+      ? subtitle
+      : currentRole === "parent"
+        ? "Thursday, April 16 · Family overview"
+        : "Personal · Thursday afternoon";
 
   return (
     <div
@@ -788,15 +800,17 @@ function WebShell({
         </div>
 
         {/* Dynamic Mode Switcher */}
-        <div style={{
-          display: "flex",
-          gap: 4,
-          background: t.c.surface2,
-          padding: 3,
-          borderRadius: 8,
-          marginBottom: 16,
-          border: `1px solid ${t.c.border}`
-        }}>
+        <div
+          style={{
+            display: "flex",
+            gap: 4,
+            background: t.c.surface2,
+            padding: 3,
+            borderRadius: 8,
+            marginBottom: 16,
+            border: `1px solid ${t.c.border}`,
+          }}
+        >
           <button
             onClick={() => setCurrentRole("parent")}
             style={{
@@ -804,7 +818,8 @@ function WebShell({
               padding: "6px 4px",
               borderRadius: 6,
               border: "none",
-              background: currentRole === "parent" ? t.c.surface : "transparent",
+              background:
+                currentRole === "parent" ? t.c.surface : "transparent",
               color: currentRole === "parent" ? t.c.primary : t.c.textMute,
               fontWeight: 600,
               fontSize: 11.5,
@@ -813,10 +828,14 @@ function WebShell({
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              gap: 4
+              gap: 4,
             }}
           >
-            <Icon name="users" size={12} color={currentRole === "parent" ? t.c.primary : t.c.textMute} />
+            <Icon
+              name="users"
+              size={12}
+              color={currentRole === "parent" ? t.c.primary : t.c.textMute}
+            />
             <span>Family Hub</span>
           </button>
           <button
@@ -826,7 +845,8 @@ function WebShell({
               padding: "6px 4px",
               borderRadius: 6,
               border: "none",
-              background: currentRole === "personal" ? t.c.surface : "transparent",
+              background:
+                currentRole === "personal" ? t.c.surface : "transparent",
               color: currentRole === "personal" ? t.c.primary : t.c.textMute,
               fontWeight: 600,
               fontSize: 11.5,
@@ -835,10 +855,14 @@ function WebShell({
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              gap: 4
+              gap: 4,
             }}
           >
-            <Icon name="leaf" size={12} color={currentRole === "personal" ? t.c.primary : t.c.textMute} />
+            <Icon
+              name="leaf"
+              size={12}
+              color={currentRole === "personal" ? t.c.primary : t.c.textMute}
+            />
             <span>My Space</span>
           </button>
         </div>
@@ -921,7 +945,9 @@ function WebShell({
         >
           <Avatar
             name={
-              currentRole === "parent" ? APP_DATA.parent.name : APP_DATA.personal.name
+              currentRole === "parent"
+                ? APP_DATA.parent.name
+                : APP_DATA.personal.name
             }
             size={30}
             color={currentRole === "parent" ? t.c.primary : t.c.accent}
@@ -965,7 +991,7 @@ function WebShell({
             justifyContent: "space-between",
             padding: "22px 32px 18px",
             gap: 16,
-            position: "relative"
+            position: "relative",
           }}
         >
           <div style={{ minWidth: 0 }}>
@@ -1040,46 +1066,98 @@ function WebShell({
                   alignItems: "center",
                   justifyContent: "center",
                   position: "relative",
-                  boxSizing: "border-box"
+                  boxSizing: "border-box",
                 }}
               >
                 <Icon name="bell" size={16} />
-                <div style={{
-                  position: "absolute",
-                  top: 3,
-                  right: 3,
-                  width: 7,
-                  height: 7,
-                  borderRadius: "50%",
-                  background: t.c.danger,
-                }} />
+                <div
+                  style={{
+                    position: "absolute",
+                    top: 3,
+                    right: 3,
+                    width: 7,
+                    height: 7,
+                    borderRadius: "50%",
+                    background: t.c.danger,
+                  }}
+                />
               </button>
 
               {/* Notification list popover */}
               {showNotifPopover && (
-                <div style={{
-                  position: "absolute",
-                  top: 48,
-                  right: 0,
-                  width: 320,
-                  background: t.c.surface,
-                  border: `1px solid ${t.c.border}`,
-                  borderRadius: 16,
-                  boxShadow: "0 10px 32px rgba(0,0,0,.08)",
-                  zIndex: 999,
-                  padding: "16px 0",
-                }}>
-                  <div style={{ padding: "0 16px 12px", borderBottom: `1px solid ${t.c.border}`, fontWeight: 600, fontSize: 13, color: t.c.text, display: "flex", justifyContent: "space-between" }}>
+                <div
+                  style={{
+                    position: "absolute",
+                    top: 48,
+                    right: 0,
+                    width: 320,
+                    background: t.c.surface,
+                    border: `1px solid ${t.c.border}`,
+                    borderRadius: 16,
+                    boxShadow: "0 10px 32px rgba(0,0,0,.08)",
+                    zIndex: 999,
+                    padding: "16px 0",
+                  }}
+                >
+                  <div
+                    style={{
+                      padding: "0 16px 12px",
+                      borderBottom: `1px solid ${t.c.border}`,
+                      fontWeight: 600,
+                      fontSize: 13,
+                      color: t.c.text,
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}
+                  >
                     <span>Recent Alerts</span>
-                    <span style={{ fontSize: 11, color: t.c.primary, cursor: "pointer" }} onClick={() => setShowNotifPopover(false)}>Dismiss</span>
+                    <span
+                      style={{
+                        fontSize: 11,
+                        color: t.c.primary,
+                        cursor: "pointer",
+                      }}
+                      onClick={() => setShowNotifPopover(false)}
+                    >
+                      Dismiss
+                    </span>
                   </div>
                   <div style={{ maxHeight: 240, overflowY: "auto" }}>
                     {APP_DATA.notifications.slice(0, 4).map((n, i) => (
-                      <div key={i} style={{ padding: "12px 16px", borderBottom: i < 3 ? `1px dashed ${t.c.border}` : "none", display: "flex", gap: 10, alignItems: "flex-start" }}>
-                        <div style={{ fontSize: 14, marginTop: 2 }}>{n.kind === "limit-hit" ? "⚠️" : "🔔"}</div>
+                      <div
+                        key={i}
+                        style={{
+                          padding: "12px 16px",
+                          borderBottom:
+                            i < 3 ? `1px dashed ${t.c.border}` : "none",
+                          display: "flex",
+                          gap: 10,
+                          alignItems: "flex-start",
+                        }}
+                      >
+                        <div style={{ fontSize: 14, marginTop: 2 }}>
+                          {n.kind === "limit-hit" ? "⚠️" : "🔔"}
+                        </div>
                         <div style={{ flex: 1 }}>
-                          <div style={{ fontSize: 12, fontWeight: 500, color: t.c.text, lineHeight: 1.4 }}>{n.text}</div>
-                          <div style={{ fontSize: 10, color: t.c.textMute, marginTop: 4 }}>{n.time}</div>
+                          <div
+                            style={{
+                              fontSize: 12,
+                              fontWeight: 500,
+                              color: t.c.text,
+                              lineHeight: 1.4,
+                            }}
+                          >
+                            {n.text}
+                          </div>
+                          <div
+                            style={{
+                              fontSize: 10,
+                              color: t.c.textMute,
+                              marginTop: 4,
+                            }}
+                          >
+                            {n.time}
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -1092,10 +1170,14 @@ function WebShell({
 
         {/* Page content */}
         <div style={{ flex: 1, padding: "4px 32px 32px", overflow: "auto" }}>
-          {currentRole === role ? children : (
-            currentRole === "personal" && window.PersonalDashboardInner ? <window.PersonalDashboardInner /> : (
-              currentRole === "parent" && window.ParentDashboardInner ? <window.ParentDashboardInner /> : children
-            )
+          {currentRole === role ? (
+            children
+          ) : currentRole === "personal" && window.PersonalDashboardInner ? (
+            <window.PersonalDashboardInner />
+          ) : currentRole === "parent" && window.ParentDashboardInner ? (
+            <window.ParentDashboardInner />
+          ) : (
+            children
           )}
         </div>
       </div>
