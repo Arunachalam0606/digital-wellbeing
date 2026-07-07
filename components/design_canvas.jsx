@@ -302,7 +302,7 @@ function DesignCanvas({ children, minScale, maxScale, style }) {
           e.currentTarget.style.transform = "scale(1)";
         }}
       >
-        <span>🎯</span> Reset to Sign Up
+        Reset to Sign Up
       </button>
     </DCCtx.Provider>
   );
