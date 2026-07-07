@@ -266,6 +266,44 @@ function DesignCanvas({ children, minScale, maxScale, style }) {
           sectionOrder={sectionOrder}
         />
       )}
+      <button
+        type="button"
+        onClick={() => {
+          window.dispatchEvent(
+            new CustomEvent("reset-dc-viewport", {
+              detail: { targetId: "web-signup-screen" },
+            }),
+          );
+        }}
+        style={{
+          position: "fixed",
+          left: 20,
+          bottom: 20,
+          zIndex: 999,
+          padding: "10px 14px",
+          borderRadius: 10,
+          background: "#5c8a6b",
+          color: "white",
+          border: "1px solid rgba(255,255,255,0.15)",
+          fontWeight: 600,
+          fontSize: 12.5,
+          cursor: "pointer",
+          boxShadow: "0 6px 20px rgba(0,0,0,0.12)",
+          display: "flex",
+          alignItems: "center",
+          gap: 6,
+          fontFamily: "system-ui, -apple-system, sans-serif",
+          transition: "transform 0.15s, opacity 0.15s",
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = "scale(1.04)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = "scale(1)";
+        }}
+      >
+        <span>🎯</span> Reset to Sign Up
+      </button>
     </DCCtx.Provider>
   );
 }
@@ -346,6 +384,76 @@ function DCViewport({ children, minScale = 0.1, maxScale = 8, style = {} }) {
       flush();
     };
   }, []);
+
+  React.useEffect(() => {
+    const handleReset = (e) => {
+      const targetId = e.detail?.targetId || "web-signup-screen";
+      const abEl = document.querySelector(`[data-dc-slot="${targetId}"]`);
+      const worldEl = worldRef.current;
+      const vpEl = vpRef.current;
+      if (!abEl || !worldEl || !vpEl) return;
+
+      const abRect = abEl.getBoundingClientRect();
+      const worldRect = worldEl.getBoundingClientRect();
+      const vpRect = vpEl.getBoundingClientRect();
+
+      const currentScale = tf.current.scale;
+      const relativeLeft = (abRect.left - worldRect.left) / currentScale;
+      const relativeTop = (abRect.top - worldRect.top) / currentScale;
+
+      const nextScale = 0.8;
+      const targetX = Math.max(
+        20,
+        (vpRect.width - abEl.offsetWidth * nextScale) / 2,
+      );
+      const targetY = 80;
+
+      tf.current = {
+        x: targetX - relativeLeft * nextScale,
+        y: targetY - relativeTop * nextScale,
+        scale: nextScale,
+      };
+      apply();
+    };
+
+    window.addEventListener("reset-dc-viewport", handleReset);
+
+    // Centering on first load/refresh once the signup screen mounts
+    const timer = setInterval(() => {
+      const abEl = document.querySelector(`[data-dc-slot="web-signup-screen"]`);
+      const worldEl = worldRef.current;
+      const vpEl = vpRef.current;
+      if (abEl && worldEl && vpEl) {
+        clearInterval(timer);
+        const abRect = abEl.getBoundingClientRect();
+        const worldRect = worldEl.getBoundingClientRect();
+        const vpRect = vpEl.getBoundingClientRect();
+
+        const currentScale = tf.current.scale;
+        const relativeLeft = (abRect.left - worldRect.left) / currentScale;
+        const relativeTop = (abRect.top - worldRect.top) / currentScale;
+
+        const nextScale = 0.8;
+        const targetX = Math.max(
+          20,
+          (vpRect.width - abEl.offsetWidth * nextScale) / 2,
+        );
+        const targetY = 80;
+
+        tf.current = {
+          x: targetX - relativeLeft * nextScale,
+          y: targetY - relativeTop * nextScale,
+          scale: nextScale,
+        };
+        apply();
+      }
+    }, 50);
+
+    return () => {
+      window.removeEventListener("reset-dc-viewport", handleReset);
+      clearInterval(timer);
+    };
+  }, [apply]);
 
   React.useEffect(() => {
     const vp = vpRef.current;
@@ -446,7 +554,9 @@ function DCViewport({ children, minScale = 0.1, maxScale = 8, style = {} }) {
     // background (anything that isn't an artboard or an inline editor).
     let drag = null;
     const onPointerDown = (e) => {
-      const onBg = !e.target.closest("[data-dc-slot], .dc-editable");
+      const onBg = !e.target.closest(
+        "[data-dc-slot], .dc-editable, button, input, select, textarea, a",
+      );
       if (!(e.button === 1 || (e.button === 0 && onBg))) return;
       e.preventDefault();
       vp.setPointerCapture(e.pointerId);

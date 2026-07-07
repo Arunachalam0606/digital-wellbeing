@@ -85,6 +85,16 @@ function App() {
   const phoneAB = { width: 470, height: 940 };
   const dividerAB = { width: 1440, height: 260 };
 
+  const activePalette =
+    window.PALETTES?.[t.palette] ||
+    window.PALETTES?.default ||
+    (window.PALETTES ? Object.values(window.PALETTES)[0] : null);
+  const primaryColor = activePalette
+    ? t.dark
+      ? activePalette.dark?.primary
+      : activePalette.light?.primary
+    : "#5c8a6b";
+
   return (
     <>
       <DesignCanvas>
@@ -757,6 +767,42 @@ function App() {
             ]}
             onChange={(v) => setTweak("cardStyle", v)}
           />
+        </TweakSection>
+
+        <TweakSection label="Navigation">
+          <div style={{ padding: "6px 0 12px" }}>
+            <button
+              type="button"
+              onClick={() => {
+                window.dispatchEvent(
+                  new CustomEvent("reset-dc-viewport", {
+                    detail: { targetId: "web-signup-screen" },
+                  }),
+                );
+              }}
+              style={{
+                width: "100%",
+                padding: "10px 14px",
+                borderRadius: 8,
+                background: primaryColor,
+                color: t.dark ? "#121212" : "#ffffff",
+                border: "none",
+                fontWeight: 600,
+                fontSize: 12.5,
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 8,
+                boxShadow: "0 2px 6px rgba(0,0,0,0.06)",
+                transition: "opacity 0.15s",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.opacity = 0.9)}
+              onMouseLeave={(e) => (e.currentTarget.style.opacity = 1)}
+            >
+              Reset to Sign Up (new)
+            </button>
+          </div>
         </TweakSection>
 
         <div
