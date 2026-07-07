@@ -4,6 +4,247 @@ const { useState: useStateP } = React;
 
 // ───────────────────── Parent Dashboard ─────────────────────
 
+function WebNeedsAttentionStack() {
+  const t = useTokens();
+  const [activeIndex, setActiveIndex] = React.useState(0);
+
+  const items = [
+    {
+      id: 1,
+      icon: "message",
+      iconColor: t.c.blue,
+      title: "30 more minutes on Discord — Jaden",
+      sub: "Requested 12 min ago · expires in 6h",
+      action: "Review",
+      actionTone: "primary",
+      modalType: "review",
+    },
+    {
+      id: 2,
+      icon: "alert",
+      iconColor: t.c.warn,
+      title: "Roblox at 80% of daily limit — Maya",
+      sub: "48 / 60 min used",
+      action: "Extend",
+      modalType: "extend",
+    },
+    {
+      id: 3,
+      icon: "shield",
+      iconColor: t.c.danger,
+      title: "Bypass attempt on TikTok — Jaden",
+      sub: "1 hour ago",
+      action: "Investigate",
+      actionTone: "danger",
+      modalType: "investigate",
+    },
+    {
+      id: 4,
+      icon: "calendar",
+      iconColor: t.c.textMute,
+      title: "Weekend schedule activates in 6h",
+      sub: "Two profiles affected",
+      action: "Preview",
+      modalType: "preview",
+    },
+  ];
+
+  const handleNext = () => {
+    setActiveIndex((activeIndex + 1) % items.length);
+  };
+
+  const handlePrev = () => {
+    setActiveIndex((activeIndex - 1 + items.length) % items.length);
+  };
+
+  return (
+    <Card
+      style={{
+        background: t.c.yellowSoft,
+        border: "none",
+        position: "relative",
+        minHeight: 180,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+      }}
+    >
+      {/* Header */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: 8,
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            fontSize: 11.5,
+            fontWeight: 600,
+            color: t.c.yellowText,
+            textTransform: "uppercase",
+            letterSpacing: ".06em",
+          }}
+        >
+          <Icon name="alert" size={14} /> Needs attention
+        </div>
+        <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+          <span
+            style={{
+              fontSize: 11,
+              color: t.c.yellowText,
+              fontWeight: 600,
+              fontVariantNumeric: "tabular-nums",
+            }}
+          >
+            {activeIndex + 1}/{items.length}
+          </span>
+          <button
+            onClick={handlePrev}
+            style={{
+              width: 24,
+              height: 24,
+              borderRadius: "50%",
+              border: `1px solid ${t.c.border}`,
+              background: t.c.surface,
+              color: t.c.text,
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Icon name="arrowLeft" size={11} />
+          </button>
+          <button
+            onClick={handleNext}
+            style={{
+              width: 24,
+              height: 24,
+              borderRadius: "50%",
+              border: `1px solid ${t.c.border}`,
+              background: t.c.surface,
+              color: t.c.text,
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Icon name="arrowRight" size={11} />
+          </button>
+        </div>
+      </div>
+
+      {/* Cards stack */}
+      <div style={{ position: "relative", flex: 1, marginTop: 8 }}>
+        {items.map((item, i) => {
+          let diff = i - activeIndex;
+          if (diff < 0) diff += items.length;
+
+          const isVisible = diff <= 2;
+          const zIndex = 10 - diff;
+          const scale = 1 - diff * 0.04;
+          const translateY = diff * 8;
+          const opacity =
+            diff === 0 ? 1 : diff === 1 ? 0.8 : diff === 2 ? 0.4 : 0;
+
+          return (
+            <div
+              key={item.id}
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                background: t.c.surface,
+                borderRadius: 12,
+                border: `1px solid ${t.c.border}`,
+                boxShadow: diff === 0 ? "0 4px 12px rgba(0,0,0,0.04)" : "none",
+                transform: `scale(${scale}) translateY(${translateY}px)`,
+                transformOrigin: "top center",
+                zIndex,
+                opacity: isVisible ? opacity : 0,
+                pointerEvents: diff === 0 ? "auto" : "none",
+                transition: "all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)",
+                padding: "12px 14px",
+              }}
+            >
+              <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+                <div
+                  style={{
+                    width: 28,
+                    height: 28,
+                    borderRadius: 8,
+                    background: t.c.surface2,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: item.iconColor,
+                  }}
+                >
+                  <Icon name={item.icon} size={13} color={item.iconColor} />
+                </div>
+                <div style={{ flex: 1, minWidth: 0, textAlign: "left" }}>
+                  <div
+                    style={{
+                      fontSize: 13,
+                      fontWeight: 600,
+                      color: t.c.text,
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {item.title}
+                  </div>
+                  <div style={{ fontSize: 11, color: t.c.textMute }}>
+                    {item.sub}
+                  </div>
+                </div>
+                <button
+                  onClick={() => window.triggerModal(item.modalType)}
+                  style={{
+                    padding: "4px 8px",
+                    borderRadius: 6,
+                    fontFamily: t.font,
+                    fontSize: 11,
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    background:
+                      item.actionTone === "primary"
+                        ? t.c.text
+                        : item.actionTone === "danger"
+                          ? t.c.dangerSoft
+                          : t.c.surface,
+                    color:
+                      item.actionTone === "primary"
+                        ? t.c.bg
+                        : item.actionTone === "danger"
+                          ? t.c.danger
+                          : t.c.text,
+                    border:
+                      item.actionTone === "primary" ||
+                      item.actionTone === "danger"
+                        ? "none"
+                        : `1px solid ${t.c.border}`,
+                  }}
+                >
+                  {item.action}
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </Card>
+  );
+}
+
 function ParentDashboardInner() {
   const t = useTokens();
   const D = APP_DATA;
@@ -147,42 +388,8 @@ function ParentDashboardInner() {
           </div>
         </Card>
 
-        {/* Quick stat - alerts */}
-        <Card style={{ background: t.c.yellowSoft, border: "none" }}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              fontSize: 11.5,
-              fontWeight: 600,
-              color: t.c.yellowText,
-              textTransform: "uppercase",
-              letterSpacing: ".06em",
-            }}
-          >
-            <Icon name="alert" size={14} /> Needs attention
-          </div>
-          <div
-            style={{
-              fontSize: 22,
-              fontWeight: 600,
-              marginTop: 12,
-              letterSpacing: "-.01em",
-              lineHeight: 1.25,
-            }}
-          >
-            Jaden requested 30 more minutes on Discord.
-          </div>
-          <div style={{ display: "flex", gap: 8, marginTop: 16 }}>
-            <Button variant="primary" size="sm">
-              Approve 30m
-            </Button>
-            <Button variant="outline" size="sm">
-              Decline
-            </Button>
-          </div>
-        </Card>
+        {/* Stacked Action queue */}
+        <WebNeedsAttentionStack />
 
         {/* Coach tip */}
         <Card>
@@ -493,9 +700,17 @@ function KidCard({ kid }) {
                 🔥 {kid.streak}-day streak
               </Chip>
             )}
-            <Chip bg={t.c.surface2} color={t.c.textMute}>
-              <Icon name="phone" size={10} /> {kid.device}
-            </Chip>
+            {kid.devices ? (
+              kid.devices.map((d) => (
+                <Chip key={d} bg={t.c.surface2} color={t.c.textMute}>
+                  <Icon name="phone" size={10} /> {d}
+                </Chip>
+              ))
+            ) : (
+              <Chip bg={t.c.surface2} color={t.c.textMute}>
+                <Icon name="phone" size={10} /> {kid.device}
+              </Chip>
+            )}
           </div>
           <div style={{ fontSize: 12, color: t.c.textMute, marginTop: 8 }}>
             Last active {kid.lastActive}
@@ -726,7 +941,7 @@ function KidCard({ kid }) {
                     Device
                   </div>
                   <div style={{ fontSize: 14, fontWeight: 500 }}>
-                    {kid.device}
+                    {kid.devices ? kid.devices.join(" & ") : kid.device}
                   </div>
                 </div>
                 <div
@@ -920,8 +1135,9 @@ function KidCard({ kid }) {
                 marginBottom: 24,
               }}
             >
-              This will lock all non-allowed apps on {kid.name}'s {kid.device}{" "}
-              immediately. You can unpause it at any time.
+              This will lock all non-allowed apps on {kid.name}'s{" "}
+              {kid.devices ? kid.devices.join(" & ") : kid.device} immediately.
+              You can unpause it at any time.
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -1398,8 +1614,9 @@ function ChildDetail() {
                 marginBottom: 24,
               }}
             >
-              This will lock all non-allowed apps on {k.name}'s {k.device}{" "}
-              immediately. You can unpause it at any time.
+              This will lock all non-allowed apps on {k.name}'s{" "}
+              {k.devices ? k.devices.join(" & ") : k.device} immediately. You
+              can unpause it at any time.
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>

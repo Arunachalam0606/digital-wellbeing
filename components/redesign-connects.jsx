@@ -340,11 +340,13 @@ function DevicesPane() {
               {d.status === "paused" ? "Resume" : "Pause"}
             </button>
             <button
+              onClick={() => window.triggerModal("...")}
               style={{
-                padding: "7px 10px",
-                borderRadius: 7,
-                background: t.c.surface2,
-                border: `1px solid ${t.c.border}`,
+                width: 28,
+                height: 28,
+                borderRadius: 8,
+                border: "none",
+                background: "transparent",
                 color: t.c.textMute,
                 cursor: "pointer",
                 display: "flex",
@@ -360,6 +362,7 @@ function DevicesPane() {
 
       {/* Add-device tile */}
       <div
+        onClick={() => window.triggerModal("pair")}
         style={{
           padding: 20,
           borderRadius: 16,
@@ -788,6 +791,7 @@ function AppsPane() {
 function WebConnectsNew() {
   const t = useTokens();
   const [tab, setTab] = useStateCon("devices");
+  const [mode, setMode] = useStateCon("family");
 
   const tabs = [
     { key: "devices", label: "Devices", icon: "phone", count: 5 },
@@ -797,8 +801,9 @@ function WebConnectsNew() {
 
   return (
     <WorkspaceShell
-      mode="family"
+      mode={mode}
       active="connects"
+      onModeChange={setMode}
       title="Connects"
       subtitle="Everything paired to your workspace — devices, people, and apps"
     >

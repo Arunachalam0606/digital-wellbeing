@@ -80,6 +80,7 @@ function MobileScreen({
           {tab}
         </div>
       )}
+      <GlobalDrawerOrModal />
     </div>
   );
 }

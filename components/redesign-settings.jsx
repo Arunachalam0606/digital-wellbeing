@@ -146,6 +146,7 @@ function SettingsSection({ id, title, description, children }) {
 function WebSettingsNew() {
   const t = useTokens();
   const [active, setActive] = useStateSet("account");
+  const [mode, setMode] = useStateSet("family");
 
   const sections = [
     { id: "account", label: "Account", icon: "user" },
@@ -159,8 +160,9 @@ function WebSettingsNew() {
 
   return (
     <WorkspaceShell
-      mode="family"
+      mode={mode}
       active="settings"
+      onModeChange={setMode}
       title="Settings"
       subtitle="Manage your account, family, and preferences"
     >
@@ -303,8 +305,43 @@ function WebSettingsNew() {
                     >
                       {k.name}
                     </div>
-                    <div style={{ fontSize: 12, color: t.c.textMute }}>
-                      Age {k.age} · {k.device} · Managed profile
+                    <div
+                      style={{
+                        fontSize: 12,
+                        color: t.c.textMute,
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 6,
+                        flexWrap: "wrap",
+                        marginTop: 2,
+                      }}
+                    >
+                      <span>Age {k.age}</span>
+                      <span>·</span>
+                      {k.devices ? (
+                        k.devices.map((d) => (
+                          <span
+                            key={d}
+                            style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: 3,
+                              background: t.c.surface2,
+                              padding: "2px 6px",
+                              borderRadius: 4,
+                              fontSize: 10,
+                              color: t.c.text,
+                            }}
+                          >
+                            <Icon name="phone" size={9} />
+                            {d}
+                          </span>
+                        ))
+                      ) : (
+                        <span>{k.device}</span>
+                      )}
+                      <span>·</span>
+                      <span>Managed profile</span>
                     </div>
                   </div>
                   <div

@@ -7,70 +7,311 @@ const { useState, useEffect, useMemo, useRef } = React;
 // TAB 1: Family — kids overview
 // ───────────────────────────────────────────────────────────────
 
+function MobNeedsAttentionStack() {
+  const t = useTokens();
+  const [activeIndex, setActiveIndex] = React.useState(0);
+  const [swipeOffset, setSwipeOffset] = React.useState(0);
+  const [isSwiping, setIsSwiping] = React.useState(false);
+  const startX = React.useRef(0);
+
+  const items = [
+    {
+      id: 1,
+      kid: 'Jaden',
+      title: 'requested 30 more minutes on Discord.',
+      modalType: 'review',
+      approveText: 'Approve 30m',
+    },
+    {
+      id: 2,
+      kid: 'Maya',
+      title: 'at 80% of daily limit for Roblox.',
+      modalType: 'extend',
+      approveText: 'Extend 15m',
+    },
+    {
+      id: 3,
+      kid: 'Jaden',
+      title: 'bypass attempt detected on TikTok.',
+      modalType: 'investigate',
+      approveText: 'Investigate',
+    },
+    {
+      id: 4,
+      kid: 'Family',
+      title: 'weekend schedule activates in 6h.',
+      modalType: 'preview',
+      approveText: 'Preview',
+    },
+  ];
+
+  const handleNext = () => {
+    setActiveIndex((activeIndex + 1) % items.length);
+    setSwipeOffset(0);
+  };
+
+  const handlePrev = () => {
+    setActiveIndex((activeIndex - 1 + items.length) % items.length);
+    setSwipeOffset(0);
+  };
+
+  const handleTouchStart = (e) => {
+    startX.current = e.touches[0].clientX;
+    setIsSwiping(true);
+  };
+
+  const handleTouchMove = (e) => {
+    const diff = e.touches[0].clientX - startX.current;
+    setSwipeOffset(diff);
+  };
+
+  const handleTouchEnd = () => {
+    setIsSwiping(false);
+    if (swipeOffset > 80) {
+      handleNext();
+    } else if (swipeOffset < -80) {
+      handlePrev();
+    } else {
+      setSwipeOffset(0);
+    }
+  };
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      {/* Header */}
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          padding: '0 4px',
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6,
+            fontSize: 10.5,
+            color: t.c.yellowText,
+            fontWeight: 600,
+            textTransform: 'uppercase',
+            letterSpacing: '.06em',
+          }}
+        >
+          <Icon name='alert' size={12} /> Needs you ({activeIndex + 1}/
+          {items.length})
+        </div>
+        <div style={{ display: 'flex', gap: 4 }}>
+          <button
+            onClick={handlePrev}
+            style={{
+              width: 24,
+              height: 24,
+              borderRadius: '50%',
+              border: `1px solid ${t.c.border}`,
+              background: t.c.surface,
+              color: t.c.text,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+            }}
+          >
+            <Icon name='arrowLeft' size={10} />
+          </button>
+          <button
+            onClick={handleNext}
+            style={{
+              width: 24,
+              height: 24,
+              borderRadius: '50%',
+              border: `1px solid ${t.c.border}`,
+              background: t.c.surface,
+              color: t.c.text,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+            }}
+          >
+            <Icon name='arrowRight' size={10} />
+          </button>
+        </div>
+      </div>
+
+      {/* Cards relative stack */}
+      <div style={{ position: 'relative', height: 135 }}>
+        {items.map((item, i) => {
+          let diff = i - activeIndex;
+          if (diff < 0) diff += items.length;
+
+          const isVisible = diff <= 2;
+          const zIndex = 10 - diff;
+          const scale = 1 - diff * 0.04;
+          const translateY = diff * 8;
+          const opacity =
+            diff === 0 ? 1 : diff === 1 ? 0.8 : diff === 2 ? 0.4 : 0;
+
+          // Apply swipe offset to the top card only
+          const tx = diff === 0 ? swipeOffset : 0;
+          const rot = diff === 0 ? swipeOffset * 0.1 : 0;
+
+          return (
+            <div
+              key={item.id}
+              onTouchStart={diff === 0 ? handleTouchStart : undefined}
+              onTouchMove={diff === 0 ? handleTouchMove : undefined}
+              onTouchEnd={diff === 0 ? handleTouchEnd : undefined}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                background: t.c.yellowSoft,
+                borderRadius: 16,
+                padding: 14,
+                boxShadow:
+                  diff === 0 ? '0 4px 16px rgba(40,30,20,.05)' : 'none',
+                transform:
+                  diff === 0
+                    ? `translate3d(${tx}px, ${translateY}px, 0) rotate(${rot}deg) scale(${scale})`
+                    : `translate3d(0, ${translateY}px, 0) scale(${scale})`,
+                transformOrigin: 'top center',
+                zIndex,
+                opacity: isVisible ? opacity : 0,
+                pointerEvents: diff === 0 ? 'auto' : 'none',
+                transition:
+                  isSwiping && diff === 0
+                    ? 'none'
+                    : 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
+                border: diff === 0 ? `1px solid ${t.c.border}` : 'none',
+              }}
+            >
+              <div
+                style={{
+                  fontSize: 13.5,
+                  color: t.c.text,
+                  lineHeight: 1.4,
+                  height: 42,
+                  overflow: 'hidden',
+                }}
+              >
+                <b>{item.kid}</b> {item.title}
+              </div>
+              <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+                <button
+                  onClick={() => window.triggerModal(item.modalType)}
+                  style={{
+                    flex: 1,
+                    background: t.c.primary,
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: 10,
+                    padding: '9px 0',
+                    fontWeight: 600,
+                    fontSize: 12.5,
+                    fontFamily: 'inherit',
+                    cursor: 'pointer',
+                  }}
+                >
+                  {item.approveText}
+                </button>
+                <button
+                  onClick={handleNext}
+                  style={{
+                    flex: 1,
+                    background: t.c.surface,
+                    color: t.c.text,
+                    border: `1px solid ${t.c.border}`,
+                    borderRadius: 10,
+                    padding: '9px 0',
+                    fontWeight: 600,
+                    fontSize: 12.5,
+                    fontFamily: 'inherit',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Decline
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function MobParentFamily({ android = false }) {
   const t = useTokens();
   const D = APP_DATA;
   const totalToday = D.kids.reduce((a, k) => a + k.todayMinutes, 0);
   const totalNotifs = D.kids.reduce(
     (a, k) => a + k.topApps.reduce((b, x) => b + x.notifs, 0),
-    0,
+    0
   );
 
   return (
     <MobileScreen
       android={android}
-      tab={<MobileTabBar items={parentTabs} active="family" />}
-      fab={<FAB icon="plus" />}
+      tab={<MobileTabBar items={parentTabs} active='family' />}
+      fab={<FAB icon='plus' />}
     >
       <MobileHeader
-        eyebrow="Family"
-        title="Hi, Sarah"
-        subtitle="Thursday, April 16 — Maya is under budget, Jaden is over."
-        action={<Avatar name="Sarah" size={34} color={t.c.primary} />}
+        eyebrow='Family'
+        title='Hi, Sarah'
+        subtitle='Thursday, April 16 — Maya is under budget, Jaden is over.'
+        action={<Avatar name='Sarah' size={34} color={t.c.primary} />}
       />
 
       <div
         style={{
-          padding: "0 18px",
-          display: "flex",
-          flexDirection: "column",
+          padding: '0 18px',
+          display: 'flex',
+          flexDirection: 'column',
           gap: 12,
         }}
       >
-        <MobileCard pad={16} bg={t.c.primarySoft} border={false} style={{ position: "relative", overflow: "hidden" }}>
+        <MobileCard
+          pad={16}
+          bg={t.c.primarySoft}
+          border={false}
+          style={{ position: 'relative', overflow: 'hidden' }}
+        >
           <svg
             style={{
-              position: "absolute",
+              position: 'absolute',
               bottom: 0,
               left: 0,
               right: 0,
               height: 48,
-              width: "100%",
+              width: '100%',
               opacity: 0.12,
-              pointerEvents: "none",
+              pointerEvents: 'none',
               zIndex: 0,
             }}
-            viewBox="0 0 100 40"
-            preserveAspectRatio="none"
+            viewBox='0 0 100 40'
+            preserveAspectRatio='none'
           >
             <path
-              d="M0,40 C15,20 30,35 45,15 C60,35 75,10 90,30 C95,20 100,40 100,40"
-              fill="none"
+              d='M0,40 C15,20 30,35 45,15 C60,35 75,10 90,30 C95,20 100,40 100,40'
+              fill='none'
               stroke={t.c.primary}
-              strokeWidth="3.5"
+              strokeWidth='3.5'
             />
             <path
-              d="M0,40 C15,20 30,35 45,15 C60,35 75,10 90,30 C95,20 100,40 100,40 L100,40 L0,40 Z"
+              d='M0,40 C15,20 30,35 45,15 C60,35 75,10 90,30 C95,20 100,40 100,40 L100,40 L0,40 Z'
               fill={t.c.primary}
             />
           </svg>
           <div
             style={{
-              position: "relative",
+              position: 'relative',
               zIndex: 1,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
             }}
           >
             <div>
@@ -79,8 +320,8 @@ function MobParentFamily({ android = false }) {
                   fontSize: 10.5,
                   color: t.c.primary,
                   fontWeight: 600,
-                  textTransform: "uppercase",
-                  letterSpacing: ".06em",
+                  textTransform: 'uppercase',
+                  letterSpacing: '.06em',
                 }}
               >
                 Family screen time today
@@ -90,7 +331,7 @@ function MobParentFamily({ android = false }) {
                   fontFamily: t.fontMono,
                   fontSize: 34,
                   fontWeight: 500,
-                  letterSpacing: "-.03em",
+                  letterSpacing: '-.03em',
                   color: t.c.text,
                   lineHeight: 1,
                   marginTop: 6,
@@ -99,20 +340,20 @@ function MobParentFamily({ android = false }) {
                 {fmtTime(totalToday)}
               </div>
             </div>
-            <Chip bg="rgba(255,255,255,.6)" color={t.c.primary}>
-              <Icon name="trendDown" size={11} /> 18%
+            <Chip bg='rgba(255,255,255,.6)' color={t.c.primary}>
+              <Icon name='trendDown' size={11} /> 18%
             </Chip>
           </div>
           {/* Stacked split by kid */}
           <div style={{ marginTop: 14 }}>
             <div
               style={{
-                display: "flex",
+                display: 'flex',
                 gap: 3,
                 height: 8,
                 borderRadius: 4,
-                overflow: "hidden",
-                background: "rgba(0,0,0,.06)",
+                overflow: 'hidden',
+                background: 'rgba(0,0,0,.06)',
               }}
             >
               {D.kids.map((k) => (
@@ -120,16 +361,16 @@ function MobParentFamily({ android = false }) {
                   key={k.id}
                   style={{
                     flex: k.todayMinutes,
-                    background: k.status === "over" ? t.c.danger : t.c.primary,
-                    opacity: k.status === "over" ? 1 : 0.7,
+                    background: k.status === 'over' ? t.c.danger : t.c.primary,
+                    opacity: k.status === 'over' ? 1 : 0.7,
                   }}
                 />
               ))}
             </div>
             <div
               style={{
-                display: "flex",
-                justifyContent: "space-between",
+                display: 'flex',
+                justifyContent: 'space-between',
                 marginTop: 8,
                 fontSize: 11,
               }}
@@ -137,7 +378,7 @@ function MobParentFamily({ android = false }) {
               {D.kids.map((k) => (
                 <span
                   key={k.id}
-                  style={{ display: "flex", alignItems: "center", gap: 5 }}
+                  style={{ display: 'flex', alignItems: 'center', gap: 5 }}
                 >
                   <span
                     style={{
@@ -145,11 +386,11 @@ function MobParentFamily({ android = false }) {
                       height: 7,
                       borderRadius: 2,
                       background:
-                        k.status === "over" ? t.c.danger : t.c.primary,
-                      opacity: k.status === "over" ? 1 : 0.7,
+                        k.status === 'over' ? t.c.danger : t.c.primary,
+                      opacity: k.status === 'over' ? 1 : 0.7,
                     }}
                   />
-                  {k.name}{" "}
+                  {k.name}{' '}
                   <span style={{ fontFamily: t.fontMono, color: t.c.textMute }}>
                     {fmtTime(k.todayMinutes)}
                   </span>
@@ -161,7 +402,7 @@ function MobParentFamily({ android = false }) {
 
         {/* Coach insight */}
         <MobileCard pad={14}>
-          <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
             <div
               style={{
                 width: 32,
@@ -169,13 +410,13 @@ function MobParentFamily({ android = false }) {
                 borderRadius: 10,
                 background: t.c.primarySoft,
                 color: t.c.primary,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
                 flexShrink: 0,
               }}
             >
-              <Icon name="sparkles" size={16} />
+              <Icon name='sparkles' size={16} />
             </div>
             <div style={{ flex: 1 }}>
               <div
@@ -183,8 +424,8 @@ function MobParentFamily({ android = false }) {
                   fontSize: 11,
                   color: t.c.primary,
                   fontWeight: 600,
-                  textTransform: "uppercase",
-                  letterSpacing: ".06em",
+                  textTransform: 'uppercase',
+                  letterSpacing: '.06em',
                 }}
               >
                 Coach
@@ -197,93 +438,34 @@ function MobParentFamily({ android = false }) {
               <button
                 style={{
                   marginTop: 10,
-                  background: "transparent",
-                  border: "none",
+                  background: 'transparent',
+                  border: 'none',
                   padding: 0,
                   color: t.c.primary,
                   fontSize: 12.5,
                   fontWeight: 600,
-                  fontFamily: "inherit",
-                  display: "flex",
-                  alignItems: "center",
+                  fontFamily: 'inherit',
+                  display: 'flex',
+                  alignItems: 'center',
                   gap: 4,
-                  cursor: "pointer",
+                  cursor: 'pointer',
                 }}
               >
-                Create schedule <Icon name="arrowRight" size={13} />
+                Create schedule <Icon name='arrowRight' size={13} />
               </button>
             </div>
           </div>
         </MobileCard>
 
-        {/* Pending request */}
-        <MobileCard pad={14} bg={t.c.yellowSoft} border={false}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 6,
-              fontSize: 10.5,
-              color: t.c.yellowText,
-              fontWeight: 600,
-              textTransform: "uppercase",
-              letterSpacing: ".06em",
-            }}
-          >
-            <Icon name="alert" size={12} /> Needs you
-          </div>
-          <div
-            style={{
-              fontSize: 13.5,
-              marginTop: 6,
-              lineHeight: 1.4,
-              color: t.c.text,
-            }}
-          >
-            <b>Jaden</b> requested 30 more minutes on Discord.
-          </div>
-          <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
-            <button
-              style={{
-                flex: 1,
-                background: t.c.primary,
-                color: "white",
-                border: "none",
-                borderRadius: 10,
-                padding: "10px 0",
-                fontWeight: 600,
-                fontSize: 13,
-                fontFamily: "inherit",
-                cursor: "pointer",
-              }}
-            >
-              Approve 30m
-            </button>
-            <button
-              style={{
-                flex: 1,
-                background: t.c.surface,
-                color: t.c.text,
-                border: `1px solid ${t.c.border}`,
-                borderRadius: 10,
-                padding: "10px 0",
-                fontWeight: 600,
-                fontSize: 13,
-                fontFamily: "inherit",
-                cursor: "pointer",
-              }}
-            >
-              Decline
-            </button>
-          </div>
-        </MobileCard>
+        {/* Touch-swipe stack of pending alerts */}
+        <MobNeedsAttentionStack />
 
         {/* Kids list */}
         <div
           style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "baseline",
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'baseline',
             marginTop: 6,
           }}
         >
@@ -292,20 +474,20 @@ function MobParentFamily({ android = false }) {
               fontFamily: t.fontSerif,
               fontSize: 20,
               fontWeight: 500,
-              letterSpacing: "-.01em",
+              letterSpacing: '-.01em',
             }}
           >
             Your kids
           </div>
           <button
             style={{
-              background: "transparent",
-              border: "none",
+              background: 'transparent',
+              border: 'none',
               color: t.c.primary,
               fontSize: 13,
               fontWeight: 600,
-              fontFamily: "inherit",
-              cursor: "pointer",
+              fontFamily: 'inherit',
+              cursor: 'pointer',
             }}
           >
             Add
@@ -319,38 +501,38 @@ function MobParentFamily({ android = false }) {
         {/* Quick links to other parent tabs */}
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
             gap: 10,
             marginTop: 6,
           }}
         >
           <QuickLink
-            icon="shieldCheck"
-            label="Ads blocked"
+            icon='shieldCheck'
+            label='Ads blocked'
             value={D.adBlocker.blockedToday.toLocaleString()}
-            sub="today · all devices"
+            sub='today · all devices'
             color={t.c.primary}
           />
           <QuickLink
-            icon="bell"
-            label="Notifications"
+            icon='bell'
+            label='Notifications'
             value={totalNotifs.toString()}
-            sub="family · today"
+            sub='family · today'
             color={t.c.lavender}
           />
           <QuickLink
-            icon="calendar"
-            label="Schedules"
-            value="2 active"
-            sub="Schoolday + Weekend"
+            icon='calendar'
+            label='Schedules'
+            value='2 active'
+            sub='Schoolday + Weekend'
             color={t.c.blue}
           />
           <QuickLink
-            icon="trophy"
-            label="Achievements"
-            value="3 this week"
-            sub="Maya: 3 streaks"
+            icon='trophy'
+            label='Achievements'
+            value='3 this week'
+            sub='Maya: 3 streaks'
             color={t.c.warn}
           />
         </div>
@@ -363,11 +545,11 @@ function MobParentFamily({ android = false }) {
 
 function KidMobileCard({ kid }) {
   const t = useTokens();
-  const over = kid.status === "over";
+  const over = kid.status === 'over';
   return (
     <MobileCard pad={0}>
       <div
-        style={{ padding: 14, display: "flex", alignItems: "center", gap: 14 }}
+        style={{ padding: 14, display: 'flex', alignItems: 'center', gap: 14 }}
       >
         <Ring
           value={kid.todayMinutes}
@@ -379,13 +561,13 @@ function KidMobileCard({ kid }) {
           <Avatar name={kid.name} color={kid.avatar} size={42} />
         </Ring>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
             <div
               style={{
                 fontFamily: t.fontSerif,
                 fontSize: 22,
                 fontWeight: 500,
-                letterSpacing: "-.01em",
+                letterSpacing: '-.01em',
               }}
             >
               {kid.name}
@@ -395,7 +577,7 @@ function KidMobileCard({ kid }) {
             </span>
           </div>
           <div
-            style={{ display: "flex", gap: 6, marginTop: 6, flexWrap: "wrap" }}
+            style={{ display: 'flex', gap: 6, marginTop: 6, flexWrap: 'wrap' }}
           >
             {over ? (
               <Chip
@@ -425,15 +607,15 @@ function KidMobileCard({ kid }) {
             )}
           </div>
         </div>
-        <Icon name="arrowRight" size={16} color={t.c.textMute} />
+        <Icon name='arrowRight' size={16} color={t.c.textMute} />
       </div>
       {/* Mini app strip */}
       <div
         style={{
           borderTop: `1px solid ${t.c.border}`,
-          padding: "10px 14px",
-          display: "flex",
-          alignItems: "center",
+          padding: '10px 14px',
+          display: 'flex',
+          alignItems: 'center',
           gap: 8,
         }}
       >
@@ -441,10 +623,10 @@ function KidMobileCard({ kid }) {
           <div
             key={i}
             style={{
-              display: "flex",
-              alignItems: "center",
+              display: 'flex',
+              alignItems: 'center',
               gap: 6,
-              flex: i === 0 ? 1 : "0 0 auto",
+              flex: i === 0 ? 1 : '0 0 auto',
             }}
           >
             <AppTile app={a} size={22} radius={6} />
@@ -454,9 +636,9 @@ function KidMobileCard({ kid }) {
                   style={{
                     fontSize: 11.5,
                     fontWeight: 600,
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
                   }}
                 >
                   {a.name}
@@ -492,50 +674,50 @@ function QuickLink({ icon, label, value, sub, color }) {
         border: `1px solid ${t.c.border}`,
         borderRadius: 14,
         padding: 12,
-        position: "relative",
-        overflow: "hidden",
+        position: 'relative',
+        overflow: 'hidden',
       }}
     >
       {/* Sparkline background */}
       <svg
         style={{
-          position: "absolute",
+          position: 'absolute',
           bottom: 0,
           left: 0,
           right: 0,
           height: 22,
-          width: "100%",
+          width: '100%',
           opacity: t.dark ? 0.08 : 0.12,
-          pointerEvents: "none",
+          pointerEvents: 'none',
           zIndex: 0,
         }}
-        viewBox="0 0 100 40"
-        preserveAspectRatio="none"
+        viewBox='0 0 100 40'
+        preserveAspectRatio='none'
       >
         <path
-          d="M0,40 C15,15 35,35 50,10 C70,30 85,5 100,40"
-          fill="none"
+          d='M0,40 C15,15 35,35 50,10 C70,30 85,5 100,40'
+          fill='none'
           stroke={cTheme}
-          strokeWidth="3.5"
+          strokeWidth='3.5'
         />
         <path
-          d="M0,40 C15,15 35,35 50,10 C70,30 85,5 100,40 L100,40 L0,40 Z"
+          d='M0,40 C15,15 35,35 50,10 C70,30 85,5 100,40 L100,40 L0,40 Z'
           fill={cTheme}
         />
       </svg>
 
-      <div style={{ position: "relative", zIndex: 1 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+      <div style={{ position: 'relative', zIndex: 1 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <div
             style={{
               width: 26,
               height: 26,
               borderRadius: 8,
-              background: cTheme + "22",
+              background: cTheme + '22',
               color: cTheme,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
             }}
           >
             <Icon name={icon} size={14} />
@@ -545,8 +727,8 @@ function QuickLink({ icon, label, value, sub, color }) {
               fontSize: 10.5,
               color: t.c.textMute,
               fontWeight: 600,
-              textTransform: "uppercase",
-              letterSpacing: ".05em",
+              textTransform: 'uppercase',
+              letterSpacing: '.05em',
             }}
           >
             {label}
@@ -558,7 +740,7 @@ function QuickLink({ icon, label, value, sub, color }) {
             fontSize: 18,
             fontWeight: 500,
             marginTop: 8,
-            letterSpacing: "-.02em",
+            letterSpacing: '-.02em',
             color: t.c.text,
           }}
         >
@@ -599,56 +781,56 @@ function MobParentMe({ android = false }) {
     ],
     apps: [
       {
-        name: "Slack",
-        cat: "Communication",
+        name: 'Slack',
+        cat: 'Communication',
         mins: 38,
         limit: null,
-        color: "#4A154B",
+        color: '#4A154B',
         pickups: 18,
         notifs: 24,
       },
       {
-        name: "Mail",
-        cat: "Communication",
+        name: 'Mail',
+        cat: 'Communication',
         mins: 20,
         limit: null,
-        color: "#0064D2",
+        color: '#0064D2',
         pickups: 9,
         notifs: 14,
       },
       {
-        name: "Instagram",
-        cat: "Social",
+        name: 'Instagram',
+        cat: 'Social',
         mins: 22,
         limit: 30,
-        color: "#E1306C",
+        color: '#E1306C',
         pickups: 8,
         notifs: 9,
       },
       {
-        name: "Safari",
-        cat: "Productivity",
+        name: 'Safari',
+        cat: 'Productivity',
         mins: 32,
         limit: null,
-        color: "#1F8AFF",
+        color: '#1F8AFF',
         pickups: 12,
         notifs: 0,
       },
       {
-        name: "YouTube",
-        cat: "Video",
+        name: 'YouTube',
+        cat: 'Video',
         mins: 16,
         limit: null,
-        color: "#FF0000",
+        color: '#FF0000',
         pickups: 4,
         notifs: 2,
       },
       {
-        name: "NYT",
-        cat: "Reading",
+        name: 'NYT',
+        cat: 'Reading',
         mins: 12,
         limit: null,
-        color: "#000000",
+        color: '#000000',
         pickups: 3,
         notifs: 1,
       },
@@ -658,27 +840,27 @@ function MobParentMe({ android = false }) {
   return (
     <MobileScreen
       android={android}
-      tab={<MobileTabBar items={parentTabs} active="me" />}
+      tab={<MobileTabBar items={parentTabs} active='me' />}
     >
       <MobileHeader
-        eyebrow="Just for you"
-        title="Today, well-spent."
+        eyebrow='Just for you'
+        title='Today, well-spent.'
         subtitle="Your screen time — separate from the kids' world."
-        action={<Avatar name="Sarah" size={34} color={t.c.primary} />}
+        action={<Avatar name='Sarah' size={34} color={t.c.primary} />}
       />
 
       <div
         style={{
-          padding: "0 18px",
-          display: "flex",
-          flexDirection: "column",
+          padding: '0 18px',
+          display: 'flex',
+          flexDirection: 'column',
           gap: 12,
         }}
       >
         {/* Big ring */}
         <MobileCard
           pad={20}
-          style={{ display: "flex", alignItems: "center", gap: 18 }}
+          style={{ display: 'flex', alignItems: 'center', gap: 18 }}
         >
           <Ring
             value={me.todayMinutes}
@@ -687,13 +869,13 @@ function MobParentMe({ android = false }) {
             stroke={11}
             color={t.c.primary}
           >
-            <div style={{ textAlign: "center" }}>
+            <div style={{ textAlign: 'center' }}>
               <div
                 style={{
                   fontFamily: t.fontMono,
                   fontSize: 22,
                   fontWeight: 500,
-                  letterSpacing: "-.02em",
+                  letterSpacing: '-.02em',
                   lineHeight: 1,
                 }}
               >
@@ -710,7 +892,7 @@ function MobParentMe({ android = false }) {
                 fontFamily: t.fontSerif,
                 fontSize: 22,
                 fontWeight: 500,
-                letterSpacing: "-.02em",
+                letterSpacing: '-.02em',
                 lineHeight: 1.2,
               }}
             >
@@ -719,10 +901,10 @@ function MobParentMe({ android = false }) {
             </div>
             <div
               style={{
-                display: "flex",
+                display: 'flex',
                 gap: 6,
                 marginTop: 10,
-                flexWrap: "wrap",
+                flexWrap: 'wrap',
               }}
             >
               <Chip
@@ -747,9 +929,9 @@ function MobParentMe({ android = false }) {
         <MobileCard>
           <div
             style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "baseline",
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'baseline',
               marginBottom: 10,
             }}
           >
@@ -766,14 +948,14 @@ function MobParentMe({ android = false }) {
           />
           <div
             style={{
-              display: "flex",
-              justifyContent: "space-between",
+              display: 'flex',
+              justifyContent: 'space-between',
               marginTop: 6,
               fontSize: 10,
               color: t.c.textMute,
             }}
           >
-            {["S", "M", "T", "W", "T", "F", "S"].map((d, i) => (
+            {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => (
               <span
                 key={i}
                 style={{
@@ -786,9 +968,9 @@ function MobParentMe({ android = false }) {
             ))}
           </div>
           <div
-            style={{ display: "flex", gap: 14, marginTop: 10, fontSize: 10.5 }}
+            style={{ display: 'flex', gap: 14, marginTop: 10, fontSize: 10.5 }}
           >
-            <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
               <span
                 style={{
                   width: 12,
@@ -799,7 +981,7 @@ function MobParentMe({ android = false }) {
               />
               This week
             </span>
-            <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
               <span
                 style={{
                   width: 12,
@@ -819,19 +1001,19 @@ function MobParentMe({ android = false }) {
           <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 12 }}>
             Today by category
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
             <MobileDonut
               data={me.categories}
               size={130}
               stroke={18}
-              centerLabel="today"
+              centerLabel='today'
               centerValue={fmtTime(me.todayMinutes)}
             />
             <div
               style={{
                 flex: 1,
-                display: "flex",
-                flexDirection: "column",
+                display: 'flex',
+                flexDirection: 'column',
                 gap: 6,
               }}
             >
@@ -842,8 +1024,8 @@ function MobParentMe({ android = false }) {
                   <div
                     key={cat}
                     style={{
-                      display: "flex",
-                      alignItems: "center",
+                      display: 'flex',
+                      alignItems: 'center',
                       gap: 6,
                       fontSize: 11.5,
                     }}
@@ -852,7 +1034,7 @@ function MobParentMe({ android = false }) {
                       style={{
                         width: 8,
                         height: 8,
-                        borderRadius: "50%",
+                        borderRadius: '50%',
                         background: APP_DATA.categoryColors[cat],
                       }}
                     />
@@ -876,9 +1058,9 @@ function MobParentMe({ android = false }) {
         <MobileCard>
           <div
             style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "baseline",
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'baseline',
               marginBottom: 8,
             }}
           >
@@ -907,7 +1089,7 @@ function MobParentMe({ android = false }) {
               lineHeight: 1.4,
             }}
           >
-            Most pickups happen at <b style={{ color: t.c.text }}>9am</b> and{" "}
+            Most pickups happen at <b style={{ color: t.c.text }}>9am</b> and{' '}
             <b style={{ color: t.c.text }}>5pm</b>.
           </div>
         </MobileCard>
@@ -916,22 +1098,22 @@ function MobParentMe({ android = false }) {
         <MobileCard>
           <div
             style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
               marginBottom: 8,
             }}
           >
             <span style={{ fontSize: 13, fontWeight: 600 }}>My apps today</span>
             <button
               style={{
-                background: "transparent",
-                border: "none",
+                background: 'transparent',
+                border: 'none',
                 color: t.c.primary,
                 fontSize: 12,
                 fontWeight: 600,
-                fontFamily: "inherit",
-                cursor: "pointer",
+                fontFamily: 'inherit',
+                cursor: 'pointer',
               }}
             >
               See all
@@ -959,45 +1141,45 @@ function MobParentReports({ android = false }) {
   return (
     <MobileScreen
       android={android}
-      tab={<MobileTabBar items={parentTabs} active="reports" />}
+      tab={<MobileTabBar items={parentTabs} active='reports' />}
     >
       <MobileHeader
-        eyebrow="The bigger picture"
-        title="Reports"
-        subtitle="This week · April 10–16"
+        eyebrow='The bigger picture'
+        title='Reports'
+        subtitle='This week · April 10–16'
       />
 
       <div
         style={{
-          padding: "0 18px",
-          display: "flex",
-          flexDirection: "column",
+          padding: '0 18px',
+          display: 'flex',
+          flexDirection: 'column',
           gap: 12,
         }}
       >
         {/* Segmented period */}
         <div
           style={{
-            display: "flex",
+            display: 'flex',
             gap: 4,
             padding: 4,
             background: t.c.surface2,
             borderRadius: 12,
           }}
         >
-          {["Week", "Month", "Year"].map((s, i) => (
+          {['Week', 'Month', 'Year'].map((s, i) => (
             <div
               key={s}
               style={{
                 flex: 1,
-                textAlign: "center",
-                padding: "8px 0",
-                background: i === 0 ? t.c.surface : "transparent",
+                textAlign: 'center',
+                padding: '8px 0',
+                background: i === 0 ? t.c.surface : 'transparent',
                 color: i === 0 ? t.c.text : t.c.textMute,
                 fontSize: 12.5,
                 fontWeight: i === 0 ? 600 : 500,
                 borderRadius: 8,
-                boxShadow: i === 0 ? "0 1px 2px rgba(0,0,0,.06)" : "none",
+                boxShadow: i === 0 ? '0 1px 2px rgba(0,0,0,.06)' : 'none',
               }}
             >
               {s}
@@ -1007,35 +1189,35 @@ function MobParentReports({ android = false }) {
 
         {/* Highlights — 4 tile grid */}
         <div
-          style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}
+          style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}
         >
           <Highlight2
-            label="Family total"
-            value="29h 14m"
-            delta="-14%"
+            label='Family total'
+            value='29h 14m'
+            delta='-14%'
             down
-            icon="users"
+            icon='users'
           />
           <Highlight2
-            label="Maya"
-            value="14h 20m"
-            delta="-18%"
+            label='Maya'
+            value='14h 20m'
+            delta='-18%'
             down
-            icon="user"
+            icon='user'
           />
           <Highlight2
-            label="Jaden"
-            value="14h 54m"
-            delta="+4%"
+            label='Jaden'
+            value='14h 54m'
+            delta='+4%'
             up
-            icon="user"
+            icon='user'
           />
           <Highlight2
-            label="Yours"
-            value="17h 00m"
-            delta="-23%"
+            label='Yours'
+            value='17h 00m'
+            delta='-23%'
             down
-            icon="leaf"
+            icon='leaf'
           />
         </div>
 
@@ -1043,9 +1225,9 @@ function MobParentReports({ android = false }) {
         <MobileCard>
           <div
             style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "baseline",
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'baseline',
               marginBottom: 10,
             }}
           >
@@ -1059,48 +1241,48 @@ function MobParentReports({ android = false }) {
           <PerKidCompareMini />
           <div
             style={{
-              display: "flex",
-              justifyContent: "space-between",
+              display: 'flex',
+              justifyContent: 'space-between',
               marginTop: 6,
               fontSize: 10.5,
               color: t.c.textMute,
             }}
           >
-            {["S", "M", "T", "W", "T", "F", "S"].map((d, i) => (
+            {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => (
               <span key={i}>{d}</span>
             ))}
           </div>
           <div
-            style={{ display: "flex", gap: 12, marginTop: 10, fontSize: 11 }}
+            style={{ display: 'flex', gap: 12, marginTop: 10, fontSize: 11 }}
           >
-            <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
               <span
                 style={{
                   width: 10,
                   height: 10,
                   borderRadius: 3,
-                  background: "#E8896F",
+                  background: '#E8896F',
                 }}
               />
               Maya
             </span>
-            <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
               <span
                 style={{
                   width: 10,
                   height: 10,
                   borderRadius: 3,
-                  background: "#A8A0C8",
+                  background: '#A8A0C8',
                 }}
               />
               Jaden
             </span>
             <span
               style={{
-                display: "flex",
-                alignItems: "center",
+                display: 'flex',
+                alignItems: 'center',
                 gap: 5,
-                marginLeft: "auto",
+                marginLeft: 'auto',
               }}
             >
               <span
@@ -1119,37 +1301,37 @@ function MobParentReports({ android = false }) {
           <StackedAreaMini />
           <div
             style={{
-              display: "flex",
-              justifyContent: "space-between",
+              display: 'flex',
+              justifyContent: 'space-between',
               marginTop: 6,
               fontSize: 10.5,
               color: t.c.textMute,
             }}
           >
-            {["S", "M", "T", "W", "T", "F", "S"].map((d, i) => (
+            {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => (
               <span key={i}>{d}</span>
             ))}
           </div>
           <div
             style={{
-              display: "flex",
-              flexWrap: "wrap",
+              display: 'flex',
+              flexWrap: 'wrap',
               gap: 10,
               marginTop: 12,
             }}
           >
             {Object.entries({
-              Social: "#E8896F",
-              Video: "#D97373",
-              Gaming: "#A8A0C8",
-              Education: "#5C8A6B",
-              Communication: "#7DA9C7",
+              Social: '#E8896F',
+              Video: '#D97373',
+              Gaming: '#A8A0C8',
+              Education: '#5C8A6B',
+              Communication: '#7DA9C7',
             }).map(([cat, col]) => (
               <span
                 key={cat}
                 style={{
-                  display: "flex",
-                  alignItems: "center",
+                  display: 'flex',
+                  alignItems: 'center',
                   gap: 5,
                   fontSize: 10.5,
                 }}
@@ -1172,9 +1354,9 @@ function MobParentReports({ android = false }) {
         <MobileCard>
           <div
             style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "baseline",
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'baseline',
               marginBottom: 10,
             }}
           >
@@ -1188,8 +1370,8 @@ function MobParentReports({ android = false }) {
           <MobileNotifHeatmap data={APP_DATA.notifHeatmap} />
           <div
             style={{
-              display: "flex",
-              alignItems: "center",
+              display: 'flex',
+              alignItems: 'center',
               gap: 6,
               marginTop: 10,
               fontSize: 10.5,
@@ -1197,7 +1379,7 @@ function MobParentReports({ android = false }) {
             }}
           >
             <span>Fewer</span>
-            <div style={{ display: "flex", gap: 1.5 }}>
+            <div style={{ display: 'flex', gap: 1.5 }}>
               {[0, 0.25, 0.5, 0.75, 1].map((i) => (
                 <div
                   key={i}
@@ -1208,13 +1390,15 @@ function MobParentReports({ android = false }) {
                     background:
                       i === 0
                         ? t.c.surface2
-                        : `oklch(from ${t.c.primary} ${0.95 - i * 0.4} ${0.06 + i * 0.1} h)`,
+                        : `oklch(from ${t.c.primary} ${0.95 - i * 0.4} ${
+                            0.06 + i * 0.1
+                          } h)`,
                   }}
                 />
               ))}
             </div>
             <span>More</span>
-            <span style={{ marginLeft: "auto", fontSize: 11, color: t.c.text }}>
+            <span style={{ marginLeft: 'auto', fontSize: 11, color: t.c.text }}>
               <b>Peak: Thu 5pm</b>
             </span>
           </div>
@@ -1230,54 +1414,54 @@ function MobParentReports({ android = false }) {
           </div>
           {[
             {
-              name: "Snapchat",
-              cat: "Social",
+              name: 'Snapchat',
+              cat: 'Social',
               mins: 410,
               limit: 420,
-              color: "#FFFC00",
+              color: '#FFFC00',
               pickups: 220,
               notifs: 320,
-              owner: "Jaden",
+              owner: 'Jaden',
             },
             {
-              name: "YouTube Kids",
-              cat: "Video",
+              name: 'YouTube Kids',
+              cat: 'Video',
               mins: 312,
               limit: 630,
-              color: "#FF4444",
+              color: '#FF4444',
               pickups: 60,
               notifs: 24,
-              owner: "Maya",
+              owner: 'Maya',
             },
             {
-              name: "TikTok",
-              cat: "Social",
+              name: 'TikTok',
+              cat: 'Social',
               mins: 268,
               limit: 420,
-              color: "#000000",
+              color: '#000000',
               pickups: 198,
               notifs: 224,
-              owner: "Both",
+              owner: 'Both',
             },
             {
-              name: "Roblox",
-              cat: "Gaming",
+              name: 'Roblox',
+              cat: 'Gaming',
               mins: 240,
               limit: 420,
-              color: "#E2231A",
+              color: '#E2231A',
               pickups: 50,
               notifs: 56,
-              owner: "Maya",
+              owner: 'Maya',
             },
             {
-              name: "Slack",
-              cat: "Communication",
+              name: 'Slack',
+              cat: 'Communication',
               mins: 234,
               limit: null,
-              color: "#4A154B",
+              color: '#4A154B',
               pickups: 90,
               notifs: 122,
-              owner: "You",
+              owner: 'You',
             },
           ].map((a, i, arr) => (
             <MobileAppRow
@@ -1303,7 +1487,7 @@ function Highlight2({ label, value, delta, up, down, icon }) {
   const bg = down ? t.c.primarySoft : up ? t.c.dangerSoft : t.c.surface2;
   return (
     <MobileCard pad={12}>
-      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
         <div
           style={{
             width: 24,
@@ -1311,9 +1495,9 @@ function Highlight2({ label, value, delta, up, down, icon }) {
             borderRadius: 7,
             background: bg,
             color: col,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
           }}
         >
           <Icon name={icon} size={13} />
@@ -1323,8 +1507,8 @@ function Highlight2({ label, value, delta, up, down, icon }) {
             fontSize: 10.5,
             color: t.c.textMute,
             fontWeight: 600,
-            textTransform: "uppercase",
-            letterSpacing: ".05em",
+            textTransform: 'uppercase',
+            letterSpacing: '.05em',
           }}
         >
           {label}
@@ -1336,15 +1520,15 @@ function Highlight2({ label, value, delta, up, down, icon }) {
           fontSize: 20,
           fontWeight: 500,
           marginTop: 8,
-          letterSpacing: "-.02em",
+          letterSpacing: '-.02em',
         }}
       >
         {value}
       </div>
       <div
         style={{
-          display: "flex",
-          alignItems: "center",
+          display: 'flex',
+          alignItems: 'center',
           gap: 4,
           fontSize: 11,
           color: col,
@@ -1352,7 +1536,7 @@ function Highlight2({ label, value, delta, up, down, icon }) {
           fontWeight: 600,
         }}
       >
-        <Icon name={down ? "trendDown" : "trend"} size={11} />
+        <Icon name={down ? 'trendDown' : 'trend'} size={11} />
         {delta}
       </div>
     </MobileCard>
@@ -1365,74 +1549,74 @@ function PerKidCompareMini() {
   const jaden = APP_DATA.weeklyHours.jaden;
   const max = Math.max(...[...maya, ...jaden].filter((v) => v != null)) * 1.2;
   const path = (data) => {
-    let d = "",
+    let d = '',
       moved = false;
     data.forEach((v, i) => {
       if (v == null) return;
       const x = (i / (data.length - 1)) * 100;
       const y = 100 - (v / max) * 100;
-      d += (moved ? "L" : "M") + x.toFixed(2) + " " + y.toFixed(2) + " ";
+      d += (moved ? 'L' : 'M') + x.toFixed(2) + ' ' + y.toFixed(2) + ' ';
       moved = true;
     });
     return d.trim();
   };
   return (
     <svg
-      viewBox="0 0 100 100"
-      preserveAspectRatio="none"
-      style={{ width: "100%", height: 130, overflow: "visible" }}
+      viewBox='0 0 100 100'
+      preserveAspectRatio='none'
+      style={{ width: '100%', height: 130, overflow: 'visible' }}
     >
       <line
-        x1="0"
-        x2="100"
+        x1='0'
+        x2='100'
         y1={100 - (5 / max) * 100}
         y2={100 - (5 / max) * 100}
         stroke={t.c.accent}
-        strokeWidth="0.8"
-        strokeDasharray="2 2"
-        vectorEffect="non-scaling-stroke"
+        strokeWidth='0.8'
+        strokeDasharray='2 2'
+        vectorEffect='non-scaling-stroke'
       />
       <path
         d={path(maya)}
-        fill="none"
-        stroke="#E8896F"
-        strokeWidth="2"
-        vectorEffect="non-scaling-stroke"
-        strokeLinecap="round"
-        strokeLinejoin="round"
+        fill='none'
+        stroke='#E8896F'
+        strokeWidth='2'
+        vectorEffect='non-scaling-stroke'
+        strokeLinecap='round'
+        strokeLinejoin='round'
       />
       <path
         d={path(jaden)}
-        fill="none"
-        stroke="#A8A0C8"
-        strokeWidth="2"
-        vectorEffect="non-scaling-stroke"
-        strokeLinecap="round"
-        strokeLinejoin="round"
+        fill='none'
+        stroke='#A8A0C8'
+        strokeWidth='2'
+        vectorEffect='non-scaling-stroke'
+        strokeLinecap='round'
+        strokeLinejoin='round'
       />
       {maya.map((v, i) =>
         v == null ? null : (
           <circle
-            key={"m" + i}
+            key={'m' + i}
             cx={(i / 6) * 100}
             cy={100 - (v / max) * 100}
-            r="1.4"
-            fill="#E8896F"
-            vectorEffect="non-scaling-stroke"
+            r='1.4'
+            fill='#E8896F'
+            vectorEffect='non-scaling-stroke'
           />
-        ),
+        )
       )}
       {jaden.map((v, i) =>
         v == null ? null : (
           <circle
-            key={"j" + i}
+            key={'j' + i}
             cx={(i / 6) * 100}
             cy={100 - (v / max) * 100}
-            r="1.4"
-            fill="#A8A0C8"
-            vectorEffect="non-scaling-stroke"
+            r='1.4'
+            fill='#A8A0C8'
+            vectorEffect='non-scaling-stroke'
           />
-        ),
+        )
       )}
     </svg>
   );
@@ -1440,13 +1624,13 @@ function PerKidCompareMini() {
 
 function StackedAreaMini() {
   const t = useTokens();
-  const cats = ["Education", "Communication", "Gaming", "Video", "Social"];
+  const cats = ['Education', 'Communication', 'Gaming', 'Video', 'Social'];
   const colors = {
-    Education: "#5C8A6B",
-    Communication: "#7DA9C7",
-    Gaming: "#A8A0C8",
-    Video: "#D97373",
-    Social: "#E8896F",
+    Education: '#5C8A6B',
+    Communication: '#7DA9C7',
+    Gaming: '#A8A0C8',
+    Video: '#D97373',
+    Social: '#E8896F',
   };
   // Pre-baked stable data
   const data = [
@@ -1507,29 +1691,29 @@ function StackedAreaMini() {
   cats.forEach((cat) => {
     const top = data.map((d, i) => accum[i] + d[cat]);
     const bot = accum.slice();
-    let path = "";
+    let path = '';
     top.forEach((v, i) => {
       const x = (i / 6) * 100;
       const y = 100 - (v / max) * 100;
-      path += (i === 0 ? "M" : "L") + x.toFixed(2) + " " + y.toFixed(2) + " ";
+      path += (i === 0 ? 'M' : 'L') + x.toFixed(2) + ' ' + y.toFixed(2) + ' ';
     });
     for (let i = bot.length - 1; i >= 0; i--) {
       const x = (i / 6) * 100;
       const y = 100 - (bot[i] / max) * 100;
-      path += "L" + x.toFixed(2) + " " + y.toFixed(2) + " ";
+      path += 'L' + x.toFixed(2) + ' ' + y.toFixed(2) + ' ';
     }
-    path += "Z";
+    path += 'Z';
     layers.push({ cat, path, color: colors[cat] });
     accum = top;
   });
   return (
     <svg
-      viewBox="0 0 100 100"
-      preserveAspectRatio="none"
-      style={{ width: "100%", height: 140, overflow: "visible" }}
+      viewBox='0 0 100 100'
+      preserveAspectRatio='none'
+      style={{ width: '100%', height: 140, overflow: 'visible' }}
     >
       {layers.map((l) => (
-        <path key={l.cat} d={l.path} fill={l.color} opacity="0.78" />
+        <path key={l.cat} d={l.path} fill={l.color} opacity='0.78' />
       ))}
     </svg>
   );
@@ -1545,19 +1729,19 @@ function MobParentShield({ android = false }) {
   return (
     <MobileScreen
       android={android}
-      tab={<MobileTabBar items={parentTabs} active="shield" />}
+      tab={<MobileTabBar items={parentTabs} active='shield' />}
     >
       <MobileHeader
-        eyebrow="Network protection"
-        title="Shield"
-        subtitle="Ad blocker · trackers · malware · all family devices"
+        eyebrow='Network protection'
+        title='Shield'
+        subtitle='Ad blocker · trackers · malware · all family devices'
       />
 
       <div
         style={{
-          padding: "0 18px",
-          display: "flex",
-          flexDirection: "column",
+          padding: '0 18px',
+          display: 'flex',
+          flexDirection: 'column',
           gap: 12,
         }}
       >
@@ -1565,9 +1749,9 @@ function MobParentShield({ android = false }) {
         <MobileCard pad={18} bg={t.c.primarySoft} border={false}>
           <div
             style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "flex-start",
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'flex-start',
             }}
           >
             <div>
@@ -1576,8 +1760,8 @@ function MobParentShield({ android = false }) {
                   fontSize: 10.5,
                   color: t.c.primary,
                   fontWeight: 600,
-                  textTransform: "uppercase",
-                  letterSpacing: ".06em",
+                  textTransform: 'uppercase',
+                  letterSpacing: '.06em',
                 }}
               >
                 Blocked today
@@ -1587,7 +1771,7 @@ function MobParentShield({ android = false }) {
                   fontFamily: t.fontMono,
                   fontSize: 38,
                   fontWeight: 500,
-                  letterSpacing: "-.03em",
+                  letterSpacing: '-.03em',
                   color: t.c.primary,
                   lineHeight: 1,
                   marginTop: 4,
@@ -1604,22 +1788,22 @@ function MobParentShield({ android = false }) {
                 width: 48,
                 height: 48,
                 borderRadius: 14,
-                background: "rgba(255,255,255,.7)",
+                background: 'rgba(255,255,255,.7)',
                 color: t.c.primary,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
               }}
             >
-              <Icon name="shieldCheck" size={28} />
+              <Icon name='shieldCheck' size={28} />
             </div>
           </div>
           {/* Mini hourly */}
           <div style={{ marginTop: 14 }}>
             <svg
-              viewBox="0 0 100 30"
-              preserveAspectRatio="none"
-              style={{ width: "100%", height: 60, display: "block" }}
+              viewBox='0 0 100 30'
+              preserveAspectRatio='none'
+              style={{ width: '100%', height: 60, display: 'block' }}
             >
               {A.hourly.map((v, h) => {
                 const x = (h / 24) * 100;
@@ -1631,7 +1815,7 @@ function MobParentShield({ android = false }) {
                     y={30 - bh}
                     width={100 / 24 - 0.6}
                     height={Math.max(bh, 0.4)}
-                    rx="0.5"
+                    rx='0.5'
                     fill={t.c.primary}
                     opacity={0.45 + (v / Math.max(...A.hourly)) * 0.5}
                   />
@@ -1640,8 +1824,8 @@ function MobParentShield({ android = false }) {
             </svg>
             <div
               style={{
-                display: "flex",
-                justifyContent: "space-between",
+                display: 'flex',
+                justifyContent: 'space-between',
                 fontSize: 9.5,
                 color: t.c.primary,
                 fontFamily: t.fontMono,
@@ -1660,26 +1844,26 @@ function MobParentShield({ android = false }) {
         {/* Category tiles */}
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr 1fr",
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr 1fr',
             gap: 8,
           }}
         >
           <ShieldStat
-            icon="alert"
-            label="Ads"
+            icon='alert'
+            label='Ads'
             value={fmtNum(A.ads)}
             color={t.c.accent}
           />
           <ShieldStat
-            icon="eye"
-            label="Trackers"
+            icon='eye'
+            label='Trackers'
             value={fmtNum(A.trackers)}
             color={t.c.lavText}
           />
           <ShieldStat
-            icon="ban"
-            label="Malware"
+            icon='ban'
+            label='Malware'
             value={A.malware.toString()}
             color={t.c.danger}
           />
@@ -1690,10 +1874,10 @@ function MobParentShield({ android = false }) {
           <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 10 }}>
             What got blocked
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
             <div
               style={{
-                position: "relative",
+                position: 'relative',
                 width: 140,
                 height: 140,
                 flexShrink: 0,
@@ -1725,13 +1909,13 @@ function MobParentShield({ android = false }) {
                     <svg
                       width={size}
                       height={size}
-                      style={{ transform: "rotate(-90deg)" }}
+                      style={{ transform: 'rotate(-90deg)' }}
                     >
                       <circle
                         cx={size / 2}
                         cy={size / 2}
                         r={r}
-                        fill="none"
+                        fill='none'
                         stroke={t.c.surface2}
                         strokeWidth={stroke}
                       />
@@ -1743,7 +1927,7 @@ function MobParentShield({ android = false }) {
                             cx={size / 2}
                             cy={size / 2}
                             r={r}
-                            fill="none"
+                            fill='none'
                             stroke={colors[k]}
                             strokeWidth={stroke}
                             strokeDasharray={`${Math.max(0, len)} ${c}`}
@@ -1756,12 +1940,12 @@ function MobParentShield({ android = false }) {
                     </svg>
                     <div
                       style={{
-                        position: "absolute",
+                        position: 'absolute',
                         inset: 0,
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        justifyContent: "center",
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
                       }}
                     >
                       <div
@@ -1769,7 +1953,7 @@ function MobParentShield({ android = false }) {
                           fontFamily: t.fontMono,
                           fontSize: 22,
                           fontWeight: 500,
-                          letterSpacing: "-.02em",
+                          letterSpacing: '-.02em',
                         }}
                       >
                         {fmtNum(A.blockedToday)}
@@ -1791,29 +1975,29 @@ function MobParentShield({ android = false }) {
             <div
               style={{
                 flex: 1,
-                display: "flex",
-                flexDirection: "column",
+                display: 'flex',
+                flexDirection: 'column',
                 gap: 6,
               }}
             >
               {[
-                ["Ads", A.ads, t.c.accent],
-                ["Trackers", A.trackers, t.c.lavText],
-                ["Social widgets", A.socialWidgets, t.c.blue],
-                ["Malware", A.malware, t.c.danger],
-                ["Other", A.other, t.c.textMute],
+                ['Ads', A.ads, t.c.accent],
+                ['Trackers', A.trackers, t.c.lavText],
+                ['Social widgets', A.socialWidgets, t.c.blue],
+                ['Malware', A.malware, t.c.danger],
+                ['Other', A.other, t.c.textMute],
               ].map(([l, v, c]) => (
                 <div
                   key={l}
                   style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
                     fontSize: 11.5,
                   }}
                 >
                   <span
-                    style={{ display: "flex", alignItems: "center", gap: 6 }}
+                    style={{ display: 'flex', alignItems: 'center', gap: 6 }}
                   >
                     <span
                       style={{
@@ -1844,9 +2028,9 @@ function MobParentShield({ android = false }) {
         <MobileCard>
           <div
             style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "baseline",
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'baseline',
               marginBottom: 8,
             }}
           >
@@ -1861,12 +2045,12 @@ function MobParentShield({ android = false }) {
             <div
               key={d.domain}
               style={{
-                display: "grid",
-                gridTemplateColumns: "20px 1fr 70px 50px",
+                display: 'grid',
+                gridTemplateColumns: '20px 1fr 70px 50px',
                 gap: 10,
-                alignItems: "center",
-                padding: "10px 0",
-                borderBottom: i < 5 ? `1px solid ${t.c.border}` : "none",
+                alignItems: 'center',
+                padding: '10px 0',
+                borderBottom: i < 5 ? `1px solid ${t.c.border}` : 'none',
               }}
             >
               <div
@@ -1876,23 +2060,23 @@ function MobParentShield({ android = false }) {
                   color: t.c.textMute,
                 }}
               >
-                {String(i + 1).padStart(2, "0")}
+                {String(i + 1).padStart(2, '0')}
               </div>
               <div
                 style={{
                   fontFamily: t.fontMono,
                   fontSize: 11.5,
                   color: t.c.text,
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
                 }}
               >
                 {d.domain}
               </div>
               <Chip
-                bg={d.type === "Ads" ? t.c.accentSoft : t.c.lavSoft}
-                color={d.type === "Ads" ? t.c.accent : t.c.lavText}
+                bg={d.type === 'Ads' ? t.c.accentSoft : t.c.lavSoft}
+                color={d.type === 'Ads' ? t.c.accent : t.c.lavText}
                 style={{ fontSize: 9 }}
               >
                 {d.type}
@@ -1902,7 +2086,7 @@ function MobParentShield({ android = false }) {
                   fontFamily: t.fontMono,
                   fontSize: 12,
                   fontWeight: 500,
-                  textAlign: "right",
+                  textAlign: 'right',
                 }}
               >
                 {d.count}
@@ -1920,12 +2104,12 @@ function MobParentShield({ android = false }) {
             <div
               key={d.name}
               style={{
-                display: "flex",
-                alignItems: "center",
+                display: 'flex',
+                alignItems: 'center',
                 gap: 12,
-                padding: "10px 0",
+                padding: '10px 0',
                 borderBottom:
-                  i < A.devices.length - 1 ? `1px solid ${t.c.border}` : "none",
+                  i < A.devices.length - 1 ? `1px solid ${t.c.border}` : 'none',
               }}
             >
               <div
@@ -1934,26 +2118,26 @@ function MobParentShield({ android = false }) {
                   height: 32,
                   borderRadius: 9,
                   background:
-                    d.status === "paused" ? t.c.surface2 : t.c.primarySoft,
-                  color: d.status === "paused" ? t.c.textMute : t.c.primary,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
+                    d.status === 'paused' ? t.c.surface2 : t.c.primarySoft,
+                  color: d.status === 'paused' ? t.c.textMute : t.c.primary,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }}
               >
-                <Icon name="wifi" size={14} />
+                <Icon name='wifi' size={14} />
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontWeight: 600, fontSize: 13 }}>{d.name}</div>
                 <div
                   style={{ fontSize: 10.5, color: t.c.textMute, marginTop: 1 }}
                 >
-                  {d.status === "paused"
-                    ? "Paused"
+                  {d.status === 'paused'
+                    ? 'Paused'
                     : `${d.blocked.toLocaleString()} blocked today`}
                 </div>
               </div>
-              <Toggle on={d.status === "active"} />
+              <Toggle on={d.status === 'active'} />
             </div>
           ))}
         </MobileCard>
@@ -1967,18 +2151,18 @@ function MobParentShield({ android = false }) {
 function ShieldStat({ icon, label, value, color }) {
   const t = useTokens();
   return (
-    <MobileCard pad={12} style={{ textAlign: "center" }}>
+    <MobileCard pad={12} style={{ textAlign: 'center' }}>
       <div
         style={{
           width: 28,
           height: 28,
           borderRadius: 8,
-          background: color + "22",
+          background: color + '22',
           color,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          margin: "0 auto",
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          margin: '0 auto',
         }}
       >
         <Icon name={icon} size={14} />
@@ -1989,7 +2173,7 @@ function ShieldStat({ icon, label, value, color }) {
           fontSize: 18,
           fontWeight: 500,
           marginTop: 8,
-          letterSpacing: "-.02em",
+          letterSpacing: '-.02em',
         }}
       >
         {value}
@@ -2000,8 +2184,8 @@ function ShieldStat({ icon, label, value, color }) {
           color: t.c.textMute,
           marginTop: 2,
           fontWeight: 600,
-          textTransform: "uppercase",
-          letterSpacing: ".05em",
+          textTransform: 'uppercase',
+          letterSpacing: '.05em',
         }}
       >
         {label}
@@ -2020,36 +2204,36 @@ function MobParentSchedules({ android = false }) {
   return (
     <MobileScreen
       android={android}
-      tab={<MobileTabBar items={parentTabs} active="limits" />}
-      fab={<FAB icon="plus" label="New" />}
+      tab={<MobileTabBar items={parentTabs} active='limits' />}
+      fab={<FAB icon='plus' label='New' />}
     >
       <MobileHeader
-        eyebrow="Routines"
-        title="Schedules"
-        subtitle="Different limits for weekdays and weekends."
+        eyebrow='Routines'
+        title='Schedules'
+        subtitle='Different limits for weekdays and weekends.'
       />
 
       <div
         style={{
-          padding: "0 18px",
-          display: "flex",
-          flexDirection: "column",
+          padding: '0 18px',
+          display: 'flex',
+          flexDirection: 'column',
           gap: 12,
         }}
       >
         {/* Active schedule chip */}
         <div
           style={{
-            display: "flex",
-            alignItems: "center",
+            display: 'flex',
+            alignItems: 'center',
             gap: 8,
-            padding: "10px 12px",
+            padding: '10px 12px',
             borderRadius: 12,
             background: t.c.primarySoft,
             color: t.c.primary,
           }}
         >
-          <Icon name="clock" size={15} />
+          <Icon name='clock' size={15} />
           <div style={{ flex: 1, fontSize: 12.5, fontWeight: 600 }}>
             Schoolday is active until 9 PM
           </div>
@@ -2058,31 +2242,31 @@ function MobParentSchedules({ android = false }) {
 
         {/* Schoolday */}
         <SchedCardMobile
-          title="Schoolday"
-          subtitle="Mon–Fri · 7am–9pm"
+          title='Schoolday'
+          subtitle='Mon–Fri · 7am–9pm'
           color={t.c.primary}
           colorSoft={t.c.primarySoft}
           activeDays={[false, true, true, true, true, true, false]}
           limits={[
-            { cat: "Social", mins: 60 },
-            { cat: "Video", mins: 90 },
-            { cat: "Gaming", mins: 60 },
-            { cat: "Education", mins: null },
+            { cat: 'Social', mins: 60 },
+            { cat: 'Video', mins: 90 },
+            { cat: 'Gaming', mins: 60 },
+            { cat: 'Education', mins: null },
           ]}
           active
         />
 
         {/* Weekend */}
         <SchedCardMobile
-          title="Weekend"
-          subtitle="Sat–Sun · 9am–10pm"
+          title='Weekend'
+          subtitle='Sat–Sun · 9am–10pm'
           color={t.c.accent}
           colorSoft={t.c.accentSoft}
           activeDays={[true, false, false, false, false, false, true]}
           limits={[
-            { cat: "Social", mins: 120 },
-            { cat: "Video", mins: 180 },
-            { cat: "Gaming", mins: 150 },
+            { cat: 'Social', mins: 120 },
+            { cat: 'Video', mins: 180 },
+            { cat: 'Gaming', mins: 150 },
           ]}
         />
 
@@ -2094,15 +2278,15 @@ function MobParentSchedules({ android = false }) {
           <TimelineMini />
           <div
             style={{
-              display: "flex",
-              justifyContent: "space-between",
+              display: 'flex',
+              justifyContent: 'space-between',
               marginTop: 8,
               fontSize: 9.5,
               color: t.c.textMute,
               fontFamily: t.fontMono,
             }}
           >
-            {["12a", "6a", "12p", "6p", "12a"].map((h, i) => (
+            {['12a', '6a', '12p', '6p', '12a'].map((h, i) => (
               <span key={i}>{h}</span>
             ))}
           </div>
@@ -2112,22 +2296,22 @@ function MobParentSchedules({ android = false }) {
         <MobileCard>
           <div
             style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
               marginBottom: 10,
             }}
           >
             <span style={{ fontSize: 13, fontWeight: 600 }}>Quiet windows</span>
             <button
               style={{
-                background: "transparent",
-                border: "none",
+                background: 'transparent',
+                border: 'none',
                 color: t.c.primary,
                 fontSize: 12,
                 fontWeight: 600,
-                fontFamily: "inherit",
-                cursor: "pointer",
+                fontFamily: 'inherit',
+                cursor: 'pointer',
               }}
             >
               + Add
@@ -2135,36 +2319,36 @@ function MobParentSchedules({ android = false }) {
           </div>
           {[
             {
-              name: "School hours",
-              time: "8:15 AM – 3 PM",
-              days: "Mon–Fri",
+              name: 'School hours',
+              time: '8:15 AM – 3 PM',
+              days: 'Mon–Fri',
               on: true,
-              icon: "lightbulb",
+              icon: 'lightbulb',
             },
             {
-              name: "Family dinner",
-              time: "6:30 – 7:30 PM",
-              days: "Every day",
+              name: 'Family dinner',
+              time: '6:30 – 7:30 PM',
+              days: 'Every day',
               on: true,
-              icon: "home",
+              icon: 'home',
             },
             {
-              name: "Wind-down",
-              time: "8:30 – 10 PM",
-              days: "Sun–Thu",
+              name: 'Wind-down',
+              time: '8:30 – 10 PM',
+              days: 'Sun–Thu',
               on: false,
-              icon: "leaf",
+              icon: 'leaf',
             },
           ].map((q, i, arr) => (
             <div
               key={q.name}
               style={{
-                display: "flex",
-                alignItems: "center",
+                display: 'flex',
+                alignItems: 'center',
                 gap: 12,
-                padding: "10px 0",
+                padding: '10px 0',
                 borderBottom:
-                  i < arr.length - 1 ? `1px solid ${t.c.border}` : "none",
+                  i < arr.length - 1 ? `1px solid ${t.c.border}` : 'none',
               }}
             >
               <div
@@ -2174,9 +2358,9 @@ function MobParentSchedules({ android = false }) {
                   borderRadius: 8,
                   background: t.c.primarySoft,
                   color: t.c.primary,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }}
               >
                 <Icon name={q.icon} size={14} />
@@ -2214,8 +2398,8 @@ function SchedCardMobile({
     <MobileCard pad={14}>
       <div
         style={{
-          display: "flex",
-          alignItems: "center",
+          display: 'flex',
+          alignItems: 'center',
           gap: 10,
           marginBottom: 12,
         }}
@@ -2227,12 +2411,12 @@ function SchedCardMobile({
             borderRadius: 10,
             background: colorSoft,
             color: color,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
           }}
         >
-          <Icon name="calendar" size={17} />
+          <Icon name='calendar' size={17} />
         </div>
         <div style={{ flex: 1 }}>
           <div
@@ -2240,7 +2424,7 @@ function SchedCardMobile({
               fontFamily: t.fontSerif,
               fontSize: 19,
               fontWeight: 500,
-              letterSpacing: "-.01em",
+              letterSpacing: '-.01em',
             }}
           >
             {title}
@@ -2252,14 +2436,14 @@ function SchedCardMobile({
         <Toggle on={true} />
       </div>
 
-      <div style={{ display: "flex", gap: 4, marginBottom: 12 }}>
-        {["S", "M", "T", "W", "T", "F", "S"].map((d, i) => (
+      <div style={{ display: 'flex', gap: 4, marginBottom: 12 }}>
+        {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => (
           <div
             key={i}
             style={{
               flex: 1,
-              textAlign: "center",
-              padding: "6px 0",
+              textAlign: 'center',
+              padding: '6px 0',
               borderRadius: 6,
               background: activeDays[i] ? colorSoft : t.c.surface2,
               color: activeDays[i] ? color : t.c.textMute,
@@ -2272,13 +2456,13 @@ function SchedCardMobile({
         ))}
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         {limits.map((l) => (
           <div
             key={l.cat}
             style={{
-              display: "flex",
-              alignItems: "center",
+              display: 'flex',
+              alignItems: 'center',
               gap: 10,
               fontSize: 12.5,
             }}
@@ -2287,7 +2471,7 @@ function SchedCardMobile({
               style={{
                 width: 8,
                 height: 8,
-                borderRadius: "50%",
+                borderRadius: '50%',
                 background: APP_DATA.categoryColors[l.cat],
               }}
             />
@@ -2297,7 +2481,7 @@ function SchedCardMobile({
                 <span style={{ color: t.c.textMute }}>no limit</span>
               ) : (
                 <>
-                  <b>{fmtTime(l.mins)}</b>{" "}
+                  <b>{fmtTime(l.mins)}</b>{' '}
                   <span style={{ color: t.c.textMute }}>/ day</span>
                 </>
               )}
@@ -2310,14 +2494,14 @@ function SchedCardMobile({
         <div
           style={{
             marginTop: 12,
-            padding: "8px 10px",
+            padding: '8px 10px',
             borderRadius: 8,
             background: colorSoft,
             color: color,
             fontSize: 11,
             fontWeight: 600,
-            display: "flex",
-            alignItems: "center",
+            display: 'flex',
+            alignItems: 'center',
             gap: 6,
           }}
         >
@@ -2325,7 +2509,7 @@ function SchedCardMobile({
             style={{
               width: 6,
               height: 6,
-              borderRadius: "50%",
+              borderRadius: '50%',
               background: color,
             }}
           />
@@ -2350,11 +2534,11 @@ function TimelineMini() {
   return (
     <div
       style={{
-        position: "relative",
-        display: "flex",
+        position: 'relative',
+        display: 'flex',
         height: 30,
         borderRadius: 8,
-        overflow: "hidden",
+        overflow: 'hidden',
         background: t.c.surface2,
       }}
     >
@@ -2362,17 +2546,17 @@ function TimelineMini() {
         <div
           key={i}
           style={{
-            width: b.w + "%",
+            width: b.w + '%',
             background: b.color,
             borderRight:
-              i < blocks.length - 1 ? "1px solid rgba(255,255,255,.5)" : "none",
+              i < blocks.length - 1 ? '1px solid rgba(255,255,255,.5)' : 'none',
           }}
         />
       ))}
       <div
         style={{
-          position: "absolute",
-          left: "67%",
+          position: 'absolute',
+          left: '67%',
           top: -3,
           bottom: -3,
           width: 2,
@@ -2382,14 +2566,14 @@ function TimelineMini() {
       />
       <div
         style={{
-          position: "absolute",
-          left: "calc(67% - 20px)",
+          position: 'absolute',
+          left: 'calc(67% - 20px)',
           top: -18,
           fontSize: 9,
           fontWeight: 700,
           color: t.c.danger,
           background: t.c.surface,
-          padding: "1px 6px",
+          padding: '1px 6px',
           borderRadius: 4,
           border: `1px solid ${t.c.dangerSoft}`,
         }}
@@ -2408,17 +2592,19 @@ window.MobParentSchedules = MobParentSchedules;
 function MobParentKidDetail({ android = false, kidIndex = 1 }) {
   const t = useTokens();
   const k = APP_DATA.kids[kidIndex]; // default Jaden (interesting "over" case)
-  const over = k.status === "over";
+  const over = k.status === 'over';
 
   const [showPause, setShowPause] = React.useState(false);
 
   return (
     <MobileScreen android={android}>
       <MobileHeader
-        eyebrow="Family › Jaden"
+        eyebrow='Family › Jaden'
         title={k.name}
-        back="Family"
-        subtitle={`age ${k.age} · ${k.device} · last active ${k.lastActive}`}
+        back='Family'
+        subtitle={`age ${k.age} · ${
+          k.devices ? k.devices.join(' & ') : k.device
+        } · last active ${k.lastActive}`}
         action={
           <button
             onClick={() => setShowPause(true)}
@@ -2426,27 +2612,27 @@ function MobParentKidDetail({ android = false, kidIndex = 1 }) {
               background: t.c.surface,
               border: `1px solid ${t.c.border}`,
               borderRadius: 8,
-              padding: "6px 10px",
+              padding: '6px 10px',
               fontSize: 12,
               fontWeight: 600,
               color: t.c.danger,
-              fontFamily: "inherit",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
+              fontFamily: 'inherit',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
               gap: 4,
             }}
           >
-            <Icon name="lock" size={13} /> Pause
+            <Icon name='lock' size={13} /> Pause
           </button>
         }
       />
 
       <div
         style={{
-          padding: "0 18px",
-          display: "flex",
-          flexDirection: "column",
+          padding: '0 18px',
+          display: 'flex',
+          flexDirection: 'column',
           gap: 12,
         }}
       >
@@ -2456,22 +2642,22 @@ function MobParentKidDetail({ android = false, kidIndex = 1 }) {
           bg={over ? t.c.dangerSoft : t.c.primarySoft}
           border={false}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
             <Ring
               value={k.todayMinutes}
               max={k.todayGoal}
               size={110}
               stroke={10}
               color={over ? t.c.danger : t.c.primary}
-              track="rgba(255,255,255,.5)"
+              track='rgba(255,255,255,.5)'
             >
-              <div style={{ textAlign: "center" }}>
+              <div style={{ textAlign: 'center' }}>
                 <div
                   style={{
                     fontFamily: t.fontMono,
                     fontSize: 20,
                     fontWeight: 500,
-                    letterSpacing: "-.02em",
+                    letterSpacing: '-.02em',
                   }}
                 >
                   {fmtTime(k.todayMinutes)}
@@ -2489,17 +2675,17 @@ function MobParentKidDetail({ android = false, kidIndex = 1 }) {
                   fontFamily: t.fontSerif,
                   fontSize: 22,
                   fontWeight: 500,
-                  letterSpacing: "-.02em",
+                  letterSpacing: '-.02em',
                   lineHeight: 1.15,
                   color: t.c.text,
                 }}
               >
                 {over ? (
                   <>
-                    Over by{" "}
+                    Over by{' '}
                     <span style={{ color: t.c.danger }}>
                       {fmtTime(k.todayMinutes - k.todayGoal)}
-                    </span>{" "}
+                    </span>{' '}
                     today.
                   </>
                 ) : (
@@ -2514,14 +2700,14 @@ function MobParentKidDetail({ android = false, kidIndex = 1 }) {
         </MobileCard>
 
         {/* Stat row */}
-        <div style={{ display: "flex", gap: 8 }}>
-          <StatTile label="Notifs" value="173" sublabel="today" icon="bell" />
-          <StatTile label="Pickups" value="84" sublabel="today" icon="phone" />
+        <div style={{ display: 'flex', gap: 8 }}>
+          <StatTile label='Notifs' value='173' sublabel='today' icon='bell' />
+          <StatTile label='Pickups' value='84' sublabel='today' icon='phone' />
           <StatTile
-            label="Streak"
-            value="0"
-            sublabel="last: 2d"
-            icon="flame"
+            label='Streak'
+            value='0'
+            sublabel='last: 2d'
+            icon='flame'
             color={t.c.warn}
           />
         </div>
@@ -2530,39 +2716,39 @@ function MobParentKidDetail({ android = false, kidIndex = 1 }) {
         <MobileCard>
           <div
             style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "baseline",
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'baseline',
               marginBottom: 12,
             }}
           >
             <span style={{ fontSize: 13, fontWeight: 600 }}>Goals</span>
             <button
               style={{
-                background: "transparent",
-                border: "none",
+                background: 'transparent',
+                border: 'none',
                 color: t.c.primary,
                 fontSize: 12,
                 fontWeight: 600,
-                fontFamily: "inherit",
-                cursor: "pointer",
+                fontFamily: 'inherit',
+                cursor: 'pointer',
               }}
             >
               Edit
             </button>
           </div>
-          <GoalRow label="Daily" current={k.todayMinutes} goal={k.todayGoal} />
+          <GoalRow label='Daily' current={k.todayMinutes} goal={k.todayGoal} />
           <div style={{ height: 12 }} />
-          <GoalRow label="Weekly" current={k.weekMinutes} goal={k.weekGoal} />
+          <GoalRow label='Weekly' current={k.weekMinutes} goal={k.weekGoal} />
         </MobileCard>
 
         {/* This week chart */}
         <MobileCard>
           <div
             style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "baseline",
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'baseline',
               marginBottom: 10,
             }}
           >
@@ -2583,19 +2769,19 @@ function MobParentKidDetail({ android = false, kidIndex = 1 }) {
           <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 10 }}>
             By category
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
             <MobileDonut
               data={k.categories}
               size={130}
               stroke={18}
-              centerLabel="today"
+              centerLabel='today'
               centerValue={fmtTime(k.todayMinutes)}
             />
             <div
               style={{
                 flex: 1,
-                display: "flex",
-                flexDirection: "column",
+                display: 'flex',
+                flexDirection: 'column',
                 gap: 6,
               }}
             >
@@ -2605,8 +2791,8 @@ function MobParentKidDetail({ android = false, kidIndex = 1 }) {
                   <div
                     key={cat}
                     style={{
-                      display: "flex",
-                      alignItems: "center",
+                      display: 'flex',
+                      alignItems: 'center',
                       gap: 6,
                       fontSize: 11.5,
                     }}
@@ -2615,7 +2801,7 @@ function MobParentKidDetail({ android = false, kidIndex = 1 }) {
                       style={{
                         width: 8,
                         height: 8,
-                        borderRadius: "50%",
+                        borderRadius: '50%',
                         background: APP_DATA.categoryColors[cat],
                       }}
                     />
@@ -2653,47 +2839,47 @@ function MobParentKidDetail({ android = false, kidIndex = 1 }) {
           <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 12 }}>
             Recent activity
           </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             {[
               {
-                icon: "lock",
-                text: "Snapchat hit daily limit (60m)",
-                sub: "12 min ago",
+                icon: 'lock',
+                text: 'Snapchat hit daily limit (60m)',
+                sub: '12 min ago',
                 col: t.c.danger,
                 bg: t.c.dangerSoft,
               },
               {
-                icon: "message",
-                text: "Asked for 30 more minutes on Discord",
-                sub: "Late afternoon",
+                icon: 'message',
+                text: 'Asked for 30 more minutes on Discord',
+                sub: 'Late afternoon',
                 col: t.c.lavText,
                 bg: t.c.lavSoft,
               },
               {
-                icon: "alert",
-                text: "At 80% of Instagram limit",
-                sub: "Late afternoon",
+                icon: 'alert',
+                text: 'At 80% of Instagram limit',
+                sub: 'Late afternoon',
                 col: t.c.warn,
                 bg: t.c.warnSoft,
               },
               {
-                icon: "shield",
-                text: "Tried to reinstall TikTok",
-                sub: "1 hour ago",
+                icon: 'shield',
+                text: 'Tried to reinstall TikTok',
+                sub: '1 hour ago',
                 col: t.c.danger,
                 bg: t.c.dangerSoft,
               },
               {
-                icon: "calendar",
-                text: "Schoolday schedule started",
-                sub: "7:00 AM",
+                icon: 'calendar',
+                text: 'Schoolday schedule started',
+                sub: '7:00 AM',
                 col: t.c.blue,
                 bg: t.c.blueSoft,
               },
             ].map((e, i) => (
               <div
                 key={i}
-                style={{ display: "flex", gap: 10, alignItems: "flex-start" }}
+                style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}
               >
                 <div
                   style={{
@@ -2702,9 +2888,9 @@ function MobParentKidDetail({ android = false, kidIndex = 1 }) {
                     borderRadius: 9,
                     background: e.bg,
                     color: e.col,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                     flexShrink: 0,
                   }}
                 >
@@ -2736,28 +2922,28 @@ function MobParentKidDetail({ android = false, kidIndex = 1 }) {
       {showPause && (
         <div
           style={{
-            position: "absolute",
+            position: 'absolute',
             inset: 0,
             zIndex: 11000,
-            background: "rgba(0,0,0,0.6)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+            background: 'rgba(0,0,0,0.6)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
             padding: 24,
           }}
           onClick={() => setShowPause(false)}
         >
           <div
             style={{
-              width: "100%",
+              width: '100%',
               maxWidth: 300,
               background: t.c.surface,
               borderRadius: 20,
               padding: 24,
               border: `1px solid ${t.c.border}`,
               color: t.c.text,
-              textAlign: "center",
-              boxShadow: "0 15px 40px rgba(0,0,0,0.2)",
+              textAlign: 'center',
+              boxShadow: '0 15px 40px rgba(0,0,0,0.2)',
             }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -2765,16 +2951,16 @@ function MobParentKidDetail({ android = false, kidIndex = 1 }) {
               style={{
                 width: 50,
                 height: 50,
-                borderRadius: "50%",
+                borderRadius: '50%',
                 background: t.c.dangerSoft,
                 color: t.c.danger,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                margin: "0 auto 16px",
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 16px',
               }}
             >
-              <Icon name="lock" size={24} />
+              <Icon name='lock' size={24} />
             </div>
 
             <div
@@ -2800,23 +2986,23 @@ function MobParentKidDetail({ android = false, kidIndex = 1 }) {
               immediately.
             </div>
 
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               <button
                 onClick={() => {
                   alert(`${k.name}'s device paused!`);
                   setShowPause(false);
                 }}
                 style={{
-                  width: "100%",
+                  width: '100%',
                   background: t.c.danger,
-                  color: "#fff",
-                  border: "none",
+                  color: '#fff',
+                  border: 'none',
                   borderRadius: 10,
-                  padding: "10px 14px",
+                  padding: '10px 14px',
                   fontSize: 13,
                   fontWeight: 600,
-                  fontFamily: "inherit",
-                  cursor: "pointer",
+                  fontFamily: 'inherit',
+                  cursor: 'pointer',
                 }}
               >
                 Pause immediately
@@ -2824,16 +3010,16 @@ function MobParentKidDetail({ android = false, kidIndex = 1 }) {
               <button
                 onClick={() => setShowPause(false)}
                 style={{
-                  width: "100%",
+                  width: '100%',
                   background: t.c.surface2,
                   color: t.c.text,
                   border: `1px solid ${t.c.border}`,
                   borderRadius: 10,
-                  padding: "10px 14px",
+                  padding: '10px 14px',
                   fontSize: 13,
                   fontWeight: 600,
-                  fontFamily: "inherit",
-                  cursor: "pointer",
+                  fontFamily: 'inherit',
+                  cursor: 'pointer',
                 }}
               >
                 Cancel
@@ -2855,29 +3041,29 @@ function MobParentNotifLog({ android = false }) {
   const t = useTokens();
   const items = APP_DATA.notifications;
   const kindMeta = {
-    "limit-hit": { col: t.c.danger, bg: t.c.dangerSoft, label: "Limit hit" },
-    warn: { col: t.c.warn, bg: t.c.warnSoft, label: "Warning" },
-    bypass: { col: t.c.danger, bg: t.c.dangerSoft, label: "Bypass" },
-    achieved: { col: t.c.primary, bg: t.c.primarySoft, label: "Achieved" },
-    request: { col: t.c.lavText, bg: t.c.lavSoft, label: "Request" },
-    schedule: { col: t.c.blue, bg: t.c.blueSoft, label: "Schedule" },
+    'limit-hit': { col: t.c.danger, bg: t.c.dangerSoft, label: 'Limit hit' },
+    warn: { col: t.c.warn, bg: t.c.warnSoft, label: 'Warning' },
+    bypass: { col: t.c.danger, bg: t.c.dangerSoft, label: 'Bypass' },
+    achieved: { col: t.c.primary, bg: t.c.primarySoft, label: 'Achieved' },
+    request: { col: t.c.lavText, bg: t.c.lavSoft, label: 'Request' },
+    schedule: { col: t.c.blue, bg: t.c.blueSoft, label: 'Schedule' },
   };
 
   return (
     <MobileScreen android={android}>
       <MobileHeader
-        title="Notifications"
-        back="Family"
+        title='Notifications'
+        back='Family'
         action={
           <button
             style={{
-              background: "transparent",
-              border: "none",
+              background: 'transparent',
+              border: 'none',
               color: t.c.primary,
               fontSize: 13,
               fontWeight: 600,
-              fontFamily: "inherit",
-              cursor: "pointer",
+              fontFamily: 'inherit',
+              cursor: 'pointer',
             }}
           >
             Mark all read
@@ -2887,22 +3073,22 @@ function MobParentNotifLog({ android = false }) {
 
       <div
         style={{
-          padding: "0 18px",
-          display: "flex",
-          flexDirection: "column",
+          padding: '0 18px',
+          display: 'flex',
+          flexDirection: 'column',
           gap: 12,
         }}
       >
         {/* Filters */}
         <div
           style={{
-            display: "flex",
+            display: 'flex',
             gap: 6,
-            overflowX: "auto",
-            padding: "2px 0 4px",
+            overflowX: 'auto',
+            padding: '2px 0 4px',
           }}
         >
-          {["All", "Limits", "Requests", "Achievements", "Bypass"].map(
+          {['All', 'Limits', 'Requests', 'Achievements', 'Bypass'].map(
             (c, i) => (
               <Chip
                 key={c}
@@ -2912,7 +3098,7 @@ function MobParentNotifLog({ android = false }) {
               >
                 {c}
               </Chip>
-            ),
+            )
           )}
         </div>
 
@@ -2925,11 +3111,11 @@ function MobParentNotifLog({ android = false }) {
                 key={i}
                 style={{
                   padding: 14,
-                  display: "flex",
+                  display: 'flex',
                   gap: 12,
-                  alignItems: "flex-start",
+                  alignItems: 'flex-start',
                   borderBottom:
-                    i < items.length - 1 ? `1px solid ${t.c.border}` : "none",
+                    i < items.length - 1 ? `1px solid ${t.c.border}` : 'none',
                 }}
               >
                 <div
@@ -2939,9 +3125,9 @@ function MobParentNotifLog({ android = false }) {
                     borderRadius: 10,
                     background: m.bg,
                     color: m.col,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                     flexShrink: 0,
                   }}
                 >
@@ -2950,11 +3136,11 @@ function MobParentNotifLog({ android = false }) {
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div
                     style={{
-                      display: "flex",
+                      display: 'flex',
                       gap: 6,
-                      alignItems: "center",
+                      alignItems: 'center',
                       marginBottom: 3,
-                      flexWrap: "wrap",
+                      flexWrap: 'wrap',
                     }}
                   >
                     <Chip bg={m.bg} color={m.col} style={{ fontSize: 9.5 }}>
@@ -2973,7 +3159,7 @@ function MobParentNotifLog({ android = false }) {
                     )}
                     <span
                       style={{
-                        marginLeft: "auto",
+                        marginLeft: 'auto',
                         fontSize: 10.5,
                         color: t.c.textMute,
                       }}
@@ -2984,19 +3170,19 @@ function MobParentNotifLog({ android = false }) {
                   <div style={{ fontSize: 12.5, lineHeight: 1.4 }}>
                     {n.text}
                   </div>
-                  {n.kind === "request" && (
-                    <div style={{ display: "flex", gap: 6, marginTop: 10 }}>
+                  {n.kind === 'request' && (
+                    <div style={{ display: 'flex', gap: 6, marginTop: 10 }}>
                       <button
                         style={{
                           background: t.c.primary,
-                          color: "white",
-                          border: "none",
-                          padding: "6px 12px",
+                          color: 'white',
+                          border: 'none',
+                          padding: '6px 12px',
                           borderRadius: 8,
                           fontSize: 12,
                           fontWeight: 600,
-                          fontFamily: "inherit",
-                          cursor: "pointer",
+                          fontFamily: 'inherit',
+                          cursor: 'pointer',
                         }}
                       >
                         Approve
@@ -3006,12 +3192,12 @@ function MobParentNotifLog({ android = false }) {
                           background: t.c.surface,
                           color: t.c.text,
                           border: `1px solid ${t.c.border}`,
-                          padding: "6px 12px",
+                          padding: '6px 12px',
                           borderRadius: 8,
                           fontSize: 12,
                           fontWeight: 600,
-                          fontFamily: "inherit",
-                          cursor: "pointer",
+                          fontFamily: 'inherit',
+                          cursor: 'pointer',
                         }}
                       >
                         Decline
@@ -3038,133 +3224,210 @@ window.MobParentNotifLog = MobParentNotifLog;
 function MobOnboardLink({ android = false, onNext, onBack }) {
   const t = useTokens();
   return (
-    <MobileScreen android={android} scroll={false} bg={`linear-gradient(135deg, ${t.c.primarySoft} 0%, ${t.c.surface2} 100%)`}>
+    <MobileScreen
+      android={android}
+      scroll={false}
+      bg={`linear-gradient(135deg, ${t.c.primarySoft} 0%, ${t.c.surface2} 100%)`}
+    >
       <div
         style={{
-          padding: "16px 24px 24px",
-          height: "100%",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          boxSizing: "border-box",
-          position: "relative",
-          overflow: "hidden",
+          padding: '16px 24px 24px',
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          boxSizing: 'border-box',
+          position: 'relative',
+          overflow: 'hidden',
         }}
       >
         {/* Subtle glow circles */}
-        <div style={{ position: "absolute", top: -80, right: -80, width: 160, height: 160, borderRadius: "50%", background: t.c.primary, filter: "blur(50px)", opacity: 0.12 }} />
-        <div style={{ position: "absolute", bottom: -60, left: -60, width: 140, height: 140, borderRadius: "50%", background: t.c.accent, filter: "blur(40px)", opacity: 0.12 }} />
-        <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", height: "100%", justifyContent: "space-between" }}>
+        <div
+          style={{
+            position: 'absolute',
+            top: -80,
+            right: -80,
+            width: 160,
+            height: 160,
+            borderRadius: '50%',
+            background: t.c.primary,
+            filter: 'blur(50px)',
+            opacity: 0.12,
+          }}
+        />
+        <div
+          style={{
+            position: 'absolute',
+            bottom: -60,
+            left: -60,
+            width: 140,
+            height: 140,
+            borderRadius: '50%',
+            background: t.c.accent,
+            filter: 'blur(40px)',
+            opacity: 0.12,
+          }}
+        />
+        <div
+          style={{
+            position: 'relative',
+            zIndex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100%',
+            justifyContent: 'space-between',
+          }}
+        >
           <div>
-          {/* Step dots */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 6,
-              marginBottom: 20,
-            }}
-          >
-            <div style={{ width: 24, height: 4, background: t.c.primary, borderRadius: 2 }} />
-            <div style={{ width: 24, height: 4, background: t.c.primary, borderRadius: 2 }} />
-            <div style={{ width: 24, height: 4, background: t.c.primary, borderRadius: 2 }} />
-            <span style={{ fontSize: 11, color: t.c.textMute, marginLeft: "auto" }}>Step 3 of 4</span>
-          </div>
-
-          <h2
-            style={{
-              fontFamily: t.fontSerif,
-              fontSize: 28,
-              fontWeight: 500,
-              letterSpacing: "-.02em",
-              lineHeight: 1.15,
-              color: t.c.text,
-              margin: "0 0 8px",
-            }}
-          >
-            Link Maya's phone
-          </h2>
-          <p
-            style={{
-              fontSize: 13.5,
-              color: t.c.textMute,
-              lineHeight: 1.5,
-              margin: "0 0 20px",
-            }}
-          >
-            Open Atrium on Maya's iPhone and point the camera at this code. No sign-in required on her end.
-          </p>
-
-          {/* QR Container */}
-          <div
-            style={{
-              background: t.c.surface,
-              borderRadius: 24,
-              padding: 24,
-              border: `1px solid ${t.c.border}`,
-              textAlign: "center",
-              boxShadow: "0 12px 36px rgba(40,30,20,.04)",
-            }}
-          >
-            <div style={{ display: "inline-block", background: t.c.surface2, padding: 12, borderRadius: 16, border: `1px solid ${t.c.border}` }}>
-              <QRCodeMock size={150} fg={t.c.text} bg={t.c.surface2} />
-            </div>
-            
+            {/* Step dots */}
             <div
               style={{
-                marginTop: 16,
-                fontFamily: t.fontMono,
-                fontSize: 18,
-                fontWeight: "bold",
-                color: t.c.primary,
-                letterSpacing: ".15em",
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+                marginBottom: 20,
               }}
             >
-              F4-9K-2A-7P
+              <div
+                style={{
+                  width: 24,
+                  height: 4,
+                  background: t.c.primary,
+                  borderRadius: 2,
+                }}
+              />
+              <div
+                style={{
+                  width: 24,
+                  height: 4,
+                  background: t.c.primary,
+                  borderRadius: 2,
+                }}
+              />
+              <div
+                style={{
+                  width: 24,
+                  height: 4,
+                  background: t.c.primary,
+                  borderRadius: 2,
+                }}
+              />
+              <span
+                style={{
+                  fontSize: 11,
+                  color: t.c.textMute,
+                  marginLeft: 'auto',
+                }}
+              >
+                Step 3 of 4
+              </span>
             </div>
-            <div style={{ fontSize: 11.5, color: t.c.textMute, marginTop: 4 }}>
-              Or enter this code on her device
+
+            <h2
+              style={{
+                fontFamily: t.fontSerif,
+                fontSize: 28,
+                fontWeight: 500,
+                letterSpacing: '-.02em',
+                lineHeight: 1.15,
+                color: t.c.text,
+                margin: '0 0 8px',
+              }}
+            >
+              Link Maya's phone
+            </h2>
+            <p
+              style={{
+                fontSize: 13.5,
+                color: t.c.textMute,
+                lineHeight: 1.5,
+                margin: '0 0 20px',
+              }}
+            >
+              Open Atrium on Maya's iPhone and point the camera at this code. No
+              sign-in required on her end.
+            </p>
+
+            {/* QR Container */}
+            <div
+              style={{
+                background: t.c.surface,
+                borderRadius: 24,
+                padding: 24,
+                border: `1px solid ${t.c.border}`,
+                textAlign: 'center',
+                boxShadow: '0 12px 36px rgba(40,30,20,.04)',
+              }}
+            >
+              <div
+                style={{
+                  display: 'inline-block',
+                  background: t.c.surface2,
+                  padding: 12,
+                  borderRadius: 16,
+                  border: `1px solid ${t.c.border}`,
+                }}
+              >
+                <QRCodeMock size={150} fg={t.c.text} bg={t.c.surface2} />
+              </div>
+
+              <div
+                style={{
+                  marginTop: 16,
+                  fontFamily: t.fontMono,
+                  fontSize: 18,
+                  fontWeight: 'bold',
+                  color: t.c.primary,
+                  letterSpacing: '.15em',
+                }}
+              >
+                F4-9K-2A-7P
+              </div>
+              <div
+                style={{ fontSize: 11.5, color: t.c.textMute, marginTop: 4 }}
+              >
+                Or enter this code on her device
+              </div>
             </div>
           </div>
-        </div>
 
-        <div style={{ display: "flex", gap: 12 }}>
-          <button
-            onClick={onBack}
-            style={{
-              flex: 1,
-              background: t.c.surface,
-              color: t.c.text,
-              border: `1px solid ${t.c.border}`,
-              borderRadius: 12,
-              padding: "14px 0",
-              fontWeight: 600,
-              fontSize: 14,
-              fontFamily: "inherit",
-              cursor: "pointer",
-            }}
-          >
-            Back
-          </button>
-          <button
-            onClick={onNext}
-            style={{
-              flex: 2,
-              background: t.c.primary,
-              color: "white",
-              border: "none",
-              borderRadius: 12,
-              padding: "14px 0",
-              fontWeight: 600,
-              fontSize: 14,
-              fontFamily: "inherit",
-              cursor: "pointer",
-              boxShadow: "0 4px 16px rgba(92,138,107,.15)",
-            }}
-          >
-            I've scanned it
-          </button>
-        </div>
+          <div style={{ display: 'flex', gap: 12 }}>
+            <button
+              onClick={onBack}
+              style={{
+                flex: 1,
+                background: t.c.surface,
+                color: t.c.text,
+                border: `1px solid ${t.c.border}`,
+                borderRadius: 12,
+                padding: '14px 0',
+                fontWeight: 600,
+                fontSize: 14,
+                fontFamily: 'inherit',
+                cursor: 'pointer',
+              }}
+            >
+              Back
+            </button>
+            <button
+              onClick={onNext}
+              style={{
+                flex: 2,
+                background: t.c.primary,
+                color: 'white',
+                border: 'none',
+                borderRadius: 12,
+                padding: '14px 0',
+                fontWeight: 600,
+                fontSize: 14,
+                fontFamily: 'inherit',
+                cursor: 'pointer',
+                boxShadow: '0 4px 16px rgba(92,138,107,.15)',
+              }}
+            >
+              I've scanned it
+            </button>
+          </div>
         </div>
       </div>
     </MobileScreen>
@@ -3173,159 +3436,395 @@ function MobOnboardLink({ android = false, onNext, onBack }) {
 
 function MobLogin({ android = false, onLogin }) {
   const t = useTokens();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleLogin = (e) => {
     e.preventDefault();
     if (onLogin) onLogin();
   };
 
-  return (
-    <MobileScreen android={android} scroll={false} bg={`linear-gradient(135deg, ${t.c.primarySoft} 0%, ${t.c.surface2} 100%)`}>
-      {/* Decorative gradient canvas background wrapper */}
-      <div style={{
-        padding: "24px",
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
-        boxSizing: "border-box",
-        position: "relative",
-        overflow: "hidden",
-      }}>
-        {/* Subtle blur circles using vibrant primary and accent colors with opacity */}
-        <div style={{ position: "absolute", top: -80, right: -80, width: 180, height: 180, borderRadius: "50%", background: t.c.yellow, filter: "blur(55px)", opacity: 0.15 }} />
-        <div style={{ position: "absolute", bottom: -60, left: -60, width: 160, height: 160, borderRadius: "50%", background: t.c.accent, filter: "blur(45px)", opacity: 0.15 }} />
+  const R = 22,
+    C = 2 * Math.PI * R;
+  const pct = 0.68;
 
-        <div style={{ textAlign: "center", marginTop: 24, zIndex: 2 }}>
-          <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
-            <Icon name="sparkles" size={40} color={t.c.primary} />
+  return (
+    <MobileScreen
+      android={android}
+      scroll={true}
+      bg={`linear-gradient(155deg, ${t.c.primarySoft} 0%, ${t.c.surface2} 60%, ${t.c.bg} 100%)`}
+    >
+      <div
+        style={{
+          padding: '20px 18px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 16,
+          boxSizing: 'border-box',
+        }}
+      >
+        {/* Logo and editorial header */}
+        <div style={{ textAlign: 'center', marginTop: 8 }}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              marginBottom: 8,
+            }}
+          >
+            <Icon name='sparkles' size={32} color={t.c.primary} />
           </div>
-          <h1 style={{ fontFamily: t.fontSerif, fontSize: 32, fontWeight: 500, color: t.c.text, margin: "0 0 8px" }}>Atrium</h1>
-          <p style={{ fontSize: 14, color: t.c.textMute, margin: 0 }}>Empathetic boundaries for family screens</p>
+          <h1
+            style={{
+              fontFamily: t.fontSerif,
+              fontSize: 26,
+              fontWeight: 500,
+              color: t.c.text,
+              margin: '0 0 6px',
+              letterSpacing: '-.02em',
+            }}
+          >
+            Atrium
+          </h1>
+          <p
+            style={{
+              fontSize: 13,
+              color: t.c.textMute,
+              margin: 0,
+              padding: '0 10px',
+              lineHeight: 1.4,
+            }}
+          >
+            Bring calm back to your family's screens. Empathetic boundaries,
+            streak-driven.
+          </p>
         </div>
 
-        {/* Login form styled as a premium card */}
-        <form onSubmit={handleLogin} style={{
-          background: t.c.surface,
-          borderRadius: 20,
-          padding: 20,
-          border: `1px solid ${t.c.border}`,
-          boxShadow: "0 12px 32px rgba(40,30,20,.05)",
-          display: "flex",
-          flexDirection: "column",
-          gap: 16,
-          zIndex: 2,
-          margin: "16px 0",
-        }}>
-          <div>
-            <label style={{ fontSize: 11, fontWeight: 600, color: t.c.textMute, textTransform: "uppercase", display: "block", marginBottom: 6 }}>Email Address</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="sarah@atrium.com"
+        {/* Mini Mindful Habit Streak card */}
+        <div
+          style={{
+            background: t.c.surface,
+            borderRadius: 16,
+            padding: 16,
+            border: `1px solid ${t.c.border}`,
+            boxShadow: '0 8px 24px rgba(40,30,20,.03)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 12,
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <svg
+              width='50'
+              height='50'
+              viewBox='0 0 60 60'
+              style={{ flexShrink: 0 }}
+            >
+              <circle
+                cx='30'
+                cy='30'
+                r={R}
+                fill='none'
+                stroke={t.c.primarySoft}
+                strokeWidth='5'
+              />
+              <circle
+                cx='30'
+                cy='30'
+                r={R}
+                fill='none'
+                stroke={t.c.primary}
+                strokeWidth='5'
+                strokeLinecap='round'
+                strokeDasharray={C}
+                strokeDashoffset={C * (1 - pct)}
+                transform='rotate(-90 30 30)'
+              />
+              <text
+                x='30'
+                y='32'
+                textAnchor='middle'
+                dominantBaseline='middle'
+                fill={t.c.text}
+                fontSize='12'
+                fontWeight='600'
+              >
+                68%
+              </text>
+            </svg>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div
+                style={{
+                  fontSize: 9.5,
+                  fontWeight: 700,
+                  color: t.c.textMute,
+                  letterSpacing: '.06em',
+                  textTransform: 'uppercase',
+                }}
+              >
+                Mindful habit streak
+              </div>
+              <div
+                style={{
+                  fontFamily: t.fontSerif,
+                  fontSize: 15,
+                  fontWeight: 500,
+                  color: t.c.text,
+                  marginTop: 1,
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
+              >
+                Consistent progress, gently.
+              </div>
+              <div
+                style={{
+                  fontSize: 11,
+                  color: t.c.textMute,
+                  marginTop: 1,
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
+              >
+                Soft nudges toward better screen rhythms.
+              </div>
+            </div>
+          </div>
+          <div
+            style={{
+              borderTop: `1px dashed ${t.c.border}`,
+              paddingTop: 10,
+              display: 'flex',
+              gap: 8,
+              alignItems: 'flex-start',
+            }}
+          >
+            <div
               style={{
-                width: "100%",
-                padding: "12px 14px",
-                borderRadius: 10,
-                background: t.c.surface2,
-                border: `1px solid ${t.c.border}`,
-                color: t.c.text,
-                fontSize: 14,
-                fontFamily: "inherit",
-                boxSizing: "border-box",
-                outline: "none",
+                width: 24,
+                height: 24,
+                borderRadius: '50%',
+                background: t.c.accentSoft,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
               }}
-            />
+            >
+              <Icon name='sparkles' size={12} color={t.c.accent} />
+            </div>
+            <div>
+              <div
+                style={{
+                  fontSize: 9.5,
+                  fontWeight: 700,
+                  color: t.c.accent,
+                  letterSpacing: '.06em',
+                  textTransform: 'uppercase',
+                }}
+              >
+                Coach
+              </div>
+              <div
+                style={{
+                  fontFamily: t.fontSerif,
+                  fontStyle: 'italic',
+                  fontSize: 12.5,
+                  lineHeight: 1.4,
+                  color: t.c.text,
+                  marginTop: 2,
+                }}
+              >
+                &ldquo;You've kept evenings offline for six days. Protect that
+                rhythm tonight.&rdquo;
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Sign In Form */}
+        <form
+          onSubmit={handleLogin}
+          style={{
+            background: t.c.surface,
+            borderRadius: 16,
+            padding: 18,
+            border: `1px solid ${t.c.border}`,
+            boxShadow: '0 8px 24px rgba(40,30,20,.03)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 14,
+          }}
+        >
+          <div>
+            <label
+              style={{
+                fontSize: 10.5,
+                fontWeight: 600,
+                color: t.c.textMute,
+                textTransform: 'uppercase',
+                display: 'block',
+                marginBottom: 5,
+              }}
+            >
+              Email Address
+            </label>
+            <div style={{ position: 'relative' }}>
+              <div
+                style={{
+                  position: 'absolute',
+                  left: 12,
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  color: t.c.textMute,
+                }}
+              >
+                <Icon name='user' size={14} />
+              </div>
+              <input
+                type='email'
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder='you@example.com'
+                style={{
+                  width: '100%',
+                  padding: '11px 12px 11px 34px',
+                  borderRadius: 8,
+                  background: t.c.surface2,
+                  border: `1px solid ${t.c.border}`,
+                  color: t.c.text,
+                  fontSize: 13.5,
+                  fontFamily: 'inherit',
+                  boxSizing: 'border-box',
+                  outline: 'none',
+                }}
+              />
+            </div>
           </div>
 
           <div>
-            <label style={{ fontSize: 11, fontWeight: 600, color: t.c.textMute, textTransform: "uppercase", display: "block", marginBottom: 6 }}>Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
+            <label
               style={{
-                width: "100%",
-                padding: "12px 14px",
-                borderRadius: 10,
-                background: t.c.surface2,
-                border: `1px solid ${t.c.border}`,
-                color: t.c.text,
-                fontSize: 14,
-                fontFamily: "inherit",
-                boxSizing: "border-box",
-                outline: "none",
+                fontSize: 10.5,
+                fontWeight: 600,
+                color: t.c.textMute,
+                textTransform: 'uppercase',
+                display: 'block',
+                marginBottom: 5,
               }}
-            />
+            >
+              Password
+            </label>
+            <div style={{ position: 'relative' }}>
+              <div
+                style={{
+                  position: 'absolute',
+                  left: 12,
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  color: t.c.textMute,
+                }}
+              >
+                <Icon name='lock' size={14} />
+              </div>
+              <input
+                type='password'
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder='••••••••'
+                style={{
+                  width: '100%',
+                  padding: '11px 12px 11px 34px',
+                  borderRadius: 8,
+                  background: t.c.surface2,
+                  border: `1px solid ${t.c.border}`,
+                  color: t.c.text,
+                  fontSize: 13.5,
+                  fontFamily: 'inherit',
+                  boxSizing: 'border-box',
+                  outline: 'none',
+                }}
+              />
+            </div>
           </div>
 
           <button
-            type="submit"
+            type='submit'
             style={{
               background: t.c.primary,
-              color: "white",
-              border: "none",
-              borderRadius: 10,
-              padding: "13px 0",
+              color: 'white',
+              border: 'none',
+              borderRadius: 8,
+              padding: '12px 0',
               fontWeight: 600,
-              fontSize: 14,
-              fontFamily: "inherit",
-              cursor: "pointer",
+              fontSize: 13.5,
+              fontFamily: 'inherit',
+              cursor: 'pointer',
               marginTop: 4,
-              boxShadow: "0 4px 16px rgba(92,138,107,.15)",
+              boxShadow: '0 4px 12px rgba(92,138,107,.15)',
             }}
           >
             Sign in
           </button>
         </form>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: 10, zIndex: 2 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10, color: t.c.textMute, fontSize: 12, margin: "4px 0" }}>
+        {/* Social logins */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 10,
+              color: t.c.textMute,
+              fontSize: 11,
+              margin: '2px 0',
+            }}
+          >
             <div style={{ flex: 1, height: 1, background: t.c.border }} />
             <span>or sign in with</span>
             <div style={{ flex: 1, height: 1, background: t.c.border }} />
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+          <div
+            style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}
+          >
             <button
-              type="button"
+              type='button'
               style={{
                 background: t.c.surface,
                 border: `1px solid ${t.c.border}`,
-                borderRadius: 10,
-                padding: "10px 0",
-                fontSize: 13,
+                borderRadius: 8,
+                padding: '9px 0',
+                fontSize: 12.5,
                 fontWeight: 600,
                 color: t.c.text,
-                fontFamily: "inherit",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+                fontFamily: 'inherit',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
                 gap: 8,
               }}
             >
               Google
             </button>
             <button
-              type="button"
+              type='button'
               style={{
                 background: t.c.surface,
                 border: `1px solid ${t.c.border}`,
-                borderRadius: 10,
-                padding: "10px 0",
-                fontSize: 13,
+                borderRadius: 8,
+                padding: '9px 0',
+                fontSize: 12.5,
                 fontWeight: 600,
                 color: t.c.text,
-                fontFamily: "inherit",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+                fontFamily: 'inherit',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
                 gap: 8,
               }}
             >
@@ -3341,79 +3840,230 @@ function MobLogin({ android = false, onLogin }) {
 function MobOnboardWelcome({ android = false, onSelect }) {
   const t = useTokens();
   return (
-    <MobileScreen android={android} scroll={false} bg={`linear-gradient(135deg, ${t.c.primarySoft} 0%, ${t.c.surface2} 100%)`}>
-      <div style={{ padding: "16px 24px 24px", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", boxSizing: "border-box", position: "relative", overflow: "hidden" }}>
+    <MobileScreen
+      android={android}
+      scroll={false}
+      bg={`linear-gradient(135deg, ${t.c.primarySoft} 0%, ${t.c.surface2} 100%)`}
+    >
+      <div
+        style={{
+          padding: '16px 24px 24px',
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          boxSizing: 'border-box',
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
         {/* Subtle glow circles */}
-        <div style={{ position: "absolute", top: -80, right: -80, width: 160, height: 160, borderRadius: "50%", background: t.c.primary, filter: "blur(50px)", opacity: 0.12 }} />
-        <div style={{ position: "absolute", bottom: -60, left: -60, width: 140, height: 140, borderRadius: "50%", background: t.c.accent, filter: "blur(40px)", opacity: 0.12 }} />
-        <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", height: "100%", justifyContent: "space-between" }}>
+        <div
+          style={{
+            position: 'absolute',
+            top: -80,
+            right: -80,
+            width: 160,
+            height: 160,
+            borderRadius: '50%',
+            background: t.c.primary,
+            filter: 'blur(50px)',
+            opacity: 0.12,
+          }}
+        />
+        <div
+          style={{
+            position: 'absolute',
+            bottom: -60,
+            left: -60,
+            width: 140,
+            height: 140,
+            borderRadius: '50%',
+            background: t.c.accent,
+            filter: 'blur(40px)',
+            opacity: 0.12,
+          }}
+        />
+        <div
+          style={{
+            position: 'relative',
+            zIndex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100%',
+            justifyContent: 'space-between',
+          }}
+        >
           <div>
-            <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 20 }}>
-              <div style={{ width: 24, height: 4, background: t.c.primary, borderRadius: 2 }} />
-              <div style={{ width: 24, height: 4, background: t.c.surface2, borderRadius: 2 }} />
-              <div style={{ width: 24, height: 4, background: t.c.surface2, borderRadius: 2 }} />
-              <span style={{ fontSize: 11, color: t.c.textMute, marginLeft: "auto" }}>Step 1 of 4</span>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+                marginBottom: 20,
+              }}
+            >
+              <div
+                style={{
+                  width: 24,
+                  height: 4,
+                  background: t.c.primary,
+                  borderRadius: 2,
+                }}
+              />
+              <div
+                style={{
+                  width: 24,
+                  height: 4,
+                  background: t.c.surface2,
+                  borderRadius: 2,
+                }}
+              />
+              <div
+                style={{
+                  width: 24,
+                  height: 4,
+                  background: t.c.surface2,
+                  borderRadius: 2,
+                }}
+              />
+              <span
+                style={{
+                  fontSize: 11,
+                  color: t.c.textMute,
+                  marginLeft: 'auto',
+                }}
+              >
+                Step 1 of 4
+              </span>
             </div>
 
-            <h2 style={{ fontFamily: t.fontSerif, fontSize: 28, fontWeight: 500, color: t.c.text, lineHeight: 1.15, marginBottom: 8 }}>
+            <h2
+              style={{
+                fontFamily: t.fontSerif,
+                fontSize: 28,
+                fontWeight: 500,
+                color: t.c.text,
+                lineHeight: 1.15,
+                marginBottom: 8,
+              }}
+            >
               Welcome to Atrium
             </h2>
-            <p style={{ fontSize: 13.5, color: t.c.textMute, lineHeight: 1.5, margin: "0 0 24px" }}>
-              Mindful daily screen habits for your family. Empathetic guidance instead of rigid blocks.
+            <p
+              style={{
+                fontSize: 13.5,
+                color: t.c.textMute,
+                lineHeight: 1.5,
+                margin: '0 0 24px',
+              }}
+            >
+              Mindful daily screen habits for your family. Empathetic guidance
+              instead of rigid blocks.
             </p>
 
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              <div style={{ fontSize: 11, fontWeight: 600, color: t.c.textMute, textTransform: "uppercase", letterSpacing: ".05em" }}>Who is using this device?</div>
-              
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <div
+                style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: t.c.textMute,
+                  textTransform: 'uppercase',
+                  letterSpacing: '.05em',
+                }}
+              >
+                Who is using this device?
+              </div>
+
               <button
-                onClick={() => onSelect("parent-ind")}
+                onClick={() => onSelect('parent-ind')}
                 style={{
                   background: t.c.surface,
                   border: `1px solid ${t.c.border}`,
                   borderRadius: 16,
                   padding: 16,
-                  textAlign: "left",
-                  fontFamily: "inherit",
-                  cursor: "pointer",
-                  display: "flex",
+                  textAlign: 'left',
+                  fontFamily: 'inherit',
+                  cursor: 'pointer',
+                  display: 'flex',
                   gap: 14,
-                  alignItems: "center",
+                  alignItems: 'center',
                   color: t.c.text,
-                  boxShadow: "0 4px 12px rgba(0,0,0,.01)",
+                  boxShadow: '0 4px 12px rgba(0,0,0,.01)',
                 }}
               >
-                <div style={{ width: 36, height: 36, borderRadius: 10, background: `${t.c.primary}15`, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <Icon name="sparkles" size={18} color={t.c.primary} />
+                <div
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: 10,
+                    background: `${t.c.primary}15`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Icon name='sparkles' size={18} color={t.c.primary} />
                 </div>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: 600, fontSize: 14.5 }}>Parent / Independent</div>
-                  <div style={{ fontSize: 11.5, color: t.c.textMute, marginTop: 2 }}>Manage child limits or track your personal wellbeing.</div>
+                  <div style={{ fontWeight: 600, fontSize: 14.5 }}>
+                    Parent / Independent
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 11.5,
+                      color: t.c.textMute,
+                      marginTop: 2,
+                    }}
+                  >
+                    Manage child limits or track your personal wellbeing.
+                  </div>
                 </div>
               </button>
 
               <button
-                onClick={() => onSelect("child")}
+                onClick={() => onSelect('child')}
                 style={{
                   background: t.c.surface,
                   border: `1px solid ${t.c.border}`,
                   borderRadius: 16,
                   padding: 16,
-                  textAlign: "left",
-                  fontFamily: "inherit",
-                  cursor: "pointer",
-                  display: "flex",
+                  textAlign: 'left',
+                  fontFamily: 'inherit',
+                  cursor: 'pointer',
+                  display: 'flex',
                   gap: 14,
-                  alignItems: "center",
+                  alignItems: 'center',
                   color: t.c.text,
-                  boxShadow: "0 4px 12px rgba(0,0,0,.01)",
+                  boxShadow: '0 4px 12px rgba(0,0,0,.01)',
                 }}
               >
-                <div style={{ width: 36, height: 36, borderRadius: 10, background: `${t.c.accent}15`, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <Icon name="phone" size={18} color={t.c.accent} />
+                <div
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: 10,
+                    background: `${t.c.accent}15`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Icon name='phone' size={18} color={t.c.accent} />
                 </div>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: 600, fontSize: 14.5 }}>Child Device</div>
-                  <div style={{ fontSize: 11.5, color: t.c.textMute, marginTop: 2 }}>Pair this device with parent controls.</div>
+                  <div style={{ fontWeight: 600, fontSize: 14.5 }}>
+                    Child Device
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 11.5,
+                      color: t.c.textMute,
+                      marginTop: 2,
+                    }}
+                  >
+                    Pair this device with parent controls.
+                  </div>
                 </div>
               </button>
             </div>
@@ -3427,94 +4077,242 @@ function MobOnboardWelcome({ android = false, onSelect }) {
 function MobOnboardRoleQuestion({ android = false, onAnswer, onBack }) {
   const t = useTokens();
   return (
-    <MobileScreen android={android} scroll={false} bg={`linear-gradient(135deg, ${t.c.primarySoft} 0%, ${t.c.surface2} 100%)`}>
-      <div style={{ padding: "16px 24px 24px", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", boxSizing: "border-box", position: "relative", overflow: "hidden" }}>
+    <MobileScreen
+      android={android}
+      scroll={false}
+      bg={`linear-gradient(135deg, ${t.c.primarySoft} 0%, ${t.c.surface2} 100%)`}
+    >
+      <div
+        style={{
+          padding: '16px 24px 24px',
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          boxSizing: 'border-box',
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
         {/* Subtle glow circles */}
-        <div style={{ position: "absolute", top: -80, right: -80, width: 160, height: 160, borderRadius: "50%", background: t.c.primary, filter: "blur(50px)", opacity: 0.12 }} />
-        <div style={{ position: "absolute", bottom: -60, left: -60, width: 140, height: 140, borderRadius: "50%", background: t.c.accent, filter: "blur(40px)", opacity: 0.12 }} />
-        <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", height: "100%", justifyContent: "space-between" }}>
+        <div
+          style={{
+            position: 'absolute',
+            top: -80,
+            right: -80,
+            width: 160,
+            height: 160,
+            borderRadius: '50%',
+            background: t.c.primary,
+            filter: 'blur(50px)',
+            opacity: 0.12,
+          }}
+        />
+        <div
+          style={{
+            position: 'absolute',
+            bottom: -60,
+            left: -60,
+            width: 140,
+            height: 140,
+            borderRadius: '50%',
+            background: t.c.accent,
+            filter: 'blur(40px)',
+            opacity: 0.12,
+          }}
+        />
+        <div
+          style={{
+            position: 'relative',
+            zIndex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100%',
+            justifyContent: 'space-between',
+          }}
+        >
           <div>
-            <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 20 }}>
-              <div style={{ width: 24, height: 4, background: t.c.primary, borderRadius: 2 }} />
-              <div style={{ width: 24, height: 4, background: t.c.primary, borderRadius: 2 }} />
-              <div style={{ width: 24, height: 4, background: t.c.surface2, borderRadius: 2 }} />
-              <span style={{ fontSize: 11, color: t.c.textMute, marginLeft: "auto" }}>Step 2 of 4</span>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+                marginBottom: 20,
+              }}
+            >
+              <div
+                style={{
+                  width: 24,
+                  height: 4,
+                  background: t.c.primary,
+                  borderRadius: 2,
+                }}
+              />
+              <div
+                style={{
+                  width: 24,
+                  height: 4,
+                  background: t.c.primary,
+                  borderRadius: 2,
+                }}
+              />
+              <div
+                style={{
+                  width: 24,
+                  height: 4,
+                  background: t.c.surface2,
+                  borderRadius: 2,
+                }}
+              />
+              <span
+                style={{
+                  fontSize: 11,
+                  color: t.c.textMute,
+                  marginLeft: 'auto',
+                }}
+              >
+                Step 2 of 4
+              </span>
             </div>
 
-            <h2 style={{ fontFamily: t.fontSerif, fontSize: 26, fontWeight: 500, color: t.c.text, lineHeight: 1.15, marginBottom: 8 }}>
+            <h2
+              style={{
+                fontFamily: t.fontSerif,
+                fontSize: 26,
+                fontWeight: 500,
+                color: t.c.text,
+                lineHeight: 1.15,
+                marginBottom: 8,
+              }}
+            >
               Are you managing children's devices?
             </h2>
-            <p style={{ fontSize: 13.5, color: t.c.textMute, lineHeight: 1.5, margin: "0 0 24px" }}>
+            <p
+              style={{
+                fontSize: 13.5,
+                color: t.c.textMute,
+                lineHeight: 1.5,
+                margin: '0 0 24px',
+              }}
+            >
               Atrium adapts its features based on your choice.
             </p>
 
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <button
-                onClick={() => onAnswer("family")}
+                onClick={() => onAnswer('family')}
                 style={{
                   background: t.c.surface,
                   border: `1px solid ${t.c.border}`,
                   borderRadius: 16,
                   padding: 16,
-                  textAlign: "left",
-                  fontFamily: "inherit",
-                  cursor: "pointer",
-                  display: "flex",
+                  textAlign: 'left',
+                  fontFamily: 'inherit',
+                  cursor: 'pointer',
+                  display: 'flex',
                   gap: 14,
-                  alignItems: "center",
+                  alignItems: 'center',
                   color: t.c.text,
-                  boxShadow: "0 4px 12px rgba(0,0,0,.01)",
+                  boxShadow: '0 4px 12px rgba(0,0,0,.01)',
                 }}
               >
-                <div style={{ width: 36, height: 36, borderRadius: 10, background: `${t.c.primary}15`, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <Icon name="users" size={18} color={t.c.primary} />
+                <div
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: 10,
+                    background: `${t.c.primary}15`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Icon name='users' size={18} color={t.c.primary} />
                 </div>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: 600, fontSize: 14.5 }}>Yes, I am a Parent</div>
-                  <div style={{ fontSize: 11.5, color: t.c.textMute, marginTop: 2 }}>Setup profiles, link devices, and monitor child usage schedules.</div>
+                  <div style={{ fontWeight: 600, fontSize: 14.5 }}>
+                    Yes, I am a Parent
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 11.5,
+                      color: t.c.textMute,
+                      marginTop: 2,
+                    }}
+                  >
+                    Setup profiles, link devices, and monitor child usage
+                    schedules.
+                  </div>
                 </div>
               </button>
 
               <button
-                onClick={() => onAnswer("independent")}
+                onClick={() => onAnswer('independent')}
                 style={{
                   background: t.c.surface,
                   border: `1px solid ${t.c.border}`,
                   borderRadius: 16,
                   padding: 16,
-                  textAlign: "left",
-                  fontFamily: "inherit",
-                  cursor: "pointer",
-                  display: "flex",
+                  textAlign: 'left',
+                  fontFamily: 'inherit',
+                  cursor: 'pointer',
+                  display: 'flex',
                   gap: 14,
-                  alignItems: "center",
+                  alignItems: 'center',
                   color: t.c.text,
-                  boxShadow: "0 4px 12px rgba(0,0,0,.01)",
+                  boxShadow: '0 4px 12px rgba(0,0,0,.01)',
                 }}
               >
-                <div style={{ width: 36, height: 36, borderRadius: 10, background: `${t.c.textMute}15`, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <Icon name="phone" size={18} color={t.c.textMute} />
+                <div
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: 10,
+                    background: `${t.c.textMute}15`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Icon name='phone' size={18} color={t.c.textMute} />
                 </div>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: 600, fontSize: 14.5 }}>No, personal use only</div>
-                  <div style={{ fontSize: 11.5, color: t.c.textMute, marginTop: 2 }}>Operate Atrium as a personal screen-time guide. Skip child setup.</div>
+                  <div style={{ fontWeight: 600, fontSize: 14.5 }}>
+                    No, personal use only
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 11.5,
+                      color: t.c.textMute,
+                      marginTop: 2,
+                    }}
+                  >
+                    Operate Atrium as a personal screen-time guide. Skip child
+                    setup.
+                  </div>
                 </div>
               </button>
             </div>
           </div>
 
-          <div style={{ display: "flex", justifyContent: "flex-start", marginTop: 24 }}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'flex-start',
+              marginTop: 24,
+            }}
+          >
             <button
               onClick={onBack}
               style={{
-                background: "transparent",
+                background: 'transparent',
                 color: t.c.text,
-                border: "none",
+                border: 'none',
                 fontSize: 14.5,
                 fontWeight: 600,
-                fontFamily: "inherit",
-                cursor: "pointer",
-                padding: "8px 12px",
+                fontFamily: 'inherit',
+                cursor: 'pointer',
+                padding: '8px 12px',
               }}
             >
               Back
@@ -3528,147 +4326,293 @@ function MobOnboardRoleQuestion({ android = false, onAnswer, onBack }) {
 
 function MobOnboardCreateProfile({ android = false, onNext, onBack }) {
   const t = useTokens();
-  const [name, setName] = useState("Maya");
-  const [age, setAge] = useState("11");
-  const [deviceType, setDeviceType] = useState("iPhone");
+  const [name, setName] = useState('Maya');
+  const [age, setAge] = useState('11');
+  const [deviceType, setDeviceType] = useState('iPhone');
 
   return (
-    <MobileScreen android={android} scroll={false} bg={`linear-gradient(135deg, ${t.c.primarySoft} 0%, ${t.c.surface2} 100%)`}>
-      <div style={{ padding: "16px 24px 24px", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", boxSizing: "border-box", position: "relative", overflow: "hidden" }}>
+    <MobileScreen
+      android={android}
+      scroll={false}
+      bg={`linear-gradient(135deg, ${t.c.primarySoft} 0%, ${t.c.surface2} 100%)`}
+    >
+      <div
+        style={{
+          padding: '16px 24px 24px',
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          boxSizing: 'border-box',
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
         {/* Subtle glow circles */}
-        <div style={{ position: "absolute", top: -80, right: -80, width: 160, height: 160, borderRadius: "50%", background: t.c.primary, filter: "blur(50px)", opacity: 0.12 }} />
-        <div style={{ position: "absolute", bottom: -60, left: -60, width: 140, height: 140, borderRadius: "50%", background: t.c.accent, filter: "blur(40px)", opacity: 0.12 }} />
-        <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", height: "100%", justifyContent: "space-between" }}>
+        <div
+          style={{
+            position: 'absolute',
+            top: -80,
+            right: -80,
+            width: 160,
+            height: 160,
+            borderRadius: '50%',
+            background: t.c.primary,
+            filter: 'blur(50px)',
+            opacity: 0.12,
+          }}
+        />
+        <div
+          style={{
+            position: 'absolute',
+            bottom: -60,
+            left: -60,
+            width: 140,
+            height: 140,
+            borderRadius: '50%',
+            background: t.c.accent,
+            filter: 'blur(40px)',
+            opacity: 0.12,
+          }}
+        />
+        <div
+          style={{
+            position: 'relative',
+            zIndex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100%',
+            justifyContent: 'space-between',
+          }}
+        >
           <div>
-          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 20 }}>
-            <div style={{ width: 24, height: 4, background: t.c.primary, borderRadius: 2 }} />
-            <div style={{ width: 24, height: 4, background: t.c.primary, borderRadius: 2 }} />
-            <div style={{ width: 24, height: 4, background: t.c.surface2, borderRadius: 2 }} />
-            <span style={{ fontSize: 11, color: t.c.textMute, marginLeft: "auto" }}>Step 2 of 4</span>
-          </div>
-
-          <h2 style={{ fontFamily: t.fontSerif, fontSize: 28, fontWeight: 500, color: t.c.text, lineHeight: 1.15, marginBottom: 8 }}>
-            Create kid profile
-          </h2>
-          <p style={{ fontSize: 13.5, color: t.c.textMute, lineHeight: 1.5, marginBottom: 20 }}>
-            Setup details to configure age-appropriate smart limits.
-          </p>
-
-          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: 12 }}>
-              <div>
-                <label style={{ fontSize: 11, fontWeight: 600, color: t.c.textMute, textTransform: "uppercase", display: "block", marginBottom: 6 }}>Child's Name</label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  style={{
-                    width: "100%",
-                    padding: "12px 14px",
-                    borderRadius: 10,
-                    background: t.c.surface,
-                    border: `1px solid ${t.c.border}`,
-                    color: t.c.text,
-                    fontSize: 14,
-                    fontFamily: "inherit",
-                    boxSizing: "border-box",
-                  }}
-                />
-              </div>
-
-              <div>
-                <label style={{ fontSize: 11, fontWeight: 600, color: t.c.textMute, textTransform: "uppercase", display: "block", marginBottom: 6 }}>Age</label>
-                <input
-                  type="text"
-                  value={age}
-                  onChange={(e) => setAge(e.target.value)}
-                  style={{
-                    width: "100%",
-                    padding: "12px 14px",
-                    borderRadius: 10,
-                    background: t.c.surface,
-                    border: `1px solid ${t.c.border}`,
-                    color: t.c.text,
-                    fontSize: 14,
-                    fontFamily: "inherit",
-                    boxSizing: "border-box",
-                  }}
-                />
-              </div>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+                marginBottom: 20,
+              }}
+            >
+              <div
+                style={{
+                  width: 24,
+                  height: 4,
+                  background: t.c.primary,
+                  borderRadius: 2,
+                }}
+              />
+              <div
+                style={{
+                  width: 24,
+                  height: 4,
+                  background: t.c.primary,
+                  borderRadius: 2,
+                }}
+              />
+              <div
+                style={{
+                  width: 24,
+                  height: 4,
+                  background: t.c.surface2,
+                  borderRadius: 2,
+                }}
+              />
+              <span
+                style={{
+                  fontSize: 11,
+                  color: t.c.textMute,
+                  marginLeft: 'auto',
+                }}
+              >
+                Step 2 of 4
+              </span>
             </div>
 
-            {/* Device selector buttons instead of input box */}
-            <div>
-              <label style={{ fontSize: 11, fontWeight: 600, color: t.c.textMute, textTransform: "uppercase", display: "block", marginBottom: 8 }}>Device Type</label>
-              <div style={{ display: "flex", gap: 8 }}>
-                {["iPhone", "Android", "iPad"].map(d => (
-                  <button
-                    key={d}
-                    type="button"
-                    onClick={() => setDeviceType(d)}
+            <h2
+              style={{
+                fontFamily: t.fontSerif,
+                fontSize: 28,
+                fontWeight: 500,
+                color: t.c.text,
+                lineHeight: 1.15,
+                marginBottom: 8,
+              }}
+            >
+              Create kid profile
+            </h2>
+            <p
+              style={{
+                fontSize: 13.5,
+                color: t.c.textMute,
+                lineHeight: 1.5,
+                marginBottom: 20,
+              }}
+            >
+              Setup details to configure age-appropriate smart limits.
+            </p>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1.2fr 1fr',
+                  gap: 12,
+                }}
+              >
+                <div>
+                  <label
                     style={{
-                      flex: 1,
-                      padding: "12px 0",
-                      borderRadius: 10,
-                      background: deviceType === d ? t.c.primarySoft : t.c.surface,
-                      border: `1px solid ${deviceType === d ? t.c.primary : t.c.border}`,
-                      color: deviceType === d ? t.c.primary : t.c.text,
+                      fontSize: 11,
                       fontWeight: 600,
-                      fontSize: 13,
-                      fontFamily: "inherit",
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: 6,
+                      color: t.c.textMute,
+                      textTransform: 'uppercase',
+                      display: 'block',
+                      marginBottom: 6,
                     }}
                   >
-                    <Icon name="phone" size={13} color={deviceType === d ? t.c.primary : t.c.textMute} />
-                    <span>{d}</span>
-                  </button>
-                ))}
+                    Child's Name
+                  </label>
+                  <input
+                    type='text'
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '12px 14px',
+                      borderRadius: 10,
+                      background: t.c.surface,
+                      border: `1px solid ${t.c.border}`,
+                      color: t.c.text,
+                      fontSize: 14,
+                      fontFamily: 'inherit',
+                      boxSizing: 'border-box',
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <label
+                    style={{
+                      fontSize: 11,
+                      fontWeight: 600,
+                      color: t.c.textMute,
+                      textTransform: 'uppercase',
+                      display: 'block',
+                      marginBottom: 6,
+                    }}
+                  >
+                    Age
+                  </label>
+                  <input
+                    type='text'
+                    value={age}
+                    onChange={(e) => setAge(e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '12px 14px',
+                      borderRadius: 10,
+                      background: t.c.surface,
+                      border: `1px solid ${t.c.border}`,
+                      color: t.c.text,
+                      fontSize: 14,
+                      fontFamily: 'inherit',
+                      boxSizing: 'border-box',
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Device selector buttons instead of input box */}
+              <div>
+                <label
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 600,
+                    color: t.c.textMute,
+                    textTransform: 'uppercase',
+                    display: 'block',
+                    marginBottom: 8,
+                  }}
+                >
+                  Device Type
+                </label>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  {['iPhone', 'Android', 'iPad'].map((d) => (
+                    <button
+                      key={d}
+                      type='button'
+                      onClick={() => setDeviceType(d)}
+                      style={{
+                        flex: 1,
+                        padding: '12px 0',
+                        borderRadius: 10,
+                        background:
+                          deviceType === d ? t.c.primarySoft : t.c.surface,
+                        border: `1px solid ${
+                          deviceType === d ? t.c.primary : t.c.border
+                        }`,
+                        color: deviceType === d ? t.c.primary : t.c.text,
+                        fontWeight: 600,
+                        fontSize: 13,
+                        fontFamily: 'inherit',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: 6,
+                      }}
+                    >
+                      <Icon
+                        name='phone'
+                        size={13}
+                        color={deviceType === d ? t.c.primary : t.c.textMute}
+                      />
+                      <span>{d}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div style={{ display: "flex", gap: 12 }}>
-          <button
-            onClick={onBack}
-            style={{
-              flex: 1,
-              background: t.c.surface,
-              color: t.c.text,
-              border: `1px solid ${t.c.border}`,
-              borderRadius: 12,
-              padding: "14px 0",
-              fontWeight: 600,
-              fontSize: 14,
-              fontFamily: "inherit",
-              cursor: "pointer",
-            }}
-          >
-            Back
-          </button>
-          <button
-            onClick={onNext}
-            style={{
-              flex: 2,
-              background: t.c.primary,
-              color: "white",
-              border: "none",
-              borderRadius: 12,
-              padding: "14px 0",
-              fontWeight: 600,
-              fontSize: 14,
-              fontFamily: "inherit",
-              cursor: "pointer",
-              boxShadow: "0 4px 16px rgba(92,138,107,.15)",
-            }}
-          >
-            Create profile
-          </button>
-        </div>
+          <div style={{ display: 'flex', gap: 12 }}>
+            <button
+              onClick={onBack}
+              style={{
+                flex: 1,
+                background: t.c.surface,
+                color: t.c.text,
+                border: `1px solid ${t.c.border}`,
+                borderRadius: 12,
+                padding: '14px 0',
+                fontWeight: 600,
+                fontSize: 14,
+                fontFamily: 'inherit',
+                cursor: 'pointer',
+              }}
+            >
+              Back
+            </button>
+            <button
+              onClick={onNext}
+              style={{
+                flex: 2,
+                background: t.c.primary,
+                color: 'white',
+                border: 'none',
+                borderRadius: 12,
+                padding: '14px 0',
+                fontWeight: 600,
+                fontSize: 14,
+                fontFamily: 'inherit',
+                cursor: 'pointer',
+                boxShadow: '0 4px 16px rgba(92,138,107,.15)',
+              }}
+            >
+              Create profile
+            </button>
+          </div>
         </div>
       </div>
     </MobileScreen>
@@ -3696,37 +4640,192 @@ function MobConnectingProgress({ android = false, onNext }) {
   }, []);
 
   return (
-    <MobileScreen android={android} scroll={false} bg={`linear-gradient(135deg, ${t.c.primarySoft} 0%, ${t.c.surface2} 100%)`}>
-      <div style={{ padding: "16px 24px 24px", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", boxSizing: "border-box", position: "relative", overflow: "hidden" }}>
+    <MobileScreen
+      android={android}
+      scroll={false}
+      bg={`linear-gradient(135deg, ${t.c.primarySoft} 0%, ${t.c.surface2} 100%)`}
+    >
+      <div
+        style={{
+          padding: '16px 24px 24px',
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          boxSizing: 'border-box',
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
         {/* Subtle glow circles */}
-        <div style={{ position: "absolute", top: -80, right: -80, width: 160, height: 160, borderRadius: "50%", background: t.c.primary, filter: "blur(50px)", opacity: 0.12 }} />
-        <div style={{ position: "absolute", bottom: -60, left: -60, width: 140, height: 140, borderRadius: "50%", background: t.c.accent, filter: "blur(40px)", opacity: 0.12 }} />
-        <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", height: "100%", justifyContent: "space-between" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 20 }}>
-          <div style={{ width: 24, height: 4, background: t.c.primary, borderRadius: 2 }} />
-          <div style={{ width: 24, height: 4, background: t.c.primary, borderRadius: 2 }} />
-          <div style={{ width: 24, height: 4, background: t.c.primary, borderRadius: 2 }} />
-          <span style={{ fontSize: 11, color: t.c.textMute, marginLeft: "auto" }}>Connecting</span>
-        </div>
+        <div
+          style={{
+            position: 'absolute',
+            top: -80,
+            right: -80,
+            width: 160,
+            height: 160,
+            borderRadius: '50%',
+            background: t.c.primary,
+            filter: 'blur(50px)',
+            opacity: 0.12,
+          }}
+        />
+        <div
+          style={{
+            position: 'absolute',
+            bottom: -60,
+            left: -60,
+            width: 140,
+            height: 140,
+            borderRadius: '50%',
+            background: t.c.accent,
+            filter: 'blur(40px)',
+            opacity: 0.12,
+          }}
+        />
+        <div
+          style={{
+            position: 'relative',
+            zIndex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100%',
+            justifyContent: 'space-between',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              marginBottom: 20,
+            }}
+          >
+            <div
+              style={{
+                width: 24,
+                height: 4,
+                background: t.c.primary,
+                borderRadius: 2,
+              }}
+            />
+            <div
+              style={{
+                width: 24,
+                height: 4,
+                background: t.c.primary,
+                borderRadius: 2,
+              }}
+            />
+            <div
+              style={{
+                width: 24,
+                height: 4,
+                background: t.c.primary,
+                borderRadius: 2,
+              }}
+            />
+            <span
+              style={{ fontSize: 11, color: t.c.textMute, marginLeft: 'auto' }}
+            >
+              Connecting
+            </span>
+          </div>
 
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 24 }}>
-          <div style={{ position: "relative", width: 90, height: 90, display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <div style={{ position: "absolute", inset: 0, borderRadius: "50%", background: t.c.primarySoft, opacity: 0.3, transform: "scale(1.4)", animation: "pulse 1.8s infinite" }} />
-            <div style={{ position: "absolute", inset: 10, borderRadius: "50%", background: t.c.primarySoft, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <Icon name="phone" size={28} color={t.c.primary} />
+          <div
+            style={{
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 24,
+            }}
+          >
+            <div
+              style={{
+                position: 'relative',
+                width: 90,
+                height: 90,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  borderRadius: '50%',
+                  background: t.c.primarySoft,
+                  opacity: 0.3,
+                  transform: 'scale(1.4)',
+                  animation: 'pulse 1.8s infinite',
+                }}
+              />
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: 10,
+                  borderRadius: '50%',
+                  background: t.c.primarySoft,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Icon name='phone' size={28} color={t.c.primary} />
+              </div>
             </div>
-          </div>
 
-          <div style={{ textAlign: "center" }}>
-            <h3 style={{ fontFamily: t.fontSerif, fontSize: 22, fontWeight: 500, color: t.c.text, marginBottom: 6 }}>Linking devices</h3>
-            <p style={{ fontSize: 13, color: t.c.textMute }}>Waiting for confirmation...</p>
-          </div>
+            <div style={{ textAlign: 'center' }}>
+              <h3
+                style={{
+                  fontFamily: t.fontSerif,
+                  fontSize: 22,
+                  fontWeight: 500,
+                  color: t.c.text,
+                  marginBottom: 6,
+                }}
+              >
+                Linking devices
+              </h3>
+              <p style={{ fontSize: 13, color: t.c.textMute }}>
+                Waiting for confirmation...
+              </p>
+            </div>
 
-          <div style={{ width: "80%", height: 6, background: t.c.surface2, borderRadius: 3, overflow: "hidden", marginTop: 8 }}>
-            <div style={{ width: `${pct}%`, height: "100%", background: t.c.primary, borderRadius: 3, transition: "width 0.15s ease-out" }} />
+            <div
+              style={{
+                width: '80%',
+                height: 6,
+                background: t.c.surface2,
+                borderRadius: 3,
+                overflow: 'hidden',
+                marginTop: 8,
+              }}
+            >
+              <div
+                style={{
+                  width: `${pct}%`,
+                  height: '100%',
+                  background: t.c.primary,
+                  borderRadius: 3,
+                  transition: 'width 0.15s ease-out',
+                }}
+              />
+            </div>
+            <span
+              style={{
+                fontSize: 11,
+                fontFamily: t.fontMono,
+                color: t.c.textMute,
+              }}
+            >
+              {pct}% configured
+            </span>
           </div>
-          <span style={{ fontSize: 11, fontFamily: t.fontMono, color: t.c.textMute }}>{pct}% configured</span>
-        </div>
         </div>
       </div>
     </MobileScreen>
@@ -3739,94 +4838,301 @@ function MobOnboardConfigure({ android = false, onNext }) {
   const [socialCap, setSocialCap] = useState(60);
 
   return (
-    <MobileScreen android={android} scroll={false} bg={`linear-gradient(135deg, ${t.c.primarySoft} 0%, ${t.c.surface2} 100%)`}>
-      <div style={{ padding: "16px 24px 24px", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", boxSizing: "border-box", position: "relative", overflow: "hidden" }}>
+    <MobileScreen
+      android={android}
+      scroll={false}
+      bg={`linear-gradient(135deg, ${t.c.primarySoft} 0%, ${t.c.surface2} 100%)`}
+    >
+      <div
+        style={{
+          padding: '16px 24px 24px',
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          boxSizing: 'border-box',
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
         {/* Subtle glow circles */}
-        <div style={{ position: "absolute", top: -80, right: -80, width: 160, height: 160, borderRadius: "50%", background: t.c.primary, filter: "blur(50px)", opacity: 0.12 }} />
-        <div style={{ position: "absolute", bottom: -60, left: -60, width: 140, height: 140, borderRadius: "50%", background: t.c.accent, filter: "blur(40px)", opacity: 0.12 }} />
-        <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", height: "100%", justifyContent: "space-between" }}>
-          <div>
-          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 20 }}>
-            <div style={{ width: 24, height: 4, background: t.c.primary, borderRadius: 2 }} />
-            <div style={{ width: 24, height: 4, background: t.c.primary, borderRadius: 2 }} />
-            <div style={{ width: 24, height: 4, background: t.c.primary, borderRadius: 2 }} />
-            <span style={{ fontSize: 11, color: t.c.textMute, marginLeft: "auto" }}>Step 4 of 4</span>
-          </div>
-
-          <h2 style={{ fontFamily: t.fontSerif, fontSize: 28, fontWeight: 500, color: t.c.text, lineHeight: 1.15, marginBottom: 8 }}>
-            Set smart bounds
-          </h2>
-          <p style={{ fontSize: 13.5, color: t.c.textMute, lineHeight: 1.5, marginBottom: 20 }}>
-            Start with soft guides. Refine routine bounds anytime.
-          </p>
-
-          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-            {/* Bedtime Card */}
-            <div style={{ background: t.c.surface, border: `1px solid ${t.c.border}`, borderRadius: 16, padding: 16, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <div>
-                <div style={{ fontWeight: 600, fontSize: 14, color: t.c.text }}>Enable Bedtime Lock</div>
-                <div style={{ fontSize: 12, color: t.c.textMute, marginTop: 2 }}>Locks device 9:00 PM – 7:00 AM</div>
-              </div>
-              <Toggle on={bedtime} onClick={() => setBedtime(!bedtime)} />
-            </div>
-
-            {/* Category Cap */}
-            <div style={{ background: t.c.surface, border: `1px solid ${t.c.border}`, borderRadius: 16, padding: 16 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-                <div>
-                  <div style={{ fontWeight: 600, fontSize: 14, color: t.c.text }}>Social app limits</div>
-                  <div style={{ fontSize: 12, color: t.c.textMute, marginTop: 2 }}>Daily cap for TikTok, Snapchat...</div>
-                </div>
-                <span style={{ fontFamily: t.fontMono, fontSize: 15, fontWeight: 600, color: t.c.primary }}>{socialCap}m</span>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <button
-                  onClick={() => setSocialCap(Math.max(15, socialCap - 15))}
-                  style={{ width: 32, height: 32, borderRadius: 8, background: t.c.surface2, border: "none", color: t.c.text, cursor: "pointer", fontWeight: "bold" }}
-                >
-                  -
-                </button>
-                <div style={{ flex: 1, height: 6, background: t.c.surface2, borderRadius: 3, position: "relative" }}>
-                  <div style={{ position: "absolute", left: 0, top: 0, height: "100%", width: `${(socialCap / 120) * 100}%`, background: t.c.primary, borderRadius: 3 }} />
-                </div>
-                <button
-                  onClick={() => setSocialCap(Math.min(120, socialCap + 15))}
-                  style={{ width: 32, height: 32, borderRadius: 8, background: t.c.surface2, border: "none", color: t.c.text, cursor: "pointer", fontWeight: "bold" }}
-                >
-                  +
-                </button>
-              </div>
-            </div>
-
-            {/* Block during school */}
-            <div style={{ background: t.c.surface, border: `1px solid ${t.c.border}`, borderRadius: 14, padding: 16, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <div>
-                <div style={{ fontWeight: 600, fontSize: 14, color: t.c.text }}>School Day Schedule</div>
-                <div style={{ fontSize: 12, color: t.c.textMute, marginTop: 2 }}>Mute notifications 8:00 AM – 3:00 PM</div>
-              </div>
-              <Toggle on={true} />
-            </div>
-          </div>
-        </div>
-
-        <button
-          onClick={onNext}
+        <div
           style={{
-            width: "100%",
+            position: 'absolute',
+            top: -80,
+            right: -80,
+            width: 160,
+            height: 160,
+            borderRadius: '50%',
             background: t.c.primary,
-            color: "white",
-            border: "none",
-            borderRadius: 12,
-            padding: "14px 0",
-            fontWeight: 600,
-            fontSize: 14,
-            fontFamily: "inherit",
-            cursor: "pointer",
-            boxShadow: "0 4px 16px rgba(92,138,107,.15)",
+            filter: 'blur(50px)',
+            opacity: 0.12,
+          }}
+        />
+        <div
+          style={{
+            position: 'absolute',
+            bottom: -60,
+            left: -60,
+            width: 140,
+            height: 140,
+            borderRadius: '50%',
+            background: t.c.accent,
+            filter: 'blur(40px)',
+            opacity: 0.12,
+          }}
+        />
+        <div
+          style={{
+            position: 'relative',
+            zIndex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100%',
+            justifyContent: 'space-between',
           }}
         >
-          All set! Finish setup
-        </button>
+          <div>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+                marginBottom: 20,
+              }}
+            >
+              <div
+                style={{
+                  width: 24,
+                  height: 4,
+                  background: t.c.primary,
+                  borderRadius: 2,
+                }}
+              />
+              <div
+                style={{
+                  width: 24,
+                  height: 4,
+                  background: t.c.primary,
+                  borderRadius: 2,
+                }}
+              />
+              <div
+                style={{
+                  width: 24,
+                  height: 4,
+                  background: t.c.primary,
+                  borderRadius: 2,
+                }}
+              />
+              <span
+                style={{
+                  fontSize: 11,
+                  color: t.c.textMute,
+                  marginLeft: 'auto',
+                }}
+              >
+                Step 4 of 4
+              </span>
+            </div>
+
+            <h2
+              style={{
+                fontFamily: t.fontSerif,
+                fontSize: 28,
+                fontWeight: 500,
+                color: t.c.text,
+                lineHeight: 1.15,
+                marginBottom: 8,
+              }}
+            >
+              Set smart bounds
+            </h2>
+            <p
+              style={{
+                fontSize: 13.5,
+                color: t.c.textMute,
+                lineHeight: 1.5,
+                marginBottom: 20,
+              }}
+            >
+              Start with soft guides. Refine routine bounds anytime.
+            </p>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              {/* Bedtime Card */}
+              <div
+                style={{
+                  background: t.c.surface,
+                  border: `1px solid ${t.c.border}`,
+                  borderRadius: 16,
+                  padding: 16,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <div>
+                  <div
+                    style={{ fontWeight: 600, fontSize: 14, color: t.c.text }}
+                  >
+                    Enable Bedtime Lock
+                  </div>
+                  <div
+                    style={{ fontSize: 12, color: t.c.textMute, marginTop: 2 }}
+                  >
+                    Locks device 9:00 PM – 7:00 AM
+                  </div>
+                </div>
+                <Toggle on={bedtime} onClick={() => setBedtime(!bedtime)} />
+              </div>
+
+              {/* Category Cap */}
+              <div
+                style={{
+                  background: t.c.surface,
+                  border: `1px solid ${t.c.border}`,
+                  borderRadius: 16,
+                  padding: 16,
+                }}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: 12,
+                  }}
+                >
+                  <div>
+                    <div
+                      style={{ fontWeight: 600, fontSize: 14, color: t.c.text }}
+                    >
+                      Social app limits
+                    </div>
+                    <div
+                      style={{
+                        fontSize: 12,
+                        color: t.c.textMute,
+                        marginTop: 2,
+                      }}
+                    >
+                      Daily cap for TikTok, Snapchat...
+                    </div>
+                  </div>
+                  <span
+                    style={{
+                      fontFamily: t.fontMono,
+                      fontSize: 15,
+                      fontWeight: 600,
+                      color: t.c.primary,
+                    }}
+                  >
+                    {socialCap}m
+                  </span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <button
+                    onClick={() => setSocialCap(Math.max(15, socialCap - 15))}
+                    style={{
+                      width: 32,
+                      height: 32,
+                      borderRadius: 8,
+                      background: t.c.surface2,
+                      border: 'none',
+                      color: t.c.text,
+                      cursor: 'pointer',
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    -
+                  </button>
+                  <div
+                    style={{
+                      flex: 1,
+                      height: 6,
+                      background: t.c.surface2,
+                      borderRadius: 3,
+                      position: 'relative',
+                    }}
+                  >
+                    <div
+                      style={{
+                        position: 'absolute',
+                        left: 0,
+                        top: 0,
+                        height: '100%',
+                        width: `${(socialCap / 120) * 100}%`,
+                        background: t.c.primary,
+                        borderRadius: 3,
+                      }}
+                    />
+                  </div>
+                  <button
+                    onClick={() => setSocialCap(Math.min(120, socialCap + 15))}
+                    style={{
+                      width: 32,
+                      height: 32,
+                      borderRadius: 8,
+                      background: t.c.surface2,
+                      border: 'none',
+                      color: t.c.text,
+                      cursor: 'pointer',
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+
+              {/* Block during school */}
+              <div
+                style={{
+                  background: t.c.surface,
+                  border: `1px solid ${t.c.border}`,
+                  borderRadius: 14,
+                  padding: 16,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <div>
+                  <div
+                    style={{ fontWeight: 600, fontSize: 14, color: t.c.text }}
+                  >
+                    School Day Schedule
+                  </div>
+                  <div
+                    style={{ fontSize: 12, color: t.c.textMute, marginTop: 2 }}
+                  >
+                    Mute notifications 8:00 AM – 3:00 PM
+                  </div>
+                </div>
+                <Toggle on={true} />
+              </div>
+            </div>
+          </div>
+
+          <button
+            onClick={onNext}
+            style={{
+              width: '100%',
+              background: t.c.primary,
+              color: 'white',
+              border: 'none',
+              borderRadius: 12,
+              padding: '14px 0',
+              fontWeight: 600,
+              fontSize: 14,
+              fontFamily: 'inherit',
+              cursor: 'pointer',
+              boxShadow: '0 4px 16px rgba(92,138,107,.15)',
+            }}
+          >
+            All set! Finish setup
+          </button>
         </div>
       </div>
     </MobileScreen>
@@ -3837,90 +5143,158 @@ function MobParentCoach({ android = false }) {
   const t = useTokens();
   const tips = [
     {
-      category: "ROUTINE",
-      title: "TikTok Homework Peak",
+      category: 'ROUTINE',
+      title: 'TikTok Homework Peak',
       desc: "Maya's pickups on TikTok are spikey between 4:00 PM and 6:00 PM. She unlocks TikTok 8 times during this period.",
-      action: "Pause TikTok during homework hours",
-      time: "Just now",
+      action: 'Pause TikTok during homework hours',
+      time: 'Just now',
       color: t.c.accent,
       bg: t.c.accentSoft,
     },
     {
-      category: "SLEEP",
-      title: "Late night check-ins",
-      desc: "Jaden opened Spotify 3 times after 10:30 PM last night. A relaxing audio check is fine, but it might interfere with deep sleep.",
-      action: "Set Music schedule lock to 10:30 PM",
-      time: "2 hours ago",
+      category: 'SLEEP',
+      title: 'Late night check-ins',
+      desc: 'Jaden opened Spotify 3 times after 10:30 PM last night. A relaxing audio check is fine, but it might interfere with deep sleep.',
+      action: 'Set Music schedule lock to 10:30 PM',
+      time: '2 hours ago',
       color: t.c.primary,
       bg: t.c.primarySoft,
     },
     {
-      category: "BALANCE",
-      title: "Reclaimed screen time",
-      desc: "Excellent progress! The family reclaimed 4h 12m this week. Streaks are at a record high.",
-      action: "Share praise with Maya & Jaden",
-      time: "Yesterday",
+      category: 'BALANCE',
+      title: 'Reclaimed screen time',
+      desc: 'Excellent progress! The family reclaimed 4h 12m this week. Streaks are at a record high.',
+      action: 'Share praise with Maya & Jaden',
+      time: 'Yesterday',
       color: t.c.yellowText,
       bg: t.c.yellowSoft,
-    }
+    },
   ];
 
   return (
     <MobileScreen android={android}>
       <MobileHeader
-        title="AI Coach Tips"
-        eyebrow="Insights & Tips"
-        action={<Icon name="sparkles" size={18} color={t.c.primary} />}
+        title='AI Coach Tips'
+        eyebrow='Insights & Tips'
+        action={<Icon name='sparkles' size={18} color={t.c.primary} />}
       />
 
-      <div style={{ padding: "0 18px", display: "flex", flexDirection: "column", gap: 14 }}>
-        <div style={{ padding: 14, borderRadius: 14, background: t.c.primarySoft, display: "flex", gap: 12, alignItems: "center" }}>
-          <div style={{ width: 36, height: 36, borderRadius: "50%", background: t.c.primary, color: "white", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <Icon name="sparkles" size={16} />
+      <div
+        style={{
+          padding: '0 18px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 14,
+        }}
+      >
+        <div
+          style={{
+            padding: 14,
+            borderRadius: 14,
+            background: t.c.primarySoft,
+            display: 'flex',
+            gap: 12,
+            alignItems: 'center',
+          }}
+        >
+          <div
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: '50%',
+              background: t.c.primary,
+              color: 'white',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Icon name='sparkles' size={16} />
           </div>
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 13, fontWeight: 600, color: t.c.primary }}>AI screen-time coach</div>
-            <div style={{ fontSize: 12, color: t.c.text }}>Personalized recommendations based on family habits.</div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: t.c.primary }}>
+              AI screen-time coach
+            </div>
+            <div style={{ fontSize: 12, color: t.c.text }}>
+              Personalized recommendations based on family habits.
+            </div>
           </div>
         </div>
 
         {tips.map((tip, idx) => (
           <MobileCard key={idx} pad={16}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-              <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 100, background: tip.bg, color: tip.color, letterSpacing: ".05em" }}>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: 10,
+              }}
+            >
+              <span
+                style={{
+                  fontSize: 10,
+                  fontWeight: 700,
+                  padding: '2px 8px',
+                  borderRadius: 100,
+                  background: tip.bg,
+                  color: tip.color,
+                  letterSpacing: '.05em',
+                }}
+              >
                 {tip.category}
               </span>
-              <span style={{ fontSize: 11, color: t.c.textMute }}>{tip.time}</span>
+              <span style={{ fontSize: 11, color: t.c.textMute }}>
+                {tip.time}
+              </span>
             </div>
-            
-            <h4 style={{ fontSize: 15, fontWeight: 600, color: t.c.text, marginBottom: 6 }}>{tip.title}</h4>
-            <p style={{ fontSize: 12.5, color: t.c.textMute, lineHeight: 1.5, marginBottom: 14 }}>{tip.desc}</p>
+
+            <h4
+              style={{
+                fontSize: 15,
+                fontWeight: 600,
+                color: t.c.text,
+                marginBottom: 6,
+              }}
+            >
+              {tip.title}
+            </h4>
+            <p
+              style={{
+                fontSize: 12.5,
+                color: t.c.textMute,
+                lineHeight: 1.5,
+                marginBottom: 14,
+              }}
+            >
+              {tip.desc}
+            </p>
 
             <button
               style={{
-                width: "100%",
+                width: '100%',
                 background: t.c.surface2,
                 color: t.c.primary,
-                border: "none",
+                border: 'none',
                 borderRadius: 10,
-                padding: "10px 12px",
+                padding: '10px 12px',
                 fontSize: 12,
                 fontWeight: 600,
-                fontFamily: "inherit",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+                fontFamily: 'inherit',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
                 gap: 6,
               }}
             >
               <span>{tip.action}</span>
-              <Icon name="arrowRight" size={12} />
+              <Icon name='arrowRight' size={12} />
             </button>
           </MobileCard>
         ))}
       </div>
-      
+
       <div style={{ height: 16 }} />
     </MobileScreen>
   );
@@ -3929,85 +5303,166 @@ function MobParentCoach({ android = false }) {
 function MobParentBypassHub({ android = false }) {
   const t = useTokens();
   const [requests, setRequests] = useState([
-    { id: 1, kid: "Maya", age: 11, app: "Roblox", duration: "30 min", time: "5 min ago", reason: "Need to finish a level with friends" },
-    { id: 2, kid: "Jaden", age: 14, app: "Discord", duration: "45 min", time: "12 min ago", reason: "Group study session questions" }
+    {
+      id: 1,
+      kid: 'Maya',
+      age: 11,
+      app: 'Roblox',
+      duration: '30 min',
+      time: '5 min ago',
+      reason: 'Need to finish a level with friends',
+    },
+    {
+      id: 2,
+      kid: 'Jaden',
+      age: 14,
+      app: 'Discord',
+      duration: '45 min',
+      time: '12 min ago',
+      reason: 'Group study session questions',
+    },
   ]);
 
   const handleAction = (id, action) => {
-    alert(`Request ${action === "approve" ? "Approved" : "Declined"}`);
-    setRequests(requests.filter(r => r.id !== id));
+    alert(`Request ${action === 'approve' ? 'Approved' : 'Declined'}`);
+    setRequests(requests.filter((r) => r.id !== id));
   };
 
   return (
     <MobileScreen android={android}>
       <MobileHeader
-        title="Bypass Requests"
-        eyebrow="Approval Center"
-        action={<Icon name="bell" size={18} color={t.c.text} />}
+        title='Bypass Requests'
+        eyebrow='Approval Center'
+        action={<Icon name='bell' size={18} color={t.c.text} />}
       />
 
-      <div style={{ padding: "0 18px", display: "flex", flexDirection: "column", gap: 14 }}>
+      <div
+        style={{
+          padding: '0 18px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 14,
+        }}
+      >
         {requests.length === 0 ? (
-          <div style={{ textAlign: "center", padding: "60px 20px", color: t.c.textMute }}>
-            <Icon name="check" size={32} color={t.c.primary} style={{ marginBottom: 12 }} />
-            <div style={{ fontWeight: 600, fontSize: 15, color: t.c.text }}>All caught up!</div>
-            <div style={{ fontSize: 12, marginTop: 4 }}>No pending bypass requests.</div>
+          <div
+            style={{
+              textAlign: 'center',
+              padding: '60px 20px',
+              color: t.c.textMute,
+            }}
+          >
+            <Icon
+              name='check'
+              size={32}
+              color={t.c.primary}
+              style={{ marginBottom: 12 }}
+            />
+            <div style={{ fontWeight: 600, fontSize: 15, color: t.c.text }}>
+              All caught up!
+            </div>
+            <div style={{ fontSize: 12, marginTop: 4 }}>
+              No pending bypass requests.
+            </div>
           </div>
         ) : (
-          requests.map(r => (
+          requests.map((r) => (
             <MobileCard key={r.id} pad={16}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: 12,
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   <Avatar name={r.kid} size={24} />
                   <div>
-                    <span style={{ fontWeight: 600, fontSize: 13.5 }}>{r.kid}</span>
-                    <span style={{ fontSize: 11, color: t.c.textMute }}> · age {r.age}</span>
+                    <span style={{ fontWeight: 600, fontSize: 13.5 }}>
+                      {r.kid}
+                    </span>
+                    <span style={{ fontSize: 11, color: t.c.textMute }}>
+                      {' '}
+                      · age {r.age}
+                    </span>
                   </div>
                 </div>
-                <span style={{ fontSize: 11, color: t.c.textMute }}>{r.time}</span>
+                <span style={{ fontSize: 11, color: t.c.textMute }}>
+                  {r.time}
+                </span>
               </div>
 
-              <div style={{ background: t.c.surface, border: `1px solid ${t.c.border}`, borderRadius: 10, padding: 12, marginBottom: 14 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div
+                style={{
+                  background: t.c.surface,
+                  border: `1px solid ${t.c.border}`,
+                  borderRadius: 10,
+                  padding: 12,
+                  marginBottom: 14,
+                }}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}
+                >
                   <span style={{ fontWeight: 700, fontSize: 13 }}>{r.app}</span>
-                  <span style={{ fontSize: 12, fontWeight: 600, color: t.c.primary }}>Requesting: {r.duration}</span>
+                  <span
+                    style={{
+                      fontSize: 12,
+                      fontWeight: 600,
+                      color: t.c.primary,
+                    }}
+                  >
+                    Requesting: {r.duration}
+                  </span>
                 </div>
-                <div style={{ fontSize: 12, color: t.c.textMute, marginTop: 6, fontStyle: "italic" }}>
+                <div
+                  style={{
+                    fontSize: 12,
+                    color: t.c.textMute,
+                    marginTop: 6,
+                    fontStyle: 'italic',
+                  }}
+                >
                   "{r.reason}"
                 </div>
               </div>
 
-              <div style={{ display: "flex", gap: 8 }}>
+              <div style={{ display: 'flex', gap: 8 }}>
                 <button
-                  onClick={() => handleAction(r.id, "decline")}
+                  onClick={() => handleAction(r.id, 'decline')}
                   style={{
                     flex: 1,
                     background: t.c.surface2,
-                    border: "none",
+                    border: 'none',
                     borderRadius: 10,
-                    padding: "10px 0",
+                    padding: '10px 0',
                     fontSize: 12,
                     fontWeight: 600,
                     color: t.c.text,
-                    fontFamily: "inherit",
-                    cursor: "pointer",
+                    fontFamily: 'inherit',
+                    cursor: 'pointer',
                   }}
                 >
                   Decline
                 </button>
                 <button
-                  onClick={() => handleAction(r.id, "approve")}
+                  onClick={() => handleAction(r.id, 'approve')}
                   style={{
                     flex: 1,
                     background: t.c.primary,
-                    border: "none",
+                    border: 'none',
                     borderRadius: 10,
-                    padding: "10px 0",
+                    padding: '10px 0',
                     fontSize: 12,
                     fontWeight: 600,
-                    color: "white",
-                    fontFamily: "inherit",
-                    cursor: "pointer",
+                    color: 'white',
+                    fontFamily: 'inherit',
+                    cursor: 'pointer',
                   }}
                 >
                   Approve +{r.duration}
@@ -4024,15 +5479,16 @@ function MobParentBypassHub({ android = false }) {
 function MobOnboarding({ android = false }) {
   const [step, setStep] = useState(1);
 
-  if (step === 1) return <MobLogin android={android} onLogin={() => setStep(2)} />;
-  
+  if (step === 1)
+    return <MobLogin android={android} onLogin={() => setStep(2)} />;
+
   if (step === 2) {
     return (
       <MobOnboardWelcome
         android={android}
         onSelect={(role) => {
-          if (role === "child") {
-            alert("Pairing device to parent hub...");
+          if (role === 'child') {
+            alert('Pairing device to parent hub...');
             setStep(1);
           } else {
             setStep(2.5);
@@ -4047,8 +5503,8 @@ function MobOnboarding({ android = false }) {
       <MobOnboardRoleQuestion
         android={android}
         onAnswer={(choice) => {
-          if (choice === "independent") {
-            alert("Independent user profile created successfully!");
+          if (choice === 'independent') {
+            alert('Independent user profile created successfully!');
             setStep(2);
           } else {
             setStep(3);
@@ -4059,13 +5515,31 @@ function MobOnboarding({ android = false }) {
     );
   }
 
-  if (step === 3) return <MobOnboardCreateProfile android={android} onNext={() => setStep(4)} onBack={() => setStep(2.5)} />;
-  if (step === 4) return <MobOnboardLink android={android} onNext={() => setStep(5)} onBack={() => setStep(3)} />;
-  if (step === 5) return <MobConnectingProgress android={android} onNext={() => setStep(6)} />;
-  if (step === 6) return <MobOnboardConfigure android={android} onNext={() => setStep(1)} />;
+  if (step === 3)
+    return (
+      <MobOnboardCreateProfile
+        android={android}
+        onNext={() => setStep(4)}
+        onBack={() => setStep(2.5)}
+      />
+    );
+  if (step === 4)
+    return (
+      <MobOnboardLink
+        android={android}
+        onNext={() => setStep(5)}
+        onBack={() => setStep(3)}
+      />
+    );
+  if (step === 5)
+    return (
+      <MobConnectingProgress android={android} onNext={() => setStep(6)} />
+    );
+  if (step === 6)
+    return <MobOnboardConfigure android={android} onNext={() => setStep(1)} />;
 }
 
-function QRCodeMock({ size = 170, fg = "#000", bg = "#fff" }) {
+function QRCodeMock({ size = 170, fg = '#000', bg = '#fff' }) {
   const grid = 21;
   const cell = size / grid;
   const seed = (x, y) => (x * 9301 + y * 49297 + 233280) % 2;
@@ -4131,10 +5605,10 @@ window.QRCodeMock = QRCodeMock;
 
 // ─────────────────── Shared parentTabs definition ───────────────────
 const parentTabs = [
-  { id: "family", label: "Family", icon: "users" },
-  { id: "me", label: "Me", icon: "leaf" },
-  { id: "limits", label: "Limits", icon: "clock" },
-  { id: "reports", label: "Reports", icon: "chart" },
-  { id: "shield", label: "Shield", icon: "shield", badge: 3 },
+  { id: 'family', label: 'Family', icon: 'users' },
+  { id: 'me', label: 'Me', icon: 'leaf' },
+  { id: 'limits', label: 'Limits', icon: 'clock' },
+  { id: 'reports', label: 'Reports', icon: 'chart' },
+  { id: 'shield', label: 'Shield', icon: 'shield', badge: 3 },
 ];
 window.parentTabs = parentTabs;

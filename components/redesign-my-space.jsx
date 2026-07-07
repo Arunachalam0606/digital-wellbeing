@@ -866,12 +866,24 @@ function CoachCard() {
 }
 
 // ─────────────────── My Space Dashboard (main) ───────────────────
-function MySpaceDashboardNew() {
+function MySpaceDashboardNew({ onModeChange }) {
+  const [currentMode, setCurrentMode] = React.useState("personal");
+
+  const handleModeChange = (newMode) => {
+    setCurrentMode(newMode);
+    if (onModeChange) onModeChange(newMode);
+  };
+
+  if (currentMode === "family") {
+    return <FamilyHubDashboardNew onModeChange={handleModeChange} />;
+  }
+
   const t = useTokens();
   return (
     <WorkspaceShell
       mode="personal"
       active="dashboard"
+      onModeChange={handleModeChange}
       title={
         <>
           Hello, <span style={{ fontStyle: "italic" }}>Alex</span>.

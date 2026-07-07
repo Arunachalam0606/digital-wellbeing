@@ -288,6 +288,8 @@ function WorkspaceShell({
           {children}
         </div>
       </main>
+
+      <GlobalDrawerOrModal />
     </div>
   );
 }
@@ -390,8 +392,43 @@ function ChildStatusCard({ kid }) {
             >
               {kid.name}
             </div>
-            <div style={{ fontSize: 12, color: t.c.textMute }}>
-              Age {kid.age} · {kid.device} · {kid.lastActive}
+            <div
+              style={{
+                fontSize: 12,
+                color: t.c.textMute,
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
+                flexWrap: "wrap",
+                marginTop: 2,
+              }}
+            >
+              <span>Age {kid.age}</span>
+              <span>·</span>
+              {kid.devices ? (
+                kid.devices.map((d) => (
+                  <span
+                    key={d}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 3,
+                      background: t.c.surface2,
+                      padding: "2px 6px",
+                      borderRadius: 4,
+                      fontSize: 10,
+                      color: t.c.text,
+                    }}
+                  >
+                    <Icon name="phone" size={10} />
+                    {d}
+                  </span>
+                ))
+              ) : (
+                <span>{kid.device}</span>
+              )}
+              <span>·</span>
+              <span>{kid.lastActive}</span>
             </div>
           </div>
         </div>
@@ -599,6 +636,7 @@ function ChildStatusCard({ kid }) {
             Pause
           </button>
           <button
+            onClick={() => window.triggerModal("view-profile")}
             style={{
               padding: "6px 10px",
               borderRadius: 7,
@@ -766,8 +804,198 @@ function WeekSpark({
   );
 }
 
+// ─────────────────── Stacked Action queue component ───────────────────
+function NeedsAttentionStack() {
+  const t = useTokens();
+  const [activeIndex, setActiveIndex] = React.useState(0);
+
+  const items = [
+    {
+      id: 1,
+      icon: "message",
+      iconColor: t.c.blue,
+      title: "30 more minutes on Discord — Jaden",
+      sub: "Requested 12 min ago · expires in 6h",
+      action: "Review",
+      actionTone: "primary",
+      modalType: "review",
+    },
+    {
+      id: 2,
+      icon: "alert",
+      iconColor: t.c.warn,
+      title: "Roblox at 80% of daily limit — Maya",
+      sub: "48 / 60 min used",
+      action: "Extend",
+      modalType: "extend",
+    },
+    {
+      id: 3,
+      icon: "shield",
+      iconColor: t.c.danger,
+      title: "Bypass attempt on TikTok — Jaden",
+      sub: "1 hour ago",
+      action: "Investigate",
+      actionTone: "danger",
+      modalType: "investigate",
+    },
+    {
+      id: 4,
+      icon: "calendar",
+      iconColor: t.c.textMute,
+      title: "Weekend schedule activates in 6h",
+      sub: "Two profiles affected",
+      action: "Preview",
+      modalType: "preview",
+    },
+  ];
+
+  const handleNext = () => {
+    setActiveIndex((activeIndex + 1) % items.length);
+  };
+
+  const handlePrev = () => {
+    setActiveIndex((activeIndex - 1 + items.length) % items.length);
+  };
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      {/* Header with Arrows */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <div>
+          <div
+            style={{
+              fontFamily: t.fontSerif,
+              fontSize: 18,
+              fontWeight: 500,
+              color: t.c.text,
+              letterSpacing: "-.01em",
+            }}
+          >
+            Needs attention
+          </div>
+          <div style={{ fontSize: 12, color: t.c.textMute }}>
+            {items.length} items · today
+          </div>
+        </div>
+        <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+          <span
+            style={{
+              fontSize: 12,
+              color: t.c.textMute,
+              marginRight: 8,
+              fontVariantNumeric: "tabular-nums",
+            }}
+          >
+            {activeIndex + 1} of {items.length}
+          </span>
+          <button
+            onClick={handlePrev}
+            style={{
+              width: 28,
+              height: 28,
+              borderRadius: "50%",
+              border: `1px solid ${t.c.border}`,
+              background: t.c.surface,
+              color: t.c.text,
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Icon name="arrowLeft" size={12} />
+          </button>
+          <button
+            onClick={handleNext}
+            style={{
+              width: 28,
+              height: 28,
+              borderRadius: "50%",
+              border: `1px solid ${t.c.border}`,
+              background: t.c.surface,
+              color: t.c.text,
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Icon name="arrowRight" size={12} />
+          </button>
+        </div>
+      </div>
+
+      {/* Stack container */}
+      <div style={{ position: "relative", height: 110, marginTop: 4 }}>
+        {items.map((item, i) => {
+          let diff = i - activeIndex;
+          if (diff < 0) diff += items.length;
+
+          const isVisible = diff <= 2;
+          const zIndex = 10 - diff;
+          const scale = 1 - diff * 0.04;
+          const translateY = diff * 8;
+          const opacity =
+            diff === 0 ? 1 : diff === 1 ? 0.8 : diff === 2 ? 0.4 : 0;
+
+          return (
+            <div
+              key={item.id}
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                background: t.c.surface,
+                borderRadius: 16,
+                border: `1px solid ${t.c.border}`,
+                boxShadow: diff === 0 ? "0 4px 12px rgba(0,0,0,0.04)" : "none",
+                transform: `scale(${scale}) translateY(${translateY}px)`,
+                transformOrigin: "top center",
+                zIndex,
+                opacity: isVisible ? opacity : 0,
+                pointerEvents: diff === 0 ? "auto" : "none",
+                transition: "all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)",
+                padding: "12px 16px",
+              }}
+            >
+              <ActionItem
+                icon={item.icon}
+                iconColor={item.iconColor}
+                title={item.title}
+                sub={item.sub}
+                action={item.action}
+                actionTone={item.actionTone}
+                onClick={() => window.triggerModal(item.modalType)}
+              />
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 // ─────────────────── Family Hub Dashboard (main) ───────────────────
-function FamilyHubDashboardNew() {
+function FamilyHubDashboardNew({ onModeChange }) {
+  const [currentMode, setCurrentMode] = React.useState("family");
+
+  const handleModeChange = (newMode) => {
+    setCurrentMode(newMode);
+    if (onModeChange) onModeChange(newMode);
+  };
+
+  if (currentMode === "personal") {
+    return <MySpaceDashboardNew onModeChange={handleModeChange} />;
+  }
+
   const t = useTokens();
   const D = window.APP_DATA;
   const totalToday = D.kids.reduce((a, k) => a + k.todayMinutes, 0);
@@ -778,6 +1006,7 @@ function FamilyHubDashboardNew() {
     <WorkspaceShell
       mode="family"
       active="dashboard"
+      onModeChange={handleModeChange}
       title={
         <>
           Good afternoon, <span style={{ fontStyle: "italic" }}>Sarah</span>.
@@ -941,95 +1170,8 @@ function FamilyHubDashboardNew() {
           </div>
         </div>
 
-        {/* Action queue */}
-        <div
-          style={{
-            padding: 24,
-            borderRadius: 20,
-            border: `1px solid ${t.c.border}`,
-            background: t.c.surface,
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: 4,
-            }}
-          >
-            <div>
-              <div
-                style={{
-                  fontFamily: t.fontSerif,
-                  fontSize: 18,
-                  fontWeight: 500,
-                  color: t.c.text,
-                  letterSpacing: "-.01em",
-                }}
-              >
-                Needs attention
-              </div>
-              <div style={{ fontSize: 12, color: t.c.textMute }}>
-                4 items · today
-              </div>
-            </div>
-            <span
-              style={{
-                padding: "3px 8px",
-                borderRadius: 6,
-                background: t.c.dangerSoft,
-                color: t.c.danger,
-                fontSize: 11,
-                fontWeight: 700,
-                letterSpacing: ".04em",
-              }}
-            >
-              4
-            </span>
-          </div>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              marginTop: 8,
-              borderTop: `1px solid ${t.c.border}`,
-            }}
-          >
-            <ActionItem
-              icon="message"
-              iconColor={t.c.blue}
-              title="30 more minutes on Discord — Jaden"
-              sub="Requested 12 min ago · expires in 6h"
-              action="Review"
-              actionTone="primary"
-            />
-            <ActionItem
-              icon="alert"
-              iconColor={t.c.warn}
-              title="Roblox at 80% of daily limit — Maya"
-              sub="48 / 60 min used"
-              action="Extend"
-            />
-            <ActionItem
-              icon="shield"
-              iconColor={t.c.danger}
-              title="Bypass attempt on TikTok — Jaden"
-              sub="1 hour ago"
-              action="Investigate"
-              actionTone="danger"
-            />
-            <ActionItem
-              icon="calendar"
-              iconColor={t.c.textMute}
-              title="Weekend schedule activates in 6h"
-              sub="Two profiles affected"
-              action="Preview"
-            />
-          </div>
-        </div>
+        {/* Action queue stack */}
+        <NeedsAttentionStack />
       </div>
 
       {/* Row 2: Child status cards */}
