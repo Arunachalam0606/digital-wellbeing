@@ -154,6 +154,77 @@ const __TWEAKS_STYLE = `
   .twk-chip svg{position:absolute;top:6px;left:6px;width:13px;height:13px;
     filter:drop-shadow(0 1px 1px rgba(0,0,0,.3))}
   .twk-panel.shrunk .twk-body{display:none}
+
+  .twk-panel.twk-dark {
+    background: rgba(26, 29, 33, 0.85);
+    color: rgba(240, 235, 220, 0.9);
+    border: .5px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.05) inset, 0 12px 40px rgba(0, 0, 0, 0.35);
+  }
+  .twk-panel.twk-dark .twk-lbl {
+    color: rgba(240, 235, 220, 0.8);
+  }
+  .twk-panel.twk-dark .twk-val {
+    color: rgba(240, 235, 220, 0.55);
+  }
+  .twk-panel.twk-dark .twk-sect {
+    color: rgba(240, 235, 220, 0.45);
+  }
+  .twk-panel.twk-dark .twk-x {
+    color: rgba(240, 235, 220, 0.55);
+  }
+  .twk-panel.twk-dark .twk-x:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(240, 235, 220, 0.95);
+  }
+  .twk-panel.twk-dark .twk-field {
+    border: .5px solid rgba(255, 255, 255, 0.15);
+    background: rgba(0, 0, 0, 0.25);
+    color: inherit;
+  }
+  .twk-panel.twk-dark .twk-field:focus {
+    border-color: rgba(255, 255, 255, 0.35);
+    background: rgba(0, 0, 0, 0.4);
+  }
+  .twk-panel.twk-dark select.twk-field {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='rgba(255,255,255,.5)' d='M0 0h10L5 6z'/></svg>");
+  }
+  .twk-panel.twk-dark .twk-slider {
+    background: rgba(255, 255, 255, 0.15);
+  }
+  .twk-panel.twk-dark .twk-slider::-webkit-slider-thumb {
+    background: #25282c;
+    border: .5px solid rgba(255, 255, 255, 0.2);
+  }
+  .twk-panel.twk-dark .twk-seg {
+    background: rgba(0, 0, 0, 0.35);
+  }
+  .twk-panel.twk-dark .twk-seg-thumb {
+    background: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  }
+  .twk-panel.twk-dark .twk-toggle {
+    background: rgba(255, 255, 255, 0.15);
+  }
+  .twk-panel.twk-dark .twk-toggle[data-on="1"] {
+    background: #30d158;
+  }
+  .twk-panel.twk-dark .twk-toggle i {
+    background: #fff;
+  }
+  .twk-panel.twk-dark .twk-num {
+    border: .5px solid rgba(255, 255, 255, 0.15);
+    background: rgba(0, 0, 0, 0.25);
+  }
+  .twk-panel.twk-dark .twk-num-lbl {
+    color: rgba(240, 235, 220, 0.6);
+  }
+  .twk-panel.twk-dark .twk-btn.secondary {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  .twk-panel.twk-dark .twk-btn.secondary:hover {
+    background: rgba(255, 255, 255, 0.18);
+  }
 `;
 
 // ── useTweaks ───────────────────────────────────────────────────────────────
@@ -163,12 +234,12 @@ function useTweaks(defaults) {
   const [values, setValues] = React.useState(defaults);
   const setTweak = React.useCallback((keyOrEdits, val) => {
     const edits =
-      typeof keyOrEdits === "object" && keyOrEdits !== null
+      typeof keyOrEdits === 'object' && keyOrEdits !== null
         ? keyOrEdits
         : { [keyOrEdits]: val };
     setValues((prev) => ({ ...prev, ...edits }));
-    window.parent.postMessage({ type: "__edit_mode_set_keys", edits }, "*");
-    window.dispatchEvent(new CustomEvent("tweakchange", { detail: edits }));
+    window.parent.postMessage({ type: '__edit_mode_set_keys', edits }, '*');
+    window.dispatchEvent(new CustomEvent('tweakchange', { detail: edits }));
   }, []);
   return [values, setTweak];
 }
@@ -180,7 +251,12 @@ function useTweaks(defaults) {
 // The close button posts __edit_mode_dismissed so the host's toolbar toggle
 // flips off in lockstep; the host echoes __deactivate_edit_mode back which
 // is what actually hides the panel.
-function TweaksPanel({ title = "Tweaks", noDeckControls = false, children }) {
+function TweaksPanel({
+  title = 'Tweaks',
+  noDeckControls = false,
+  dark = false,
+  children,
+}) {
   const [open, setOpen] = React.useState(true);
   const [shrunk, setShrunk] = React.useState(false);
   const dragRef = React.useRef(null);
@@ -192,8 +268,8 @@ function TweaksPanel({ title = "Tweaks", noDeckControls = false, children }) {
   // and pass noDeckControls to suppress this one.
   const hasDeckStage = React.useMemo(
     () =>
-      typeof document !== "undefined" && !!document.querySelector("deck-stage"),
-    [],
+      typeof document !== 'undefined' && !!document.querySelector('deck-stage'),
+    []
   );
   // deck-stage enables its rail in connectedCallback, but this panel can
   // mount before that element has upgraded. The initial read catches the
@@ -201,27 +277,27 @@ function TweaksPanel({ title = "Tweaks", noDeckControls = false, children }) {
   // copies still wait for the host's __omelette_rail_enabled postMessage —
   // same listener handles those.)
   const [railEnabled, setRailEnabled] = React.useState(
-    () => hasDeckStage && !!document.querySelector("deck-stage")?._railEnabled,
+    () => hasDeckStage && !!document.querySelector('deck-stage')?._railEnabled
   );
   React.useEffect(() => {
     if (!hasDeckStage || railEnabled) return undefined;
     const onMsg = (e) => {
-      if (e.data && e.data.type === "__omelette_rail_enabled")
+      if (e.data && e.data.type === '__omelette_rail_enabled')
         setRailEnabled(true);
     };
-    window.addEventListener("message", onMsg);
-    return () => window.removeEventListener("message", onMsg);
+    window.addEventListener('message', onMsg);
+    return () => window.removeEventListener('message', onMsg);
   }, [hasDeckStage, railEnabled]);
   const [railVisible, setRailVisible] = React.useState(() => {
     try {
-      return localStorage.getItem("deck-stage.railVisible") !== "0";
+      return localStorage.getItem('deck-stage.railVisible') !== '0';
     } catch (e) {
       return true;
     }
   });
   const toggleRail = (on) => {
     setRailVisible(on);
-    window.postMessage({ type: "__deck_rail_visible", on }, "*");
+    window.postMessage({ type: '__deck_rail_visible', on }, '*');
   };
   const offsetRef = React.useRef({ x: 16, y: 16 });
   const PAD = 16;
@@ -237,16 +313,16 @@ function TweaksPanel({ title = "Tweaks", noDeckControls = false, children }) {
       x: Math.min(maxRight, Math.max(PAD, offsetRef.current.x)),
       y: Math.min(maxBottom, Math.max(PAD, offsetRef.current.y)),
     };
-    panel.style.right = offsetRef.current.x + "px";
-    panel.style.bottom = offsetRef.current.y + "px";
+    panel.style.right = offsetRef.current.x + 'px';
+    panel.style.bottom = offsetRef.current.y + 'px';
   }, []);
 
   React.useEffect(() => {
     if (!open) return;
     clampToViewport();
-    if (typeof ResizeObserver === "undefined") {
-      window.addEventListener("resize", clampToViewport);
-      return () => window.removeEventListener("resize", clampToViewport);
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', clampToViewport);
+      return () => window.removeEventListener('resize', clampToViewport);
     }
     const ro = new ResizeObserver(clampToViewport);
     ro.observe(document.documentElement);
@@ -260,17 +336,17 @@ function TweaksPanel({ title = "Tweaks", noDeckControls = false, children }) {
   React.useEffect(() => {
     const onMsg = (e) => {
       const t = e?.data?.type;
-      if (t === "__activate_edit_mode") setOpen(true);
-      else if (t === "__deactivate_edit_mode") setOpen(false);
+      if (t === '__activate_edit_mode') setOpen(true);
+      else if (t === '__deactivate_edit_mode') setOpen(false);
     };
-    window.addEventListener("message", onMsg);
-    window.parent.postMessage({ type: "__edit_mode_available" }, "*");
-    return () => window.removeEventListener("message", onMsg);
+    window.addEventListener('message', onMsg);
+    window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+    return () => window.removeEventListener('message', onMsg);
   }, []);
 
   const dismiss = () => {
     setOpen(false);
-    window.parent.postMessage({ type: "__edit_mode_dismissed" }, "*");
+    window.parent.postMessage({ type: '__edit_mode_dismissed' }, '*');
   };
 
   const onDragStart = (e) => {
@@ -289,11 +365,11 @@ function TweaksPanel({ title = "Tweaks", noDeckControls = false, children }) {
       clampToViewport();
     };
     const up = () => {
-      window.removeEventListener("mousemove", move);
-      window.removeEventListener("mouseup", up);
+      window.removeEventListener('mousemove', move);
+      window.removeEventListener('mouseup', up);
     };
-    window.addEventListener("mousemove", move);
-    window.addEventListener("mouseup", up);
+    window.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', up);
   };
 
   if (!open) return null;
@@ -302,27 +378,29 @@ function TweaksPanel({ title = "Tweaks", noDeckControls = false, children }) {
       <style>{__TWEAKS_STYLE}</style>
       <section
         ref={dragRef}
-        className={shrunk ? "twk-panel shrunk" : "twk-panel"}
-        data-noncommentable=""
+        className={`${shrunk ? 'twk-panel shrunk' : 'twk-panel'} ${
+          dark ? 'twk-dark' : ''
+        }`}
+        data-noncommentable=''
         style={{ right: offsetRef.current.x, bottom: offsetRef.current.y }}
       >
-        <div className="twk-hd" onMouseDown={onDragStart}>
+        <div className='twk-hd' onMouseDown={onDragStart}>
           <b>{title}</b>
           <button
-            className="twk-x"
-            aria-label={shrunk ? "Expand tweaks" : "Minimize tweaks"}
+            className='twk-x'
+            aria-label={shrunk ? 'Expand tweaks' : 'Minimize tweaks'}
             onMouseDown={(e) => e.stopPropagation()}
             onClick={() => setShrunk((prev) => !prev)}
           >
-            {shrunk ? "＋" : "✕"}
+            {shrunk ? '＋' : '✕'}
           </button>
         </div>
-        <div className="twk-body">
+        <div className='twk-body'>
           {children}
           {hasDeckStage && railEnabled && !noDeckControls && (
-            <TweakSection label="Deck">
+            <TweakSection label='Deck'>
               <TweakToggle
-                label="Thumbnail rail"
+                label='Thumbnail rail'
                 value={railVisible}
                 onChange={toggleRail}
               />
@@ -339,7 +417,7 @@ function TweaksPanel({ title = "Tweaks", noDeckControls = false, children }) {
 function TweakSection({ label, children }) {
   return (
     <>
-      <div className="twk-sect">{label}</div>
+      <div className='twk-sect'>{label}</div>
       {children}
     </>
   );
@@ -347,10 +425,10 @@ function TweakSection({ label, children }) {
 
 function TweakRow({ label, value, children, inline = false }) {
   return (
-    <div className={inline ? "twk-row twk-row-h" : "twk-row"}>
-      <div className="twk-lbl">
+    <div className={inline ? 'twk-row twk-row-h' : 'twk-row'}>
+      <div className='twk-lbl'>
         <span>{label}</span>
-        {value != null && <span className="twk-val">{value}</span>}
+        {value != null && <span className='twk-val'>{value}</span>}
       </div>
       {children}
     </div>
@@ -365,14 +443,14 @@ function TweakSlider({
   min = 0,
   max = 100,
   step = 1,
-  unit = "",
+  unit = '',
   onChange,
 }) {
   return (
     <TweakRow label={label} value={`${value}${unit}`}>
       <input
-        type="range"
-        className="twk-slider"
+        type='range'
+        className='twk-slider'
         min={min}
         max={max}
         step={step}
@@ -385,15 +463,15 @@ function TweakSlider({
 
 function TweakToggle({ label, value, onChange }) {
   return (
-    <div className="twk-row twk-row-h">
-      <div className="twk-lbl">
+    <div className='twk-row twk-row-h'>
+      <div className='twk-lbl'>
         <span>{label}</span>
       </div>
       <button
-        type="button"
-        className="twk-toggle"
-        data-on={value ? "1" : "0"}
-        role="switch"
+        type='button'
+        className='twk-toggle'
+        data-on={value ? '1' : '0'}
+        role='switch'
         aria-checked={!!value}
         onClick={() => onChange(!value)}
       >
@@ -416,7 +494,7 @@ function TweakRadio({ label, value, options, onChange }) {
   // to its own padding, and 11.5px system-ui averages ~6.3px/char — so 2
   // options fit ~16 chars each, 3 fit ~10. Past that (or >3 options), fall
   // back to a dropdown rather than wrap.
-  const labelLen = (o) => String(typeof o === "object" ? o.label : o).length;
+  const labelLen = (o) => String(typeof o === 'object' ? o.label : o).length;
   const maxLen = options.reduce((m, o) => Math.max(m, labelLen(o)), 0);
   const fitsAsSegments = maxLen <= ({ 2: 16, 3: 10 }[options.length] ?? 0);
   if (!fitsAsSegments) {
@@ -424,9 +502,9 @@ function TweakRadio({ label, value, options, onChange }) {
     // fallback stays type-preserving (numbers, booleans) like the segment path.
     const resolve = (s) => {
       const m = options.find(
-        (o) => String(typeof o === "object" ? o.value : o) === s,
+        (o) => String(typeof o === 'object' ? o.value : o) === s
       );
-      return m === undefined ? s : typeof m === "object" ? m.value : m;
+      return m === undefined ? s : typeof m === 'object' ? m.value : m;
     };
     return (
       <TweakSelect
@@ -438,11 +516,11 @@ function TweakRadio({ label, value, options, onChange }) {
     );
   }
   const opts = options.map((o) =>
-    typeof o === "object" ? o : { value: o, label: o },
+    typeof o === 'object' ? o : { value: o, label: o }
   );
   const idx = Math.max(
     0,
-    opts.findIndex((o) => o.value === value),
+    opts.findIndex((o) => o.value === value)
   );
   const n = opts.length;
 
@@ -464,23 +542,23 @@ function TweakRadio({ label, value, options, onChange }) {
     };
     const up = () => {
       setDragging(false);
-      window.removeEventListener("pointermove", move);
-      window.removeEventListener("pointerup", up);
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
     };
-    window.addEventListener("pointermove", move);
-    window.addEventListener("pointerup", up);
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
   };
 
   return (
     <TweakRow label={label}>
       <div
         ref={trackRef}
-        role="radiogroup"
+        role='radiogroup'
         onPointerDown={onPointerDown}
-        className={dragging ? "twk-seg dragging" : "twk-seg"}
+        className={dragging ? 'twk-seg dragging' : 'twk-seg'}
       >
         <div
-          className="twk-seg-thumb"
+          className='twk-seg-thumb'
           style={{
             left: `calc(2px + ${idx} * (100% - 4px) / ${n})`,
             width: `calc((100% - 4px) / ${n})`,
@@ -489,8 +567,8 @@ function TweakRadio({ label, value, options, onChange }) {
         {opts.map((o) => (
           <button
             key={o.value}
-            type="button"
-            role="radio"
+            type='button'
+            role='radio'
             aria-checked={o.value === value}
           >
             {o.label}
@@ -505,13 +583,13 @@ function TweakSelect({ label, value, options, onChange }) {
   return (
     <TweakRow label={label}>
       <select
-        className="twk-field"
+        className='twk-field'
         value={value}
         onChange={(e) => onChange(e.target.value)}
       >
         {options.map((o) => {
-          const v = typeof o === "object" ? o.value : o;
-          const l = typeof o === "object" ? o.label : o;
+          const v = typeof o === 'object' ? o.value : o;
+          const l = typeof o === 'object' ? o.label : o;
           return (
             <option key={v} value={v}>
               {l}
@@ -527,8 +605,8 @@ function TweakText({ label, value, placeholder, onChange }) {
   return (
     <TweakRow label={label}>
       <input
-        className="twk-field"
-        type="text"
+        className='twk-field'
+        type='text'
         value={value}
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
@@ -543,7 +621,7 @@ function TweakNumber({
   min,
   max,
   step = 1,
-  unit = "",
+  unit = '',
   onChange,
 }) {
   const clamp = (n) => {
@@ -555,7 +633,7 @@ function TweakNumber({
   const onScrubStart = (e) => {
     e.preventDefault();
     startRef.current = { x: e.clientX, val: value };
-    const decimals = (String(step).split(".")[1] || "").length;
+    const decimals = (String(step).split('.')[1] || '').length;
     const move = (ev) => {
       const dx = ev.clientX - startRef.current.x;
       const raw = startRef.current.val + dx * step;
@@ -563,26 +641,26 @@ function TweakNumber({
       onChange(clamp(Number(snapped.toFixed(decimals))));
     };
     const up = () => {
-      window.removeEventListener("pointermove", move);
-      window.removeEventListener("pointerup", up);
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
     };
-    window.addEventListener("pointermove", move);
-    window.addEventListener("pointerup", up);
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
   };
   return (
-    <div className="twk-num">
-      <span className="twk-num-lbl" onPointerDown={onScrubStart}>
+    <div className='twk-num'>
+      <span className='twk-num-lbl' onPointerDown={onScrubStart}>
         {label}
       </span>
       <input
-        type="number"
+        type='number'
         value={value}
         min={min}
         max={max}
         step={step}
         onChange={(e) => onChange(clamp(Number(e.target.value)))}
       />
-      {unit && <span className="twk-num-unit">{unit}</span>}
+      {unit && <span className='twk-num-unit'>{unit}</span>}
     </div>
   );
 }
@@ -591,8 +669,8 @@ function TweakNumber({
 // read on both #111 and #fafafa without per-option configuration. Hex input
 // only (#rgb / #rrggbb); named or rgb()/hsl() colors fall through to "light".
 function __twkIsLight(hex) {
-  const h = String(hex).replace("#", "");
-  const x = h.length === 3 ? h.replace(/./g, (c) => c + c) : h.padEnd(6, "0");
+  const h = String(hex).replace('#', '');
+  const x = h.length === 3 ? h.replace(/./g, (c) => c + c) : h.padEnd(6, '0');
   const n = parseInt(x.slice(0, 6), 16);
   if (Number.isNaN(n)) return true;
   const r = (n >> 16) & 255,
@@ -602,14 +680,14 @@ function __twkIsLight(hex) {
 }
 
 const __TwkCheck = ({ light }) => (
-  <svg viewBox="0 0 14 14" aria-hidden="true">
+  <svg viewBox='0 0 14 14' aria-hidden='true'>
     <path
-      d="M3 7.2 5.8 10 11 4.2"
-      fill="none"
-      strokeWidth="2.2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      stroke={light ? "rgba(0,0,0,.78)" : "#fff"}
+      d='M3 7.2 5.8 10 11 4.2'
+      fill='none'
+      strokeWidth='2.2'
+      strokeLinecap='round'
+      strokeLinejoin='round'
+      stroke={light ? 'rgba(0,0,0,.78)' : '#fff'}
     />
   </svg>
 );
@@ -623,13 +701,13 @@ const __TwkCheck = ({ light }) => (
 function TweakColor({ label, value, options, onChange }) {
   if (!options || !options.length) {
     return (
-      <div className="twk-row twk-row-h">
-        <div className="twk-lbl">
+      <div className='twk-row twk-row-h'>
+        <div className='twk-lbl'>
           <span>{label}</span>
         </div>
         <input
-          type="color"
-          className="twk-swatch"
+          type='color'
+          className='twk-swatch'
           value={value}
           onChange={(e) => onChange(e.target.value)}
         />
@@ -643,7 +721,7 @@ function TweakColor({ label, value, options, onChange }) {
   const cur = key(value);
   return (
     <TweakRow label={label}>
-      <div className="twk-chips" role="radiogroup">
+      <div className='twk-chips' role='radiogroup'>
         {options.map((o, i) => {
           const colors = Array.isArray(o) ? o : [o];
           const [hero, ...rest] = colors;
@@ -652,13 +730,13 @@ function TweakColor({ label, value, options, onChange }) {
           return (
             <button
               key={i}
-              type="button"
-              className="twk-chip"
-              role="radio"
+              type='button'
+              className='twk-chip'
+              role='radio'
               aria-checked={on}
-              data-on={on ? "1" : "0"}
-              aria-label={colors.join(", ")}
-              title={colors.join(" · ")}
+              data-on={on ? '1' : '0'}
+              aria-label={colors.join(', ')}
+              title={colors.join(' · ')}
               style={{ background: hero }}
               onClick={() => onChange(o)}
             >
@@ -681,8 +759,8 @@ function TweakColor({ label, value, options, onChange }) {
 function TweakButton({ label, onClick, secondary = false }) {
   return (
     <button
-      type="button"
-      className={secondary ? "twk-btn secondary" : "twk-btn"}
+      type='button'
+      className={secondary ? 'twk-btn secondary' : 'twk-btn'}
       onClick={onClick}
     >
       {label}
@@ -707,7 +785,7 @@ Object.assign(window, {
 
 // ── TweakSuggestionBar (flag-gated addon) ───────────────────────────────────
 (function () {
-  const s = document.createElement("style");
+  const s = document.createElement('style');
   s.textContent = `
     @keyframes twk-blink{50%{opacity:0}}
     @keyframes twk-fadein{from{opacity:0;transform:translateX(4px)}to{opacity:1;transform:none}}
@@ -734,21 +812,21 @@ Object.assign(window, {
 })();
 
 const __twkSendChat = (text) =>
-  window.parent.postMessage({ type: "__edit_mode_chat", text }, "*");
+  window.parent.postMessage({ type: '__edit_mode_chat', text }, '*');
 
 const __TWK_SPARK_STAR =
-  "M14.8299 10.378C15.1555 10.499 15.1827 10.9337 14.8747 11.0918L11.401 12.8747C11.3125 12.9202 11.2445 12.9955 11.2099 13.0864L9.95228 16.3963C9.82177 16.7397 9.31884 16.7397 9.18834 16.3963L7.93069 13.0864C7.89616 12.9955 7.82814 12.9202 7.73965 12.8747L4.2659 11.0918C3.95787 10.9337 3.98513 10.499 4.31067 10.378L7.69556 9.11947C7.81035 9.0768 7.89899 8.98625 7.93669 8.87317L9.18301 5.13503C9.30417 4.77165 9.83645 4.77165 9.9576 5.13503L11.2039 8.87317C11.2416 8.98626 11.3303 9.0768 11.4451 9.11947L14.8299 10.378Z";
+  'M14.8299 10.378C15.1555 10.499 15.1827 10.9337 14.8747 11.0918L11.401 12.8747C11.3125 12.9202 11.2445 12.9955 11.2099 13.0864L9.95228 16.3963C9.82177 16.7397 9.31884 16.7397 9.18834 16.3963L7.93069 13.0864C7.89616 12.9955 7.82814 12.9202 7.73965 12.8747L4.2659 11.0918C3.95787 10.9337 3.98513 10.499 4.31067 10.378L7.69556 9.11947C7.81035 9.0768 7.89899 8.98625 7.93669 8.87317L9.18301 5.13503C9.30417 4.77165 9.83645 4.77165 9.9576 5.13503L11.2039 8.87317C11.2416 8.98626 11.3303 9.0768 11.4451 9.11947L14.8299 10.378Z';
 const __TWK_SPARK_DOT =
-  "M6.0114 3.58637C6.35897 3.71564 6.35897 4.19061 6.0114 4.31988L4.98024 4.70337C4.86547 4.74605 4.77685 4.83659 4.73915 4.94965L4.33943 6.14853C4.21828 6.51191 3.686 6.51191 3.56485 6.14853L3.16513 4.94965C3.12743 4.83659 3.03881 4.74605 2.92404 4.70337L1.89288 4.31988C1.54531 4.19061 1.54531 3.71564 1.89288 3.58637L2.92404 3.20288C3.03881 3.1602 3.12743 3.06966 3.16513 2.9566L3.56485 1.75772C3.686 1.39434 4.21828 1.39434 4.33943 1.75772L4.73915 2.9566C4.77685 3.06966 4.86547 3.1602 4.98024 3.20288L6.0114 3.58637Z";
+  'M6.0114 3.58637C6.35897 3.71564 6.35897 4.19061 6.0114 4.31988L4.98024 4.70337C4.86547 4.74605 4.77685 4.83659 4.73915 4.94965L4.33943 6.14853C4.21828 6.51191 3.686 6.51191 3.56485 6.14853L3.16513 4.94965C3.12743 4.83659 3.03881 4.74605 2.92404 4.70337L1.89288 4.31988C1.54531 4.19061 1.54531 3.71564 1.89288 3.58637L2.92404 3.20288C3.03881 3.1602 3.12743 3.06966 3.16513 2.9566L3.56485 1.75772C3.686 1.39434 4.21828 1.39434 4.33943 1.75772L4.73915 2.9566C4.77685 3.06966 4.86547 3.1602 4.98024 3.20288L6.0114 3.58637Z';
 
 function __TwkSpark({ size = 12 }) {
   return (
     <svg
       width={size}
       height={size}
-      viewBox="0 0 17 18"
-      fill="currentColor"
-      style={{ display: "inline-block", verticalAlign: "-1px" }}
+      viewBox='0 0 17 18'
+      fill='currentColor'
+      style={{ display: 'inline-block', verticalAlign: '-1px' }}
     >
       <path d={__TWK_SPARK_STAR} />
       <path d={__TWK_SPARK_DOT} />
@@ -763,11 +841,11 @@ function __TwkSpark({ size = 12 }) {
 // types in and "Ideas" appears — clicking asks for three more suggestions.
 function TweakSuggestionBar({
   suggestions = [],
-  placeholder = "Describe a tweak…",
-  ideasPrompt = "Suggest three more tweak ideas for this design and update the suggestions on TweakSuggestionBar.",
+  placeholder = 'Describe a tweak…',
+  ideasPrompt = 'Suggest three more tweak ideas for this design and update the suggestions on TweakSuggestionBar.',
 }) {
-  const [val, setVal] = React.useState("");
-  const [ghost, setGhost] = React.useState("");
+  const [val, setVal] = React.useState('');
+  const [ghost, setGhost] = React.useState('');
   const [focused, setFocused] = React.useState(false);
   const inputRef = React.useRef(null);
   const tw = useTwkTypewriter(suggestions, {
@@ -778,7 +856,7 @@ function TweakSuggestionBar({
   const freeze = () => {
     tw.markPlayed();
     if (val || ghost) return;
-    const target = !tw.done ? suggestions[tw.idx] : "";
+    const target = !tw.done ? suggestions[tw.idx] : '';
     if (target) setGhost(target);
     inputRef.current?.focus();
   };
@@ -787,20 +865,20 @@ function TweakSuggestionBar({
     const v = (val || ghost).trim();
     if (!v) return;
     __twkSendChat(v);
-    setVal("");
-    setGhost("");
+    setVal('');
+    setGhost('');
   };
 
   const onKeyDown = (e) => {
-    if (e.key === "Tab" && ghost && !val) {
+    if (e.key === 'Tab' && ghost && !val) {
       e.preventDefault();
       setVal(ghost);
-      setGhost("");
-    } else if (e.key === "Enter") {
+      setGhost('');
+    } else if (e.key === 'Enter') {
       e.preventDefault();
       submit();
-    } else if (e.key === "Escape") {
-      setGhost("");
+    } else if (e.key === 'Escape') {
+      setGhost('');
     }
   };
 
@@ -810,15 +888,15 @@ function TweakSuggestionBar({
   const showStatic = !val && !ghost && !focused && tw.done;
 
   return (
-    <div className="twk-sugg" onMouseDown={freeze}>
-      <div className="twk-sugg-field">
+    <div className='twk-sugg' onMouseDown={freeze}>
+      <div className='twk-sugg-field'>
         <input
           ref={inputRef}
           value={val}
-          placeholder={focused && !ghost ? placeholder : ""}
+          placeholder={focused && !ghost ? placeholder : ''}
           onChange={(e) => {
             setVal(e.target.value);
-            setGhost("");
+            setGhost('');
           }}
           onFocus={() => {
             setFocused(true);
@@ -826,29 +904,29 @@ function TweakSuggestionBar({
           }}
           onBlur={() => {
             setFocused(false);
-            if (!val) setGhost("");
+            if (!val) setGhost('');
           }}
           onKeyDown={onKeyDown}
         />
         {showAnim && (
-          <div className="twk-sugg-ghost">
+          <div className='twk-sugg-ghost'>
             {tw.text}
-            <span className="twk-sugg-caret" />
+            <span className='twk-sugg-caret' />
           </div>
         )}
         {showStatic && (
-          <div className="twk-sugg-ghost">
+          <div className='twk-sugg-ghost'>
             {tw.tail}
             {tw.tail.length < placeholder.length && (
-              <span className="twk-sugg-caret" />
+              <span className='twk-sugg-caret' />
             )}
           </div>
         )}
-        {ghost && !val && <div className="twk-sugg-ghost hint">{ghost}</div>}
+        {ghost && !val && <div className='twk-sugg-ghost hint'>{ghost}</div>}
       </div>
       {val || ghost ? (
         <button
-          className="twk-sugg-send"
+          className='twk-sugg-send'
           onMouseDown={(e) => {
             e.stopPropagation();
             e.preventDefault();
@@ -859,7 +937,7 @@ function TweakSuggestionBar({
         </button>
       ) : tw.done && !focused ? (
         <button
-          className="twk-sugg-ideas"
+          className='twk-sugg-ideas'
           onMouseDown={(e) => {
             e.stopPropagation();
             e.preventDefault();
@@ -884,64 +962,64 @@ function useTwkTypewriter(
     eraseMs = 22,
     pauseMs = 1800,
     enabled = true,
-  } = {},
+  } = {}
 ) {
   // Dep mirrors the memo body verbatim so collidable joins like
   // ['a\nb','c'] vs ['a','b','c'] don't share a stale sessionStorage key
   // (gen-spark PR #28600 Bugbot R3 — minor divergence from Tiffany's
   // `items.join('\n')` dep; upstream report pending).
   const key = React.useMemo(
-    () => "__twk_played:" + JSON.stringify(items),
-    [JSON.stringify(items)],
+    () => '__twk_played:' + JSON.stringify(items),
+    [JSON.stringify(items)]
   );
   const played = () => {
     try {
-      return sessionStorage.getItem(key) === "1";
+      return sessionStorage.getItem(key) === '1';
     } catch {
       return false;
     }
   };
 
-  const [text, setText] = React.useState("");
+  const [text, setText] = React.useState('');
   const [tail, setTail] = React.useState(() =>
-    items.length === 0 || played() ? placeholder : "",
+    items.length === 0 || played() ? placeholder : ''
   );
   const [idx, setIdx] = React.useState(0);
   const [done, setDone] = React.useState(() => items.length === 0 || played());
-  const phase = React.useRef("type");
+  const phase = React.useRef('type');
   const n = React.useRef(0);
 
   const markPlayed = React.useCallback(() => {
     try {
-      sessionStorage.setItem(key, "1");
+      sessionStorage.setItem(key, '1');
     } catch {}
     setDone(true);
   }, [key]);
 
   React.useEffect(() => {
     const skip = items.length === 0 || played();
-    setText("");
+    setText('');
     setIdx(0);
     setDone(skip);
-    setTail(skip ? placeholder : "");
-    phase.current = "type";
+    setTail(skip ? placeholder : '');
+    phase.current = 'type';
     n.current = 0;
   }, [key]);
 
   React.useEffect(() => {
     if (done || !enabled) return;
-    const item = items[idx] ?? "";
+    const item = items[idx] ?? '';
     let t;
     const tick = () => {
-      if (phase.current === "type") {
+      if (phase.current === 'type') {
         n.current++;
         setText(item.slice(0, n.current));
         if (n.current >= item.length) {
-          phase.current = "pause";
+          phase.current = 'pause';
           t = setTimeout(tick, pauseMs);
         } else t = setTimeout(tick, typeMs + Math.random() * 20);
-      } else if (phase.current === "pause") {
-        phase.current = "erase";
+      } else if (phase.current === 'pause') {
+        phase.current = 'erase';
         t = setTimeout(tick, eraseMs);
       } else {
         n.current--;
@@ -951,14 +1029,14 @@ function useTwkTypewriter(
             markPlayed();
             return;
           }
-          phase.current = "type";
+          phase.current = 'type';
           setIdx((i) => i + 1);
         } else t = setTimeout(tick, eraseMs);
       }
     };
-    phase.current = "type";
+    phase.current = 'type';
     n.current = 0;
-    setText("");
+    setText('');
     t = setTimeout(tick, 400);
     return () => clearTimeout(t);
   }, [idx, done, key, enabled, typeMs, eraseMs, pauseMs]);
