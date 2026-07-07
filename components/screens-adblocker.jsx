@@ -16,7 +16,12 @@ function AdBlocker() {
           <Chip bg={t.c.primarySoft} color={t.c.primary}>
             <Icon name="shieldCheck" size={12} /> Protection active
           </Chip>
-          <Button variant="outline" size="sm" icon="settings">
+          <Button
+            onClick={() => window.triggerModal("filter")}
+            variant="outline"
+            size="sm"
+            icon="settings"
+          >
             Filter lists
           </Button>
         </>
@@ -211,7 +216,12 @@ function AdBlocker() {
             title="Top blocked domains"
             subtitle="Where the most requests came from"
             action={
-              <Button variant="ghost" size="sm" icon="list">
+              <Button
+                onClick={() => window.triggerModal("view-all")}
+                variant="ghost"
+                size="sm"
+                icon="list"
+              >
                 View all 1,284
               </Button>
             }
@@ -283,7 +293,12 @@ function AdBlocker() {
             title="Per-device blocking"
             subtitle="Each device shares the same filter lists"
             action={
-              <Button variant="ghost" size="sm" icon="plus">
+              <Button
+                onClick={() => window.triggerModal("add-device")}
+                variant="ghost"
+                size="sm"
+                icon="plus"
+              >
                 Add device
               </Button>
             }
@@ -337,7 +352,12 @@ function AdBlocker() {
             title="Filter lists & rules"
             subtitle="What's protecting your family"
             action={
-              <Button variant="ghost" size="sm" icon="plus">
+              <Button
+                onClick={() => window.triggerModal("add-list")}
+                variant="ghost"
+                size="sm"
+                icon="plus"
+              >
                 Add list
               </Button>
             }

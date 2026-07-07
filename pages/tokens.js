@@ -456,6 +456,32 @@ const P = {
 
 window.PALETTES = P;
 
+// Font pairings — display serif + body sans
+const FONT_PAIRS = {
+  editorial: {
+    name: "Editorial",
+    sans: '"Geist", -apple-system, BlinkMacSystemFont, system-ui, sans-serif',
+    serif: '"Newsreader", Georgia, serif',
+    displayWeight: 500,
+    displayTracking: "-.02em",
+  },
+  modern: {
+    name: "Modern",
+    sans: '"Space Grotesk", -apple-system, BlinkMacSystemFont, system-ui, sans-serif',
+    serif: '"Instrument Serif", Georgia, serif',
+    displayWeight: 400,
+    displayTracking: "-.025em",
+  },
+  classic: {
+    name: "Classic",
+    sans: '"Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif',
+    serif: '"Fraunces", Georgia, serif',
+    displayWeight: 400,
+    displayTracking: "-.02em",
+  },
+};
+window.FONT_PAIRS = FONT_PAIRS;
+
 window.useTokens = function useTokens() {
   const tw = window.__TWEAKS || {};
   const paletteKey = tw.palette || "sage";
@@ -464,6 +490,9 @@ window.useTokens = function useTokens() {
   const c = dark ? paletteDef.dark : paletteDef.light;
   const density = tw.density || "cozy";
   const cardStyle = tw.cardStyle || "soft";
+  const fontKey = tw.fontPair || "editorial";
+  const fontDef = FONT_PAIRS[fontKey] || FONT_PAIRS.editorial;
+  const layout = tw.layout || "A";
 
   const pad = density === "compact" ? 16 : 24;
   const padSm = density === "compact" ? 10 : 14;
@@ -476,14 +505,19 @@ window.useTokens = function useTokens() {
     paletteName: paletteDef.name,
     density,
     cardStyle,
+    fontPair: fontKey,
+    fontPairName: fontDef.name,
+    displayWeight: fontDef.displayWeight,
+    displayTracking: fontDef.displayTracking,
+    layout,
     pad,
     padSm,
     gap,
     radius: 18,
     radiusSm: 12,
     radiusLg: 24,
-    font: '"Geist", -apple-system, BlinkMacSystemFont, system-ui, sans-serif',
-    fontSerif: '"Newsreader", Georgia, serif',
+    font: fontDef.sans,
+    fontSerif: fontDef.serif,
     fontMono: '"JetBrains Mono", ui-monospace, Menlo, monospace',
     cardStyles(extra = {}) {
       const base = {
@@ -523,6 +557,6 @@ if (
   link.id = "tokens-fonts";
   link.rel = "stylesheet";
   link.href =
-    "https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Newsreader:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap";
+    "https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Newsreader:ital,wght@0,400;0,500;0,600;1,400&family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=JetBrains+Mono:wght@400;500&display=swap";
   document.head.appendChild(link);
 }
